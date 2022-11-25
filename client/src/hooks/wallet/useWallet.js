@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useEth } from "../../contexts/EthContext";
-import { errCodes, getRPCError } from "../../helpers/errorHandling.js";
+import { getRPCError } from "../../helpers/errorHandling.js";
 
 function useWallet() {
 	/* ---- Contexts -------------------------------- */
@@ -19,10 +19,7 @@ function useWallet() {
 					wallet = await contract.methods.getWallet().call({ from: account });
 				} catch (err) {
 					const rpcErr = getRPCError(err);
-
-					if (rpcErr.errCode === errCodes.WALLET_NOT_FOUND) {
-						await contract.methods.cre().call({ from: account });
-					}
+					console.error(rpcErr.message);
 				}
 			}
 

@@ -14,7 +14,7 @@ function UserWallet() {
 				<>
 					{!wallet.tickets.length ? <p>Vous ne possédez aucun ticket</p> : (
 						<ul>
-							{wallet.tickets.map((ticket, idx) => <li key={`${account}-${idx}`}>{ticket}</li>)}
+							{wallet.tickets.map((ticket, idx) => <li key={`${account}-${idx}`}>{ticket.name}</li>)}
 						</ul>
 					)}
 				</>

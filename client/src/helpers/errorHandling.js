@@ -1,9 +1,7 @@
+// TODO: Remove ?
 const del = "#";
 const errCodeLen = 6;
-export const errCodes = {
-	WALLET_NOT_FOUND: `${del}WAL001`,
-	WALLET_ALREADY_EXISTS: `${del}WAL002`
-};
+export const errCodes = { };
 
 export function getRPCError(err) {
 	// Parse the RPC string
