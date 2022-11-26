@@ -11,9 +11,6 @@ contract UserWalletFactory {
         TicketFactory.Ticket[] tickets;
     }
 
-    /// Events
-    event NewWallet();
-
     /// Mappings
     mapping (address => UserWallet) userToWallet;
 
