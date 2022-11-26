@@ -15,7 +15,7 @@ contract TicketFactory is UserWalletFactory {
     uint ticketPrice = 0.001 ether;
 
     /// Events
-    event BoughtTicket(string name);
+    event BoughtTicket(address owner, string name);
 
     /// Functions
     function buyTicket() external payable {
@@ -24,6 +24,6 @@ contract TicketFactory is UserWalletFactory {
         Ticket memory ticket = Ticket(msg.sender, "Bonjour");
         super._addTicket(msg.sender, ticket);
 
-        emit BoughtTicket(ticket.name);
+        emit BoughtTicket(ticket.owner, ticket.name);
     }
 }
