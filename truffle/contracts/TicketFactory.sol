@@ -2,28 +2,29 @@ pragma solidity ^0.8.0;
 // SPDX-License-Identifier: UNLICENSED
 
 import "./UserWalletFactory.sol";
+import "./Administrable.sol";
 
-contract TicketFactory is UserWalletFactory {
+contract TicketFactory is UserWalletFactory, Administrable {
     constructor() {}
 
-    /// Constants
+    /// Properties
     struct Ticket {
         address owner;
         string name;
     }
 
-    uint ticketPrice = 0.001 ether;
+    uint256 ticketPrice = 0.001 ether;
 
     /// Events
-    event BoughtTicket(address owner, string name);
+    event BoughtTicket(address indexed owner, string name);
     event TicketPriceChanged(uint newPrice);
 
     /// Functions
-    function getPrice() external view returns(uint) {
+    function getPrice() external view returns(uint256) {
         return ticketPrice;
     }
 
-    function setPrice(uint price) external {
+    function setPrice(uint256 price) external mustBeAdmin {
         ticketPrice = price;
         emit TicketPriceChanged(ticketPrice);
     }
