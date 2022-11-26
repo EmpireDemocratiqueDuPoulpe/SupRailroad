@@ -18,6 +18,11 @@ contract TicketFactory is UserWalletFactory {
     event BoughtTicket(address owner, string name);
 
     /// Functions
+    function getPrice() external view returns(uint) {
+        return ticketPrice;
+    }
+
+    // TODO: Send value if too much
     function buyTicket() external payable {
         require(msg.value == ticketPrice);
 
