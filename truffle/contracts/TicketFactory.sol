@@ -16,10 +16,16 @@ contract TicketFactory is UserWalletFactory {
 
     /// Events
     event BoughtTicket(address owner, string name);
+    event TicketPriceChanged(uint newPrice);
 
     /// Functions
     function getPrice() external view returns(uint) {
         return ticketPrice;
+    }
+
+    function setPrice(uint price) external {
+        ticketPrice = price;
+        emit TicketPriceChanged(ticketPrice);
     }
 
     // TODO: Send value if too much

@@ -11,7 +11,7 @@ function useWallet() {
 
 	/* ---- Effects --------------------------------- */
 	useEffect(() => {
-		// This function fetch the new wallet and update the hook state.
+		// Fetch the new wallet and update the hook state.
 		const update = async () => {
 			try {
 				const wallet = await contract.methods.getWallet().call({ from: account });
@@ -22,17 +22,17 @@ function useWallet() {
 			}
 		};
 
-		// If the contract exists, we fetch the wallet once and start an event listener.
-		let ticketEvent = null;
+		// Fetch the wallet once and start an event listener.
+		let ticketBoughtListener = null;
 		if (contract) {
 			update().catch(console.error);
-			ticketEvent = contract.events.BoughtTicket({ filter: {owner: account} }).on("data", update);
+			ticketBoughtListener = contract.events.BoughtTicket({ filter: {owner: account} }).on("data", update);
 		}
 
 		// The event listener is stopped when this hook is unmounted.
 		return () => {
-			if (ticketEvent) {
-				ticketEvent.removeAllListeners("data");
+			if (ticketBoughtListener) {
+				ticketBoughtListener.removeAllListeners("data");
 			}
 		};
 	}, [contract, account]);
