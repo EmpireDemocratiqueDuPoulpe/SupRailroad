@@ -8,16 +8,23 @@ contract TicketFactory is UserWalletFactory, Administrable {
     constructor() {}
 
     /// Properties
+    struct Coordinate {
+        int32 lat;
+        int32 long;
+    }
+
     struct Ticket {
         address owner;
         string name;
+        Coordinate origin;
+        Coordinate destination;
     }
 
     uint256 ticketPrice = 0.001 ether;
 
     /// Events
     event BoughtTicket(address indexed owner, string name);
-    event TicketPriceChanged(uint newPrice);
+    event TicketPriceChanged(uint256 newPrice);
 
     /// Functions
     function getPrice() external view returns(uint256) {
@@ -29,11 +36,11 @@ contract TicketFactory is UserWalletFactory, Administrable {
         emit TicketPriceChanged(ticketPrice);
     }
 
-    // TODO: Send value if too much
-    function buyTicket() external payable {
+    // TODO: Send value if too much?
+    function buyTicket(Coordinate calldata origin, Coordinate calldata destination) external payable {
         require(msg.value == ticketPrice);
 
-        Ticket memory ticket = Ticket(msg.sender, "Bonjour");
+        Ticket memory ticket = Ticket(msg.sender, "Bonjour", origin, destination);
         super._addTicket(msg.sender, ticket);
 
         emit BoughtTicket(ticket.owner, ticket.name);

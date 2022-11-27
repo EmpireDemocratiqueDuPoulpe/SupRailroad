@@ -18,7 +18,8 @@ function TicketDispenser() {
 
 	const buyTicket = async () => {
 		try {
-			await contract.methods.buyTicket().send({ from: account, value: ticketPrice.price});
+			await contract.methods.buyTicket({lat: 46901492, long: 3583934}, {lat: 43177141, long: 2528543})
+				.send({ from: account, value: ticketPrice.price});
 		} catch (err) {
 			// TODO: Error modal
 			console.error(err);
@@ -29,6 +30,7 @@ function TicketDispenser() {
 	return (
 		<div className="ticket-dispenser">
 			<p>train | métro | bus</p>
+			<p>De: [46901492, 3583934] à [43177141, 2528543]</p>
 			<button onClick={buyTicket} disabled={!ticketPrice.price}>
 				Acheter un ticket {ticketPrice.price && <>({Web3.utils.fromWei(ticketPrice.price, "ether")} ETH)</>}
 			</button>
