@@ -1,9 +1,12 @@
+import * as dotenv from "dotenv";
 import Web3 from "web3";
 import TicketFactoryBuild from "./contracts/TicketFactory.json" assert {type: "json"};
 
+dotenv.config({ override: true, debug: false });
+
 /*** Constants ********************************************************************************************************/
-const SLEEP_INTERVAL = process.env.SLEEP_INTERVAL || 1000;
-const CHUNK_SIZE = process.env.CHUNK_SIZE || 10;
+const SLEEP_INTERVAL = process.env.SLEEP_INTERVAL ? parseInt(process.env.SLEEP_INTERVAL, 10) : 1000;
+const CHUNK_SIZE = process.env.CHUNK_SIZE ? parseInt(process.env.CHUNK_SIZE, 10) : 10;
 
 /*** Functions - Queue management *************************************************************************************/
 const queue = [];
@@ -25,8 +28,7 @@ async function processRequest(request, ticketContract) {
 	const calculatedPrice = calculatePrice(request.origin, request.destination, standardPrice);
 
 	try {
-		// TODO: Change hard-coded address
-		await ticketContract.methods.sendCalculatedPrice(request.caller, request.requestId, `${calculatedPrice}`).send({ from: "0x9cF106fea3E1d92Cc04b3F9C34DAb57a21F3828D" });
+		await ticketContract.methods.sendCalculatedPrice(request.caller, request.requestId, `${calculatedPrice}`).send({ from: process.env.ACCOUNT });
 	} catch (err) {
 		console.error(`An error occurred during a request processing: ${err}`);
 	}
@@ -67,9 +69,41 @@ function deg2rad(deg) {
 }
 
 /*** Functions - Initialization ***************************************************************************************/
+function checkEnv() {
+	if (!process.env.ACCOUNT) {
+		throw new Error("Missing account address in `process.env`!");
+	}
+}
+
 async function getContract(web3, buildFile) {
 	const networkId = await web3.eth.net.getId();
 	return new web3.eth.Contract(buildFile.abi, buildFile.networks[networkId].address);
+}
+
+async function estimateGas(web3, method) {
+	return await method.estimateGas({from: process.env.ACCOUNT});
+}
+
+async function announceOracle(web3, ticketContract) {
+	try {
+		const gasPrice = await estimateGas(web3, ticketContract.methods.addOracle(process.env.ACCOUNT));
+		await ticketContract.methods.addOracle(process.env.ACCOUNT).send({ from: process.env.ACCOUNT, gas: gasPrice });
+		console.log("Announce done: this oracle is ready to work.");
+	} catch (err) {
+		console.error(`An error occurred during the oracle announcement: ${err}`);
+		process.exit(0);
+	}
+}
+
+async function retireOracle(ticketContract) {
+	try {
+		await ticketContract.methods.removeOracle(process.env.ACCOUNT).send({ from: process.env.ACCOUNT });
+		console.log("Retire done: this oracle is now free.");
+		return true;
+	} catch (err) {
+		console.error(`An error occurred during the oracle retirement: ${err}`);
+		return false;
+	}
 }
 
 function listenEvents(web3, ticketContract) {
@@ -85,11 +119,22 @@ function listenEvents(web3, ticketContract) {
 	});
 }
 
+async function onClose(ticketContract) {
+	const retired = await retireOracle(ticketContract);
+
+	if (retired) {
+		console.log("The Oracle is no more. Oedipus would be happy.");
+		process.exit(0);
+	}
+}
+
 function delay(ms) {
 	return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 async function startOracle() {
+	checkEnv();
+
 	// Initialize Web3
 	const web3 = new Web3(Web3.givenProvider || "ws://127.0.0.1:8545");
 	web3.eth.net.isListening()
@@ -102,13 +147,15 @@ async function startOracle() {
 	// Load contracts
 	const ticketContract = await getContract(web3, TicketFactoryBuild);
 
+	// Announce oracle
+	await announceOracle(web3, ticketContract);
+
 	// Listen events
 	listenEvents(web3, ticketContract);
 
 	// Initialize oracle events
-	process.on("SIGINT", () => {
-		console.log("The Oracle is no more. Oedipus would be happy.");
-		process.exit(0);
+	["SIGTERM", "SIGINT", "SIGBREAK", "SIGHUP"].forEach(sig => {
+		process.on(sig, async () => { await onClose(ticketContract); });
 	});
 
 	// Listen for contract events

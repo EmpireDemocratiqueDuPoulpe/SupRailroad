@@ -1,11 +1,16 @@
 pragma solidity ^0.8.0;
 // SPDX-License-Identifier: UNLICENSED
 
-contract Administrable {
-    constructor() {}
+import "@openzeppelin/contracts/access/AccessControlEnumerable.sol";
+
+contract Administrable is AccessControlEnumerable {
+    constructor() {
+        super._grantRole(ADMIN_ROLE, ADMIN);
+    }
 
     /// Properties
-    address public constant ADMIN = 0xf02Aea86D06DE1831258AC831b5eeAc14C4DB6BD;
+    bytes32 public constant ADMIN_ROLE = keccak256("ADMIN_ROLE");
+    address private constant ADMIN = 0x9cF106fea3E1d92Cc04b3F9C34DAb57a21F3828D;
 
     /// Modifiers
     modifier mustBeAdmin() {
@@ -15,6 +20,6 @@ contract Administrable {
 
     /// Functions
     function isAdmin() public view returns(bool) {
-        return msg.sender == ADMIN;
+        return super.hasRole(ADMIN_ROLE, msg.sender);
     }
 }

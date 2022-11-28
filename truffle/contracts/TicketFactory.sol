@@ -23,6 +23,9 @@ contract TicketFactory is UserWalletFactory, Administrable, OracleLinked {
 
     uint256 ticketPrice = 0.00015 ether;
 
+    /// Mappings
+    mapping (address => uint256) private callerToPrice;
+
     /// Events
     event TicketPriceChanged(uint256 newPrice);
     event TicketPriceRequested(address caller, uint256 requestId, Coordinate origin, Coordinate destination);
@@ -43,8 +46,7 @@ contract TicketFactory is UserWalletFactory, Administrable, OracleLinked {
         return requestId;
     }
 
-    // TODO: Role security
-    function sendCalculatedPrice(address _caller, uint256 _requestId, uint256 _price) public validRequestId(_requestId) {
+    function sendCalculatedPrice(address _caller, uint256 _requestId, uint256 _price) public validRequestId(_requestId) mustBeOracle {
         delete pendingRequests[_requestId];
         emit TicketPriceCalculated(_caller, _requestId, _price);
     }
