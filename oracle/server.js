@@ -1,3 +1,9 @@
+/**
+ * The oracle of SupRailroad.
+ * @module server
+ * @author Alexis L. <alexis.lecomte@supinfo.com>
+ */
+
 import * as dotenv from "dotenv";
 dotenv.config({ override: true, debug: false });
 
