@@ -9,8 +9,8 @@ node_modules
 build
 client/src/contracts
 client/*/src/contracts
-oracle/src/contracts
-oracle/*/src/contracts
+oracle/contracts
+oracle/*/contracts
 
 # Testing
 coverage
