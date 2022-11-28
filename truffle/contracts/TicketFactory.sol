@@ -3,8 +3,9 @@ pragma solidity ^0.8.0;
 
 import "./UserWalletFactory.sol";
 import "./Administrable.sol";
+import "./OracleLinked.sol";
 
-contract TicketFactory is UserWalletFactory, Administrable {
+contract TicketFactory is UserWalletFactory, Administrable, OracleLinked {
     constructor() {}
 
     /// Properties
@@ -20,15 +21,32 @@ contract TicketFactory is UserWalletFactory, Administrable {
         Coordinate destination;
     }
 
-    uint256 ticketPrice = 0.001 ether;
+    uint256 ticketPrice = 0.00015 ether;
 
     /// Events
-    event BoughtTicket(address indexed owner, string name);
     event TicketPriceChanged(uint256 newPrice);
+    event TicketPriceRequested(address caller, uint256 requestId, Coordinate origin, Coordinate destination);
+    event TicketPriceCalculated(address caller, uint256 requestId, uint256 price);
+    event BoughtTicket(address indexed owner, string name);
 
     /// Functions
-    function getPrice() external view returns(uint256) {
+    function getStandardPrice() external view returns(uint256) {
         return ticketPrice;
+    }
+
+    function getPrice(Coordinate calldata _origin, Coordinate calldata _destination) external returns(uint256) {
+        uint256 requestId = super._getNewId();
+
+        pendingRequests[requestId] = true;
+        emit TicketPriceRequested(msg.sender, requestId, _origin, _destination);
+
+        return requestId;
+    }
+
+    // TODO: Role security
+    function sendCalculatedPrice(address _caller, uint256 _requestId, uint256 _price) public validRequestId(_requestId) {
+        delete pendingRequests[_requestId];
+        emit TicketPriceCalculated(_caller, _requestId, _price);
     }
 
     function setPrice(uint256 price) external mustBeAdmin {
@@ -37,10 +55,10 @@ contract TicketFactory is UserWalletFactory, Administrable {
     }
 
     // TODO: Send value if too much?
-    function buyTicket(Coordinate calldata origin, Coordinate calldata destination) external payable {
+    function buyTicket(Coordinate calldata _origin, Coordinate calldata _destination) external payable {
         require(msg.value == ticketPrice);
 
-        Ticket memory ticket = Ticket(msg.sender, "Bonjour", origin, destination);
+        Ticket memory ticket = Ticket(msg.sender, "Bonjour", _origin, _destination);
         super._addTicket(msg.sender, ticket);
 
         emit BoughtTicket(ticket.owner, ticket.name);

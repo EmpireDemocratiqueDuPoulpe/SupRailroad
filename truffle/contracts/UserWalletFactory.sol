@@ -6,7 +6,7 @@ import "./TicketFactory.sol";
 contract UserWalletFactory {
     constructor() {}
 
-    /// Constants
+    /// Properties
     struct UserWallet {
         TicketFactory.Ticket[] tickets;
     }
