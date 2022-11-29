@@ -2,6 +2,7 @@ import { useState } from "react";
 import Web3 from "web3";
 import { useEth } from "../../contexts/EthContext";
 import useTicketPrice from "../../hooks/ticketPrice/useTicketPrice.js";
+import Map from "./Map/Map.jsx";
 
 function TicketDispenser() {
 	/* ---- Contexts -------------------------------- */
@@ -34,6 +35,7 @@ function TicketDispenser() {
 	return (
 		<div className="ticket-dispenser">
 			<p>train | métro | bus</p>
+			<Map/>
 			<p>De: [46901492, 3583934] à [43177141, 2528543]</p>
 			<button onClick={calcTicketPrice}>Calculer le prix</button>
 			<button onClick={buyTicket} disabled={!ticketPrice.price}>
