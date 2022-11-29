@@ -3,7 +3,8 @@ const TicketFactory = artifacts.require("TicketFactory");
 const CardFactory = artifacts.require("CardFactory");
 
 module.exports = function (deployer) {
-  deployer.deploy(UserWalletFactory);
+  deployer.deploy(UserWalletFactory).then(() => {
+    deployer.deploy(CardFactory, UserWalletFactory.address);
+  });
   deployer.deploy(TicketFactory);
-  deployer.deploy(CardFactory);
 };

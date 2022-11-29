@@ -1,22 +1,27 @@
 pragma solidity ^0.8.0;
 // SPDX-License-Identifier: UNLICENSED
 
-import "./UserWalletFactory.sol";
-import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
+import "./IUserWalletFactory.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
+import "./Administrable.sol";
 
-contract CardFactory is UserWalletFactory,ERC721,Ownable {
+contract CardFactory is ERC721URIStorage, Administrable {
     using Counters for Counters.Counter;
-
     Counters.Counter private _tokenIdCounter;
 
-    constructor() ERC721("CardFactory", "CRD") {}
+    constructor(address walletAddr) ERC721("CardFactory", "CRD") {
+        walletContract = IUserWalletFactory(walletAddr);
+    }
+
+    function supportsInterface(bytes4 interfaceId) public view virtual override(ERC721, AccessControlEnumerable) returns (bool) {
+        return super.supportsInterface(interfaceId);
+    }
 
     /// Constants
     struct Card {
-        uint uid;
-        uint price;
+        uint256 tokenId;
+        uint256 price;
         uint8 discountPercent;
         address owner;
         string name;
@@ -24,59 +29,30 @@ contract CardFactory is UserWalletFactory,ERC721,Ownable {
         string description;
     }
 
-    struct UserCards {
-        Card[] cards;
-    }
+    IUserWalletFactory walletContract;
 
-    /// Mappings & Arrays
-    mapping (address => UserCards) ownerToCard;
-    mapping (uint => address) cardToOwner;
-    mapping (uint => address) cardApprovals;
-    mapping (address => uint) ownerCardCount;
+    /// Mappings
+    mapping (uint => address) private cardApprovals;
 
     /// Events
-    event BoughtCard(address owner, string name);
+    event BoughtCard(address owner, uint256 tokenId);
 
     /// Functions
-    function createCard() public onlyOwner {
-        uint256 cardId = safeMint(msg.sender);
-        cardToOwner[msg.sender].push(Card(cardId, 10, 10, msg.sender, "TEST", "", "DESCRIPTION"));
-    }
+    //function createCard() public mustBeAdmin {
+        //uint256 cardId = safeMint(msg.sender);
+        //walletContract._addCard(msg.sender, Card(cardId, 10, 10, msg.sender, "TEST", "", "DESCRIPTION"));
+    //}
 
-    function safeMint(address to) internal onlyOwner returns (uint256) {
-        uint256 tokenId = _tokenIdCounter.current();
+    function createCard(string memory tokenURI)
+    public mustBeAdmin
+    returns (uint256)
+    {
+        uint256 newCardId = _tokenIdCounter.current();
+        _mint(msg.sender, newCardId);
+        _setTokenURI(newCardId, tokenURI);
+
         _tokenIdCounter.increment();
-        _safeMint(to, tokenId);
-        return tokenId;
+        return newCardId;
     }
 
-    function balanceOf(address _owner) public view returns (uint256 _balance) {
-        return ownerCardCount[_owner];
-    }
-
-    function ownerOf(uint256 _tokenId) public view returns (address _owner) {
-        return cardToOwner[_tokenId];
-    }
-
-    function _transfer(address _from, address _to, uint256 _tokenId) private {
-        ownerCardCount[_to]++;
-        ownerCardCount[_from]--;
-        cardToOwner[_tokenId] = _to;
-        Transfer(_from, _to, _tokenId);
-    }
-
-    function transfer(address _to, uint256 _tokenId) public ownerOf(_tokenId) {
-        _transfer(msg.sender, _to, _tokenId);
-    }
-
-    function approve(address _to, uint256 _tokenId) public ownerOf(_tokenId) {
-        cardApprovals[_tokenId] = _to;
-        Approval(msg.sender, _to, _tokenId);
-    }
-
-    function takeOwnership(uint256 _tokenId) public {
-        require(cardApprovals[_tokenId] == msg.sender);
-        address owner = ownerOf(_tokenId);
-        _transfer(owner, msg.sender, _tokenId);
-    }
 }

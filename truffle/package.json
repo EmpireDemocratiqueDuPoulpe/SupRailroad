@@ -8,7 +8,7 @@
     "@truffle/hdwallet-provider": "^2.0.10"
   },
   "scripts": {
-    "migrate": "truffle migrate && ./postMigrate.cmd",
+    "migrate": "truffle migrate && postMigrate.cmd",
     "test": "truffle test"
   },
   "author": "",
