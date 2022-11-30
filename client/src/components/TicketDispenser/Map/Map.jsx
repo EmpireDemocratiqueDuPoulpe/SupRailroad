@@ -1,45 +1,72 @@
 import { useState, useRef, useCallback } from "react";
+import * as turf from "@turf/turf";
 import mapboxgl from "mapbox-gl";
-import ReactMap, { FullscreenControl, NavigationControl, ScaleControl, Marker } from "react-map-gl";
+import ReactMap, { FullscreenControl, NavigationControl, ScaleControl, Source, Layer } from "react-map-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import "./Map.css";
 
 // eslint-disable-next-line no-undef
 mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_GL_KEY_MOVE_TO_DYNAMIC_PLACEHOLDER || null;
 
+const initialView = { latitude: 47, longitude: 2, zoom: 4.5 };
+
+const lineString = {
+	type: "Feature",
+	geometry: { type: "LineString", coordinates: [] }
+};
+
+function lineDistance(line) {
+	const format = distance => `${distance} km`;
+	return line ? format(turf.length(line).toLocaleString()) : format(0);
+}
+
 function Map() {
 	/* ---- States ---------------------------------- */
 	const mapRef = useRef(null);
-	const [markers, setMarkers] = useState([]);
+	const [geoJSON, setGeoJSON] = useState({ type: "FeatureCollection", features: [] });
+	const [distance, setDistance] = useState(/** @type {string} */ lineDistance(null));
 
 	/* ---- Functions ------------------------------- */
 	const onMapLoad = useCallback(() => {
+		const mapInstance = mapRef.current.getMap();
+
 		// Change the map language
-		mapRef.current.getMap().setLayoutProperty("country-label", "text-field", [
+		mapInstance.setLayoutProperty("country-label", "text-field", [
 			"format",
-			["get", "name"],
-			{ "font-scale": 1.2 },
-			"\n",
-			{},
-			["get", "name_en"],
-			{ "font-scale": 0.8, "text-font": ["literal", ["DIN Offc Pro Italic", "Arial Unicode MS Regular"]] }
+			[ "get", "name" ], { "font-scale": 1.2 },
+			"\n", {},
+			[ "get", "name_en" ], { "font-scale": 0.8, "text-font": ["literal", ["DIN Offc Pro Italic", "Arial Unicode MS Regular"]] }
 		]);
 	}, []);
 
 	const onMapClick = useCallback(event => {
-		if (markers.length < 2) {
-			setMarkers(prevState => [...prevState, { lat: event.lngLat.lat, long: event.lngLat.lng }]);
+		const mapInstance = mapRef.current.getMap();
+		const features = mapInstance.queryRenderedFeatures(event.point, { layers: ["measure-points"] });
+		const currentGeoJSON = turf.clone(geoJSON);
+
+		// Remove the line to redraw it
+		if (currentGeoJSON.features.length > 1) currentGeoJSON.features.pop();
+
+		if (features.length) { // Remove a point if clicked
+			const id = features[0].properties.id;
+			currentGeoJSON.features = currentGeoJSON.features.filter(pt => pt.properties.id !== id);
+		} else { // Otherwise, add a point
+			currentGeoJSON.features.push({
+				type: "Feature",
+				geometry: { type: "Point", coordinates: [event.lngLat.lng, event.lngLat.lat] },
+				properties: { id: String(new Date().getTime()) }
+			});
 		}
-	}, [markers]);
 
-	const onMarkerClick = useCallback((event, id) => {
-		setMarkers(prevState => prevState.map((marker, markerIdx) => ((markerIdx !== id) || marker.dragged) ? ({ ...marker, dragged: false }) : null).filter(Boolean));
-		event.originalEvent.stopPropagation();
-	}, []);
+		// Draw the line if there's enough points
+		if (currentGeoJSON.features.length > 1) {
+			lineString.geometry.coordinates = currentGeoJSON.features.map(pt => pt.geometry.coordinates);
+			currentGeoJSON.features.push(lineString);
+			setDistance(lineDistance(lineString));
+		}
 
-	const onMarkerDragEnd = useCallback((event, id) => {
-		setMarkers(prevState => prevState.map((marker, markerIdx) => (markerIdx !== id) ? marker : ({ ...marker, lat: event.lngLat.lat, long: event.lngLat.lng, dragged: true })));
-	}, []);
+		setGeoJSON(prevState => ({ ...prevState, ...currentGeoJSON }));
+	}, [geoJSON]);
 
 	/* ---- Page content ---------------------------- */
 	return (
@@ -47,14 +74,21 @@ function Map() {
 			{mapboxgl.accessToken ? (
 				<>
 					{mapboxgl.supported() ? (
-						<ReactMap ref={mapRef} mapStyle="mapbox://styles/mapbox/streets-v12" onLoad={onMapLoad} onClick={onMapClick}>
+						<ReactMap ref={mapRef} initialViewState={initialView} mapStyle="mapbox://styles/mapbox/streets-v12" onLoad={onMapLoad} onClick={onMapClick}>
 							<FullscreenControl position="top-right"/>
 							<NavigationControl position="top-right" showCompass={true} showZoom={true} visualizePitch={true}/>
 							<ScaleControl position="bottom-left" unit="metric"/>
 
-							{markers.map((marker, idx) => (
-								<Marker key={`map-marker-${idx}`} latitude={marker.lat} longitude={marker.long} draggable={true} clickTolerance={0} onClick={e => onMarkerClick(e, idx)} onDragEnd={e => onMarkerDragEnd(e, idx)}/>
-							))}
+							{geoJSON && (
+								<Source type="geojson" data={geoJSON}>
+									<Layer id="measure-lines" type="line" source="geojson" layout={{ "line-cap": "round", "line-join": "round" }} paint={{ "line-color": "#000000", "line-width": 2.5 }}/>
+									<Layer id="measure-points" type="circle" source="geojson" paint={{ "circle-radius": 5, "circle-color": "#000000" }} filter={[ "in", "$type", "Point" ]}/>
+								</Source>
+							)}
+
+							<div className="travel-distance-container">
+								<span className="travel-distance">{distance}</span>
+							</div>
 						</ReactMap>
 					) : <p>La carte ne peut pas être affichée : votre navigateur n&apos;est pas compatible.</p>}
 				</>
