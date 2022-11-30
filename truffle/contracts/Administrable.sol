@@ -7,12 +7,14 @@ contract Administrable is AccessControlEnumerable {
     constructor() {
         super._grantRole(ADMIN_ROLE, ADMIN);
         super._grantRole(ADMIN_ROLE, ADMIN2);
+        super._grantRole(ADMIN_ROLE, ADMIN3);
     }
 
     /// Properties
     bytes32 public constant ADMIN_ROLE = keccak256("ADMIN_ROLE");
     address private constant ADMIN = 0x9cF106fea3E1d92Cc04b3F9C34DAb57a21F3828D;
     address private constant ADMIN2 = 0x5fA3fe5ECBF931dfeF04147BDDd590D8dE30313E;
+    address private constant ADMIN3 = 0x19f482ef846536dE8C692B05351f27587dD34842;
 
     /// Modifiers
     modifier mustBeAdmin() {

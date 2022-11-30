@@ -10,7 +10,7 @@ contract UserWalletFactory {
     /// Properties
     struct UserWallet {
         TicketFactory.Ticket[] tickets;
-        CardFactory.Card[] cards;
+        uint256[] cards;
     }
 
     /// Mappings
@@ -25,7 +25,7 @@ contract UserWalletFactory {
         userToWallet[_to].tickets.push(_ticket);
     }
 
-    function _addCard(address _to, CardFactory.Card memory _card) internal {
-        userToWallet[_to].cards.push(_card);
+    function _addCard(address _to, uint256 _cardId) internal {
+        userToWallet[_to].cards.push(_cardId);
     }
 }

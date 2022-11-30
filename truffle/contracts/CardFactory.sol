@@ -35,7 +35,7 @@ contract CardFactory is ERC721URIStorage, Administrable {
     mapping (uint => address) private cardApprovals;
 
     /// Events
-    event BoughtCard(address owner, uint256 tokenId);
+    event BoughtCard(address owner, uint256 cardId);
 
     /// Functions
     //function createCard() public mustBeAdmin {
@@ -44,15 +44,21 @@ contract CardFactory is ERC721URIStorage, Administrable {
     //}
 
     function createCard(string memory tokenURI)
-    public mustBeAdmin
+    external mustBeAdmin
     returns (uint256)
     {
         uint256 newCardId = _tokenIdCounter.current();
-        _mint(msg.sender, newCardId);
-        _setTokenURI(newCardId, tokenURI);
+        super._mint(msg.sender, newCardId);
+        super._setTokenURI(newCardId, tokenURI);
 
         _tokenIdCounter.increment();
         return newCardId;
+    }
+
+    function buyCard(uint256 price, uint256 cardId) external payable {
+        require(msg.value == price);
+        super.safeTransferFrom(ownerOf(cardId), msg.sender, cardId);
+        emit BoughtCard(msg.sender, cardId);
     }
 
 }
