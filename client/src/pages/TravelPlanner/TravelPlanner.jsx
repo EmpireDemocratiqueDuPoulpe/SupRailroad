@@ -2,9 +2,9 @@ import { useState } from "react";
 import Web3 from "web3";
 import { useEth } from "../../contexts/EthContext";
 import useTicketPrice from "../../hooks/ticketPrice/useTicketPrice.js";
-import Map from "./Map/Map.jsx";
+import Map from "../../components/Map/Map.jsx";
 
-function TicketDispenser() {
+function TravelPlanner() {
 	/* ---- Contexts -------------------------------- */
 	const { state: { account, contract } } = useEth();
 	const ticketPrice = useTicketPrice();
@@ -33,7 +33,7 @@ function TicketDispenser() {
 
 	/* ---- Page content ---------------------------- */
 	return (
-		<div className="ticket-dispenser">
+		<div className="Page TravelPlannerPage">
 			<p>train | métro | bus</p>
 			<Map/>
 			<p>[&#123; lat: 48840056, long: 2361997 &#125;, &#123; lat: 49878677, long: 2280633 &#125;, &#123; lat: 50285914, long: 2785091 &#125;]</p>
@@ -50,4 +50,4 @@ function TicketDispenser() {
 	);
 }
 
-export default TicketDispenser;
+export default TravelPlanner;

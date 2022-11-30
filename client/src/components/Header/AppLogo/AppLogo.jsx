@@ -1,8 +1,9 @@
+import { Link } from "react-router-dom";
 import "./AppLogo.css";
 
 function AppLogo() {
 	/* ---- Page content ---------------------------- */
-	return <div className="app-logo"/>;
+	return <Link className="app-logo" to="/"/>;
 }
 
 export default AppLogo;

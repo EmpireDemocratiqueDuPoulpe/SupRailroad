@@ -1,4 +1,5 @@
 import AppLogo from "./AppLogo/AppLogo.jsx";
+import NavLinks from "./NavLinks/NavLinks.jsx";
 import UserAccount from "./UserAccount/UserAccount.jsx";
 import "./Header.css";
 
@@ -7,6 +8,7 @@ function Header() {
 	return (
 		<header>
 			<AppLogo/>
+			<NavLinks/>
 			<UserAccount/>
 		</header>
 	);

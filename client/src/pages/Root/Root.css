@@ -1,0 +1,13 @@
+/* ---- Page container ---------------------------------------------------------------------------------------------- */
+.App-root {
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-items: stretch;
+}
+
+/* -- Header */
+.App-root header { flex-grow: 0; flex-shrink: 0; }
+
+/* ---- App body ---------------------------------------------------------------------------------------------------- */
+.App-root .App-body { flex-grow: 1; }

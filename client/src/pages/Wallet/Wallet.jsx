@@ -1,14 +1,14 @@
 import { useEth } from "../../contexts/EthContext";
 import useWallet from "../../hooks/wallet/useWallet.js";
 
-function UserWallet() {
+function Wallet() {
 	/* ---- Contexts -------------------------------- */
 	const { state: { account } } = useEth();
 	const wallet = useWallet();
 
 	/* ---- Page content ---------------------------- */
 	return (
-		<div className="user-wallet">
+		<div className="Page WalletPage">
 			{/* TODO: Better message */}
 			{!wallet ? <p>N/A</p> : (
 				<>
@@ -25,4 +25,4 @@ function UserWallet() {
 	);
 }
 
-export default UserWallet;
+export default Wallet;

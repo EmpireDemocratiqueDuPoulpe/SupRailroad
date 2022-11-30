@@ -13,8 +13,6 @@ function InterfaceChecker({ children }) {
 		</div>
 	);
 }
-InterfaceChecker.propTypes = {
-	children: PropTypes.node
-};
+InterfaceChecker.propTypes = { children: PropTypes.node };
 
 export default InterfaceChecker;
