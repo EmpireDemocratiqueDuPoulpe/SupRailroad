@@ -4,17 +4,13 @@
  * @author Alexis L. <alexis.lecomte@supinfo.com>
  */
 
+import * as turf from "@turf/turf";
+
 /*** Typedefs *********************************************************************************************************/
 /**
  * @typedef {Object} GCSPoint
  * @property {number} lat - Latitude (before conversion)
  * @property {number} long - Longitude (before conversion)
- */
-
-/**
- * @typedef {Object} FittedGCSPoint
- * @property {number} lat - Latitude (after conversion)
- * @property {number} long - Longitude (after conversion)
  */
 
 /*** Functions ********************************************************************************************************/
@@ -24,53 +20,38 @@
  * doesn't take into account roads, railroads, airports, ...
  * @function
  *
- * @param {GCSPoint} origin - Origin of the trip.
- * @param {GCSPoint} destination - Destination of the trip.
+ * @param {Array<GCSPoint>} points - Points of the trip.
  * @param {number} standardPrice - Price per km.
  * @return {number} - The calculated price.
  */
-export function calculatePrice(origin, destination, standardPrice) {
-	const ptA = convertPosition(origin);
-	const ptB = convertPosition(destination);
-
-	// Distance calculation
-	const R = 6371; // Earth radius in km
-	const dLat = deg2rad(ptB.lat - ptA.lat);
-	const dLong = deg2rad(ptB.long - ptA.long);
-
-	const a =
-			Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-			Math.cos(deg2rad(ptA.lat)) * Math.cos(deg2rad(ptB.lat)) *
-			Math.sin(dLong / 2) * Math.sin(dLong / 2);
-	const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-	const d = R * c; // Distance in km
+export function calculatePrice(points, standardPrice) {
+	const convertedPoints = convertPoints(points);
+	const distance = turf.length(convertedPoints);
 
 	// Price calculation
-	return standardPrice * d;
+	return standardPrice * distance;
 }
 
 /**
- * Convert a `GCSPoint` to a `FittedGCSPoint`. Since Solidity cannot handle floats, the latitude and longitude are stored
- * as integers.
+ * Convert a list of `GCSPoint` to a `LineString`.
  * @function
+ * @see convertSinglePoint
  *
- * @param {GCSPoint} position - The GCS point to convert.
- * @return {FittedGCSPoint} - The converted GCS point.
+ * @param {Array<GCSPoint>} points - The list of GCS points to convert.
+ * @return {turf~Feature<turf~LineString, turf~Properties>} - The line string.
  */
-function convertPosition(position) {
-	return { // The `position` object is read-only.
-		lat: position.lat / 1_000_000,
-		long: position.long / 1_000_000,
-	};
+function convertPoints(points) {
+	return turf.lineString(points.map(convertSinglePoint));
 }
 
 /**
- * Converts degrees to radians.
+ * Convert a `GCSPoint` to an array of longitude and latitude. Since Solidity cannot handle floats, the latitude and
+ * longitude was stored as integers and are converted to float.
  * @function
  *
- * @param {number} deg - Degrees.
- * @return {number} - Radians.
+ * @param {GCSPoint} point - The GCS point to convert.
+ * @return {Array<number>} - The converted point.
  */
-function deg2rad(deg) {
-	return deg * (Math.PI / 180);
+function convertSinglePoint(point) {
+	return [(point.long / 1_000_000), (point.lat / 1_000_000)];
 }

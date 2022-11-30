@@ -21,14 +21,14 @@ contract TicketFactory is UserWalletFactory, Administrable, OracleLinked {
         Coordinate destination;
     }
 
-    uint256 ticketPrice = 0.00015 ether;
+    uint256 ticketPrice = 0.00030 ether;
 
     /// Mappings
     mapping (address => uint256) private callerToPrice;
 
     /// Events
     event TicketPriceChanged(uint256 newPrice);
-    event TicketPriceRequested(address caller, uint256 requestId, Coordinate origin, Coordinate destination);
+    event TicketPriceRequested(address caller, uint256 requestId, Coordinate[] points);
     event TicketPriceCalculated(address caller, uint256 requestId, uint256 price);
     event BoughtTicket(address indexed owner, string name);
 
@@ -37,11 +37,11 @@ contract TicketFactory is UserWalletFactory, Administrable, OracleLinked {
         return ticketPrice;
     }
 
-    function getPrice(Coordinate calldata _origin, Coordinate calldata _destination) external returns(uint256) {
+    function getPrice(Coordinate[] calldata _points) external returns(uint256) {
         uint256 requestId = super._getNewId();
 
         pendingRequests[requestId] = true;
-        emit TicketPriceRequested(msg.sender, requestId, _origin, _destination);
+        emit TicketPriceRequested(msg.sender, requestId, _points);
 
         return requestId;
     }
