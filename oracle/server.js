@@ -67,7 +67,7 @@ async function onClose(queue, ticketContract) {
  */
 async function processRequest(request, ticketContract) {
 	const standardPrice = await ticketContract.methods.getStandardPrice().call({ from: request.caller });
-	const calculatedPrice = calculatePrice(request.data.origin, request.data.destination, standardPrice);
+	const calculatedPrice = calculatePrice(request.data.points, standardPrice);
 
 	try {
 		await ticketContract.methods.sendCalculatedPrice(request.caller, request.requestId, `${calculatedPrice}`).send({ from: process.env.ACCOUNT });

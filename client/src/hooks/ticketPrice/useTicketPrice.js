@@ -12,8 +12,8 @@ function useTicketPrice() {
 	const [requestId, setRequestId] = useState(/** @type {number} */ null);
 
 	/* ---- Functions ------------------------------- */
-	const getPrice = async (origin, destination) => {
-		const requestId = await contract.methods.getPrice(origin, destination).send({ from: account });
+	const getPrice = async points => {
+		const requestId = await contract.methods.getPrice(points).send({ from: account });
 		setRequestId(requestId);
 	};
 
