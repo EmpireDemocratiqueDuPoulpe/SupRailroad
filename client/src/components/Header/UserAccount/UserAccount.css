@@ -22,9 +22,11 @@
     height: var(--pic-size);
 }
 
-.user-account .user-account-pic .jazzicon {
-    width: 100%;
-    height: 100%;
+.user-account .user-account-pic .user-account-no-pic {
+    width: var(--pic-size);
+    height: var(--pic-size);
+    background: rgba(128, 128, 128, 0.15);
+    border-radius: 50%;
 }
 
 /* --- User account info -------------------------------------------------------------------------------------------- */
