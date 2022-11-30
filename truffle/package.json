@@ -9,7 +9,7 @@
   },
   "scripts": {
     "migrate-w10": "truffle migrate && postMigrate.cmd",
-    "migrate-w11": "truffle migrate && postMigrate.cmd",
+    "migrate-w11": "truffle migrate && ./postMigrate.cmd",
     "test": "truffle test"
   },
   "author": "",
