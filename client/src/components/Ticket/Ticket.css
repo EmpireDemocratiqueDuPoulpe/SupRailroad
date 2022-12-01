@@ -1,0 +1,7 @@
+/* --- Container ---------------------------------------------------------------------------------------------------- */
+.ticket {
+    display: block;
+    background: var(--background-color⨣2);
+    border: thin var(--primary-border-color) solid;
+    border-radius: 5px;
+}
