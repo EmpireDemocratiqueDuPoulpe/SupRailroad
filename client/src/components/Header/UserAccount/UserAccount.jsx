@@ -51,7 +51,7 @@ function UserAccount() {
 
 			<div className={`user-account-menu ${showMenu ? "shown" : "hidden"}`}>
 				<ul className="user-account-menu-list">
-					<li className="user-account-menu-item"><Link to="/wallet">Mon porte-feuille</Link></li>
+					<li className="user-account-menu-item"><Link className="link" to="/wallet">Mon porte-feuille</Link></li>
 				</ul>
 			</div>
 		</div>

@@ -4,8 +4,8 @@ function NavLinks() {
 	/* ---- Page content ---------------------------- */
 	return (
 		<div className="nav-links">
-			<Link to="/travel">Acheter un ticket</Link>
-			<Link to="/admin">Administration</Link>
+			<Link className="link" to="/travel">Acheter un ticket</Link>
+			<Link className="link" to="/admin">Administration</Link>
 		</div>
 	);
 }

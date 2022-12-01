@@ -14,11 +14,12 @@
     flex-direction: row;
     justify-content: flex-start;
     align-items: center;
-    gap: var(--container-padding);
+    gap: calc(var(--container-padding) * 2);
     height: var(--container-height);
     padding: var(--container-padding);
     background: inherit;
-    border: thin bisque solid;
+    border: thin var(--primary-border-color) solid;
+    border-radius: 5px;
     cursor: pointer;
     z-index: 10;
 }
@@ -44,6 +45,10 @@
     flex-direction: column;
     justify-content: center;
     align-items: flex-start;
+    -ms-user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
 }
 
 /* -- Account status */
@@ -110,8 +115,10 @@
     bottom: 0;
     right: 0;
     left: 0;
-    padding: var(--item-margin);
-    background: burlywood;
+    padding: calc(var(--item-margin) * 2) var(--item-margin) var(--item-margin) var(--item-margin);
+    background: var(--background-color⨣2);
+    border: thin var(--primary-border-color) solid;
+    border-radius: 0 0 5px 5px;
     transition: bottom 100ms ease-in-out;
     pointer-events: none;
     z-index: 5;
@@ -139,7 +146,7 @@
     transition: background-color 100ms ease-in;
 }
 .user-account .user-account-menu .user-account-menu-item:not(:last-child) { margin-bottom: var(--item-margin); }
-.user-account .user-account-menu .user-account-menu-item:hover { background: rgba(0, 0, 0, 0.15); }
+.user-account .user-account-menu .user-account-menu-item:hover { background: rgba(255, 255, 255, 0.15); }
 
 .user-account .user-account-menu .user-account-menu-item > * {
     display: block;
