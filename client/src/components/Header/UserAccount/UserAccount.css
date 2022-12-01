@@ -3,7 +3,13 @@
     --container-height: calc(3.5rem - 2px);
     --container-padding: 5px;
 
+    position: relative;
+    background: inherit;
+}
+
+.user-account .user-account-wrapper {
     box-sizing: border-box;
+    position: relative;
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
@@ -11,7 +17,10 @@
     gap: var(--container-padding);
     height: var(--container-height);
     padding: var(--container-padding);
+    background: inherit;
     border: thin bisque solid;
+    cursor: pointer;
+    z-index: 10;
 }
 
 /* --- User account picture ----------------------------------------------------------------------------------------- */
@@ -89,4 +98,53 @@
 /* -- Account balance */
 .user-account .user-account-info .user-account-balance {
     font-size: 0.7em;
+}
+
+/* --- User account menu -------------------------------------------------------------------------------------------- */
+.user-account .user-account-menu {
+    --item-height: 30px;
+    --item-margin: 5px;
+    --item-count: 1;
+
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    padding: var(--item-margin);
+    background: burlywood;
+    transition: bottom 100ms ease-in-out;
+    pointer-events: none;
+    z-index: 5;
+}
+.user-account .user-account-menu.shown {
+    bottom: calc(((var(--item-height) * var(--item-count)) + (var(--item-margin) * (var(--item-count) - 1)) + (var(--item-margin) * 2)) * -1);
+    pointer-events: auto;
+}
+
+/* -- Menu list */
+.user-account .user-account-menu .user-account-menu-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+/* -- Menu item */
+.user-account .user-account-menu .user-account-menu-item {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    height: var(--item-height);
+    cursor: pointer;
+    transition: background-color 100ms ease-in;
+}
+.user-account .user-account-menu .user-account-menu-item:not(:last-child) { margin-bottom: var(--item-margin); }
+.user-account .user-account-menu .user-account-menu-item:hover { background: rgba(0, 0, 0, 0.15); }
+
+.user-account .user-account-menu .user-account-menu-item > * {
+    display: block;
+    flex-grow: 1;
+    height: var(--item-height);
+    line-height: var(--item-height);
+    padding: 0 var(--item-margin);
 }
