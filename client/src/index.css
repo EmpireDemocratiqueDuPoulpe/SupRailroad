@@ -17,3 +17,18 @@ body {
 }
 
 /* -- Special classes */
+/* - Back link */
+/* TODO: Change color */
+.back-link {
+  margin: 0;
+  padding: 0;
+  background: none;
+  color: peru;
+  border: none;
+  text-decoration: none;
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  appearance: none;
+  cursor: pointer;
+}
+.back-link:hover { text-decoration: underline; }
