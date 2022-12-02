@@ -1,7 +1,29 @@
 /* --- Container ---------------------------------------------------------------------------------------------------- */
 .ticket {
+    --border-radius: 5px;
+
+    position: relative;
     display: block;
-    background: var(--background-color⨣2);
+    width: 15vw;
+    padding: 20px;
+    background: var(--background-color⨣1);
     border: thin var(--primary-border-color) solid;
-    border-radius: 5px;
+    border-radius: var(--border-radius);
+    perspective: 1000px;
+}
+
+/* --- Ticket info -------------------------------------------------------------------------------------------------- */
+.ticket .ticket-info .ticket-info-line.ticket-name { font-weight: bold; }
+.ticket .ticket-info .ticket-info-line { margin-top: 0; }
+.ticket .ticket-info p:last-of-type { margin-bottom: 0; }
+
+/* --- Ticket type -------------------------------------------------------------------------------------------------- */
+.ticket .ticket-type {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 2.5vw;
+    height: 2.5vw;
+    background: var(--background-color⨣2);
+    border-radius: 0 var(--border-radius) 0 var(--border-radius);
 }

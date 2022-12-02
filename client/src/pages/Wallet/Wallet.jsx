@@ -10,7 +10,7 @@ function Wallet() {
 	/* ---- Page content ---------------------------- */
 	return (
 		<div className="Page WalletPage">
-			<Ticket name="Ticket" type="bus" points={[{ lat: 48.840056, long: 2.361997 }, { lat: 49.878677, long: 2.280633 }, { lat: 50.285914, long: 2.785091 }]}/>
+			<Ticket name="Ticket" type="bus" distance={1700.5}/>
 			{/* TODO: Better message */}
 			{!wallet ? <p>N/A</p> : (
 				<>

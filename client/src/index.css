@@ -9,7 +9,8 @@ html, body, #root, .expand-width, .expand-height, .expand-all {
 /* -- Body */
 body {
   --background-color: #0D1B1E;
-  --background-color⨣2: #1E2B2E;
+  --background-color⨣1: #1E2B2E;
+  --background-color⨣2: #2F3B3E;
   --primary-color: #0466C8;
   --secondary-color: #FFC229;
   --tertiary-color: #4ECDC4;
