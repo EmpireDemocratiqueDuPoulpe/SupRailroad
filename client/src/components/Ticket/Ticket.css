@@ -2,28 +2,135 @@
 .ticket {
     --border-radius: 5px;
 
-    position: relative;
+    box-sizing: border-box;
     display: block;
-    width: 15vw;
-    padding: 20px;
+    width: 250px;
+    height: 150px;
+    margin: 0;
+    padding: 0;
+    background-color: transparent;
+    perspective: 1000px;
+    cursor: pointer;
+}
+
+.ticket .ticket-inner {
+    box-sizing: inherit;
+    position: relative;
+    width: inherit;
+    height: inherit;
+    transform-style: preserve-3d;
+    transition-property: transform;
+    transition-delay: 100ms;
+    transition-duration: 600ms;
+}
+.ticket.flipped .ticket-inner { transform: rotateY(180deg); }
+
+/* --- Ticket sides ------------------------------------------------------------------------------------------------- */
+.ticket .ticket-inner .ticket-front,
+.ticket .ticket-inner .ticket-back {
+    --inner-padding: 20px;
+
+    box-sizing: border-box;
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    width: 100%;
+    height: 100%;
+    padding: var(--inner-padding);
     background: var(--background-color⨣1);
     border: thin var(--primary-border-color) solid;
     border-radius: var(--border-radius);
-    perspective: 1000px;
+    overflow: hidden;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
 }
 
-/* --- Ticket info -------------------------------------------------------------------------------------------------- */
-.ticket .ticket-info .ticket-info-line.ticket-name { font-weight: bold; }
-.ticket .ticket-info .ticket-info-line { margin-top: 0; }
-.ticket .ticket-info p:last-of-type { margin-bottom: 0; }
-
-/* --- Ticket type -------------------------------------------------------------------------------------------------- */
-.ticket .ticket-type {
+.ticket .ticket-inner .ticket-front .ticket-bottom,
+.ticket .ticket-inner .ticket-back .ticket-bottom {
     position: absolute;
-    top: 0;
     right: 0;
-    width: 2.5vw;
-    height: 2.5vw;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 50px;
+    background: var(--secondary-color);
+}
+
+.ticket .ticket-inner .ticket-front .ticket-bottom { clip-path: polygon(0% 100%, 100% 100%, 100% 0%, 75% 0%, 60% 50%, 0% 50%); }
+.ticket .ticket-inner .ticket-back .ticket-bottom { clip-path: polygon(100% 100%, 0% 100%, 0% 0%, 25% 0%, 40% 50%, 100% 50%); }
+
+/* --- Ticket front ------------------------------------------------------------------------------------------------- */
+.ticket .ticket-inner .ticket-front { transform: rotateY(0deg); z-index: 2; }
+
+/* -- Ticket info */
+.ticket .ticket-inner .ticket-front .ticket-info .ticket-info-line.ticket-name { font-weight: bold; margin-bottom: 0.5em; }
+.ticket .ticket-inner .ticket-front .ticket-info .ticket-info-line { margin-top: 0; }
+.ticket .ticket-inner .ticket-front .ticket-info p:last-of-type { margin-bottom: 0; }
+
+.ticket .ticket-inner .ticket-front .ticket-info .ticket-distance { font-size: 0.9em; }
+
+/* -- Ticket type */
+.ticket .ticket-inner .ticket-front .ticket-types {
+    box-sizing: border-box;
+    position: absolute;
+    top: var(--inner-padding);
+    right: var(--inner-padding);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 5px;
+    width: 40px;
+    height: 40px;
+    font-size: 0.7em;
+    padding: 5px;
     background: var(--background-color⨣2);
-    border-radius: 0 var(--border-radius) 0 var(--border-radius);
+    border-radius: var(--border-radius);
+}
+
+.ticket .ticket-inner .ticket-front .ticket-types .ticket-type-item {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+.ticket .ticket-inner .ticket-front .ticket-types .ticket-type-item:nth-child(3) { grid-column: 1 / -1; }
+
+.ticket .ticket-inner .ticket-front .ticket-types .ticket-type-item > svg {
+    width: 100%;
+}
+
+/* --- Ticket back -------------------------------------------------------------------------------------------------- */
+.ticket .ticket-inner .ticket-back {
+    align-items: flex-end;
+    padding-top: calc(var(--inner-padding) / 2);
+    padding-right: calc(var(--inner-padding) / 2);
+    padding-bottom: calc(var(--inner-padding) + (var(--inner-padding) / 4));
+    transform: rotateY(180deg);
+    z-index: 1;
+}
+
+.ticket .ticket-inner .ticket-back .ticket-back-content {
+    min-height: 0;
+    margin-bottom: 10px;
+}
+
+/* -- Bar code */
+.ticket .ticket-inner .ticket-back .qr-code-box {
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    padding: 10px;
+    background: var(--background-color⨣2);
+    border-radius: var(--border-radius);
+}
+
+.ticket .ticket-inner .ticket-back .qr-code-box .qr-code {
+    max-width: 100% !important;
+    width: auto !important;
+    max-height: 100% !important;
+    height: auto !important;
 }

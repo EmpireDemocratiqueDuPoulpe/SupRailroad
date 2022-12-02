@@ -36,12 +36,12 @@ export function clickOnEnter(e, callback, ...callbackArgs) {
  *
  * @param {function} callback - The event handler to call
  * @param {...*} [callbackArgs] - Parameters to pass to the callback when the event is triggerred
- * @return {{ onClick: (function(): void), onKeyDown: (function(e: KeyboardEvent): void), role: "button", tabIndex: 0 }}
+ * @return {{ onClick: (function(e: KeyboardEvent): void), onKeyDown: (function(e: KeyboardEvent): void), role: "button", tabIndex: 0 }}
  */
 export function eventOnElement(callback, ...callbackArgs) {
 	// noinspection JSUnusedGlobalSymbols
 	return {
-		onClick: () => callback(...callbackArgs),
+		onClick: e => callback(e, ...callbackArgs),
 		onKeyDown: e => clickOnEnter(e, callback, ...callbackArgs),
 		role: "button",
 		tabIndex: 0

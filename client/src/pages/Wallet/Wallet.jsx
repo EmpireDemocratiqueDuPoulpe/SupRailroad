@@ -10,7 +10,7 @@ function Wallet() {
 	/* ---- Page content ---------------------------- */
 	return (
 		<div className="Page WalletPage">
-			<Ticket name="Ticket" type="bus" distance={1700.5}/>
+			<Ticket id={1} name="Ticket" types={["bus", "train", "subway"]} distance={1700.5}/>
 			{/* TODO: Better message */}
 			{!wallet ? <p>N/A</p> : (
 				<>

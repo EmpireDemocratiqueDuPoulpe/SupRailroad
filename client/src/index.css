@@ -50,3 +50,6 @@ body {
   cursor: pointer;
 }
 .back-link:hover { text-decoration: underline; }
+
+/* - Event killers */
+.no-event { cursor: auto !important; }
