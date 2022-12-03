@@ -8,12 +8,13 @@ html, body, #root, .expand-width, .expand-height, .expand-all {
 
 /* -- Body */
 body {
-  --background-color: #0D1B1E;
-  --background-color⨣1: #1E2B2E;
-  --background-color⨣2: #2F3B3E;
+  --background-color: #222831;
+  --background-color⨣1: #393E46;
+  --background-color⨣2: #565B62;
   --primary-color: #0466C8;
   --secondary-color: #FFC229;
   --tertiary-color: #4ECDC4;
+  --quaternary-color: #F62A66;
   --primary-text-color: #FFFFFF;
   --primary-border-color: #404B4D;
 
