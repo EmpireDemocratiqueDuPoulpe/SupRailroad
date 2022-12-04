@@ -17,3 +17,21 @@
 	box-sizing: border-box;
 	padding: 20px;
 }
+
+/* -- Inner page */
+.App-root .App-body .Page .inner-page {
+	box-sizing: border-box;
+	width: 50vw;
+	margin: 0 auto;
+	padding: 20px;
+	background: var(--background-color⨣1);
+	box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+}
+
+/* - Title */
+.App-root .App-body .Page .inner-page .inner-page-section:not(:last-child) { margin-bottom: 30px; }
+
+.App-root .App-body .Page .inner-page .inner-page-section .inner-page-section-title {
+	margin-top: 0;
+	color: var(--secondary-color);
+}
