@@ -47,7 +47,7 @@ function Ticket({ id, name, types: typesArr, distance }) {
 					<div className="ticket-front-content">
 						<div className="ticket-info">
 							<p className="ticket-name ticket-info-line no-event" {...eventOnElement(killEvent)}>{name}</p>
-							<p className="ticket-distance ticket-info-line no-event" {...eventOnElement(killEvent)}>{distance} km</p>
+							<p className="ticket-distance ticket-info-line no-event" {...eventOnElement(killEvent)}>{(parseInt(distance, 10) / 1_000_000).toFixed(2)} km</p>
 						</div>
 
 						<div className="ticket-types" title={types.altText}>
@@ -79,7 +79,7 @@ Ticket.propTypes = {
 	types: PropTypes.arrayOf(
 		PropTypes.oneOf(["bus", "train", "subway"])
 	).isRequired,
-	distance: PropTypes.number.isRequired,
+	distance: PropTypes.string.isRequired,
 };
 
 export default Ticket;

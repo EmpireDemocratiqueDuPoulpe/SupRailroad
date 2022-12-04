@@ -5,10 +5,22 @@ import "./UserWalletFactory.sol";
 import "./Administrable.sol";
 import "./OracleLinked.sol";
 
+// ISSUE 01 :
+// Storing an array of Coordinates in a Ticket is forbidden by the Solidity gods. But storing the same Ticket in an array
+// of Ticket in another struct is allowed. I don't know why. I didn't found a fix.
+
 contract TicketFactory is UserWalletFactory, Administrable, OracleLinked {
     constructor() {}
 
     /// Properties
+    struct PriceRequest {
+        bool requested;
+        // Coordinate[] points; // See ISSUE 01
+        uint256 standardPrice;
+        uint256 distance;
+        uint256 price;
+    }
+
     struct Coordinate {
         int32 lat;
         int32 long;
@@ -17,38 +29,39 @@ contract TicketFactory is UserWalletFactory, Administrable, OracleLinked {
     struct Ticket {
         address owner;
         string name;
-        Coordinate origin;
-        Coordinate destination;
+        // Coordinate[] points; // See ISSUE 01
+        uint256 distance;
     }
 
     uint256 ticketPrice = 0.00030 ether;
 
     /// Mappings
-    mapping (address => uint256) private callerToPrice;
+    mapping (address => PriceRequest) private callerToPriceRequest;
 
     /// Events
     event TicketPriceChanged(uint256 newPrice);
-    event TicketPriceRequested(address caller, uint256 requestId, Coordinate[] points);
-    event TicketPriceCalculated(address caller, uint256 requestId, uint256 price);
+    event TicketPriceRequested(uint256 requestId, address caller, Coordinate[] points);
+    event TicketPriceCalculated(uint256 requestId, address caller, uint256 price);
     event BoughtTicket(address indexed owner, string name);
 
     /// Functions
-    function getStandardPrice() external view returns(uint256) {
+    function getStandardPrice() public view returns(uint256) {
         return ticketPrice;
     }
 
     function getPrice(Coordinate[] calldata _points) external returns(uint256) {
-        uint256 requestId = super._getNewId();
-
-        pendingRequests[requestId] = true;
-        emit TicketPriceRequested(msg.sender, requestId, _points);
+        uint256 requestId = super._addRequest();
+        emit TicketPriceRequested(requestId, msg.sender, _points);
 
         return requestId;
     }
 
-    function sendCalculatedPrice(address _caller, uint256 _requestId, uint256 _price) public validRequestId(_requestId) mustBeOracle {
-        delete pendingRequests[_requestId];
-        emit TicketPriceCalculated(_caller, _requestId, _price);
+    function setCalculatedPrice(uint256 _requestId, address _caller, uint256 _standardPrice, uint256 _distance, uint256 _price) public validRequestId(_requestId) mustBeOracle {
+        super._removeRequest(_requestId);
+        // callerToPriceRequest[_caller] = PriceRequest(true, _points, _standardPrice, _distance, _price); // See ISSUE 01
+        callerToPriceRequest[_caller] = PriceRequest(true, _standardPrice, _distance, _price);
+
+        emit TicketPriceCalculated(_requestId, _caller, _price);
     }
 
     function setPrice(uint256 price) external mustBeAdmin {
@@ -57,12 +70,29 @@ contract TicketFactory is UserWalletFactory, Administrable, OracleLinked {
     }
 
     // TODO: Send value if too much?
-    function buyTicket(Coordinate calldata _origin, Coordinate calldata _destination) external payable {
-        require(msg.value == ticketPrice);
+    function buyTicket() external payable {
+        require(callerToPriceRequest[msg.sender].requested == true, "You must request the price before buying a ticket!");
+        PriceRequest memory request = callerToPriceRequest[msg.sender];
 
-        Ticket memory ticket = Ticket(msg.sender, "Bonjour", _origin, _destination);
-        super._addTicket(msg.sender, ticket);
+        require(request.standardPrice == getStandardPrice(), "The ticket price has changed: Please do another request.");
+        require(msg.value == request.price, "Not enough ETH!");
+
+        delete callerToPriceRequest[msg.sender];
+        // Ticket storage ticket = _createTicket(msg.sender, "Bonjour", request.points, request.distance); // See ISSUE 01
+        Ticket memory ticket = _createTicket(msg.sender, "Bonjour", request.distance);
 
         emit BoughtTicket(ticket.owner, ticket.name);
+    }
+
+    function _createTicket(address _owner, string memory _name, uint256 _distance) private returns(Ticket memory) {
+        // Ticket storage ticket = super._addTicket(_owner, Ticket(_owner, _name, new Coordinate[](_points.length), _distance)); // See ISSUE 01
+        Ticket memory ticket = Ticket(_owner, _name, _distance);
+        super._addTicket(_owner, ticket);
+
+        // for(uint i = 0; i < _points.length; i++) { // See ISSUE 01
+        //     ticket.points.push(_points[i]);        // See ISSUE 01
+        // }                                          // See ISSUE 01
+
+        return ticket;
     }
 }

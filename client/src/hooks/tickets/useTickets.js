@@ -1,46 +1,58 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Web3 from "web3";
 import { useEth } from "../../contexts/EthContext";
 
-function useTicketPrice() {
+function useTickets() {
 	/* ---- Contexts -------------------------------- */
 	const { state: { account, contract } } = useEth();
 
 	/* ---- States ---------------------------------- */
-	const [price, setPrice] = useState(/** @type {string} */ null);
-	const [standardPrice, setStandardPrice] = useState(/** @type {string} */ null);
+	const [standardPrice, setStandardPrice] = useState(/** @type {number} */ null);
 	const [requestId, setRequestId] = useState(/** @type {number} */ null);
+	const [price, setPrice] = useState(/** @type {number} */ null);
 
 	/* ---- Functions ------------------------------- */
+	const getStandardPrice = useCallback(async () => {
+		// noinspection JSUnresolvedFunction
+		const amount = await contract.methods.getStandardPrice().call({ from: account });
+		setStandardPrice(parseFloat(Web3.utils.fromWei(`${amount}`, "ether")));
+		setPrice(null);
+	}, [contract, account]);
+
+	const changeStandardPrice = async (newPrice) => {
+		try {
+			// noinspection JSUnresolvedFunction
+			await contract.methods.setPrice(Web3.utils.toWei(newPrice, "ether")).send({ from: account });
+		} catch (err) {
+			// TODO: Err modal
+			console.error(err);
+		}
+	};
+
 	const getPrice = async points => {
+		// noinspection JSUnresolvedFunction
 		const requestId = await contract.methods.getPrice(points).send({ from: account });
 		setRequestId(requestId);
 	};
 
-	const changePrice = async (newPrice) => {
-		if (contract) {
-			try {
-				await contract.methods.setPrice(Web3.utils.toWei(newPrice, "ether")).send({ from: account });
-			} catch (err) {
-				// TODO: Err modal
-				console.error(err);
-			}
+	const buyTicket = async () => {
+		try {
+			// noinspection JSUnresolvedFunction
+			await contract.methods.buyTicket().send({ from: account, value: Web3.utils.toWei(`${price}`, "ether") });
+		} catch (err) {
+			// TODO: Error modal
+			console.error(err);
 		}
 	};
 
 	/* ---- Effects --------------------------------- */
+	// Keep the standard price updated
 	useEffect(() => {
-		// Fetch the new ticket price and update the hook state.
-		const getStandardPrice = async () => {
-			const amount = await contract.methods.getStandardPrice().call({ from: account });
-			setStandardPrice(`${amount}`);
-			setPrice(null);
-		};
-
 		// Fetch the price once and start an event listener.
 		let priceChangeListener = null;
 		if (contract) {
 			getStandardPrice().catch(console.error);
+			// noinspection JSValidateTypes
 			priceChangeListener = contract.events.TicketPriceChanged().on("data", getStandardPrice);
 		}
 
@@ -50,14 +62,17 @@ function useTicketPrice() {
 				priceChangeListener.removeAllListeners("data");
 			}
 		};
-	}, [contract, account]);
+	}, [contract, account, getStandardPrice]);
 
+	// Listen for a requested price
 	useEffect(() => {
+		// Start an event listener.
 		let receivedPriceListener = null;
 		if (contract) {
+			// noinspection JSValidateTypes
 			receivedPriceListener = contract.events.TicketPriceCalculated({ filter: {caller: account, requestId} }).on("data", data => {
 				setRequestId(null);
-				setPrice(data.returnValues.price);
+				setPrice(parseFloat(Web3.utils.fromWei(data.returnValues.price, "ether")));
 			});
 		}
 
@@ -70,7 +85,7 @@ function useTicketPrice() {
 	}, [contract, account, requestId]);
 
 	/* ---- Expose hook ----------------------------- */
-	return { price, standardPrice, set: changePrice, get: getPrice };
+	return { standardPrice, setStandardPrice: changeStandardPrice, currentPrice: price, requestPrice: getPrice, buy: buyTicket };
 }
 
-export default useTicketPrice;
+export default useTickets;
