@@ -31,7 +31,7 @@ function TravelPlanner() {
 
 	/* ---- Page content ---------------------------- */
 	return (
-		<div className="Page TravelPlannerPage">
+		<div className="Page TravelPlanner-page">
 			<p>train | métro | bus</p>
 			<Map/>
 			<p>[&#123; lat: 48840056, long: 2361997 &#125;, &#123; lat: 49878677, long: 2280633 &#125;, &#123; lat: 50285914, long: 2785091 &#125;]</p>

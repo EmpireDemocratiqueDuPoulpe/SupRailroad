@@ -1,6 +1,6 @@
 function AdminCorner() {
 	return (
-		<div className="Page AdminCornerPage">
+		<div className="Page AdminCorner-page">
 			Admin page
 		</div>
 	);

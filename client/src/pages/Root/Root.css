@@ -10,4 +10,10 @@
 .App-root header { flex-grow: 0; flex-shrink: 0; }
 
 /* ---- App body ---------------------------------------------------------------------------------------------------- */
-.App-root .App-body { flex-grow: 1; }
+.App-root .App-body { flex-grow: 1; position: relative; }
+
+/* ---- Pages ------------------------------------------------------------------------------------------------------- */
+.App-root .App-body .Page {
+	box-sizing: border-box;
+	padding: 20px;
+}
