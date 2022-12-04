@@ -24,7 +24,7 @@ function Wallet() {
 					</div>
 
 					<div className="collection-box">
-						<h2 className="collection-title">Cartes de r&eacute;ductions</h2>
+						<h2 className="collection-title">Cartes de r&eacute;duction</h2>
 						{!wallet.cards.length ? <p className="empty-collection">Vous ne possédez aucune carte de r&eacute;duction.</p> : (
 							<div>
 								{wallet.cards.map((cards, idx) => `${idx} - ${JSON.stringify(cards)}`)}
