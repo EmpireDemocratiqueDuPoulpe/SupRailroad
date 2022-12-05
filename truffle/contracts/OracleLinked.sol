@@ -14,7 +14,7 @@ contract OracleLinked is AccessControlEnumerable, Administrable {
     uint256 private constant modulus = 1000;
 
     /// Mappings
-    mapping (uint256 => bool) internal pendingRequests;
+    mapping (uint256 => bool) private pendingRequests;
 
     /// Events
     event AddedOracle(address addr);
@@ -32,6 +32,17 @@ contract OracleLinked is AccessControlEnumerable, Administrable {
     }
 
     /// Functions
+    function _addRequest() internal returns(uint256) {
+        uint256 requestId = _getNewId();
+        pendingRequests[requestId] = true;
+
+        return requestId;
+    }
+
+    function _removeRequest(uint256 _requestId) internal {
+        delete pendingRequests[_requestId];
+    }
+
     function addOracle(address _oracle) external mustBeAdmin {
         require(!super.hasRole(ORACLE_ROLE, _oracle), "This oracle is already registered!");
 
@@ -39,15 +50,15 @@ contract OracleLinked is AccessControlEnumerable, Administrable {
         emit AddedOracle(_oracle);
     }
 
-    function removeOracle(address _oracle) external mustBeAdmin {
+    function removeOracle(address _oracle, bool _forced) external mustBeAdmin {
         require(super.hasRole(ORACLE_ROLE, _oracle), "This address is not a registered oracle!");
-        require(super.getRoleMemberCount(ORACLE_ROLE) > 1, "The last oracle cannot be removed!");
+        if (!_forced) require(super.getRoleMemberCount(ORACLE_ROLE) > 1, "The last oracle cannot be removed!");
 
         super._revokeRole(ORACLE_ROLE, _oracle);
         emit RemovedOracle(_oracle);
     }
 
-    function _getNewId() internal returns(uint256) {
+    function _getNewId() private returns(uint256) {
         ++randNonce;
         return uint256(keccak256(abi.encodePacked(block.timestamp, msg.sender, randNonce))) % modulus;
     }

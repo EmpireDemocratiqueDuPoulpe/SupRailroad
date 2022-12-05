@@ -5,12 +5,19 @@
  */
 
 import * as turf from "@turf/turf";
+import constants from "./constants.js";
 
 /*** Typedefs *********************************************************************************************************/
 /**
  * @typedef {Object} GCSPoint
  * @property {number} lat - Latitude (before conversion)
  * @property {number} long - Longitude (before conversion)
+ */
+
+/**
+ * @typedef {Object} PriceCalculation
+ * @property {number} distance - Calculated distance of the travel.
+ * @property {number} price - Estimated ticket price (in Wei).
  */
 
 /*** Functions ********************************************************************************************************/
@@ -22,14 +29,14 @@ import * as turf from "@turf/turf";
  *
  * @param {Array<GCSPoint>} points - Points of the trip.
  * @param {number} standardPrice - Price per km.
- * @return {number} - The calculated price.
+ * @return {PriceCalculation} - The calculated distance and price.
  */
 export function calculatePrice(points, standardPrice) {
-	const convertedPoints = convertPoints(points);
+	const convertedPoints = convertPoints(points); // noinspection JSCheckFunctionSignatures
 	const distance = turf.length(convertedPoints);
 
 	// Price calculation
-	return standardPrice * distance;
+	return { distance, price: (standardPrice * distance) };
 }
 
 /**
@@ -53,5 +60,5 @@ function convertPoints(points) {
  * @return {Array<number>} - The converted point.
  */
 function convertSinglePoint(point) {
-	return [(point.long / 1_000_000), (point.lat / 1_000_000)];
+	return [(point.long / constants.FLOAT_FACTOR), (point.lat / constants.FLOAT_FACTOR)];
 }

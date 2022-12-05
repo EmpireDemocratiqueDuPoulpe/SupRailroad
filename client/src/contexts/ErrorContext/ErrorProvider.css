@@ -1,0 +1,13 @@
+/* --- Container ---------------------------------------------------------------------------------------------------- */
+.errors-wrapper {
+	position: absolute;
+	top: 10px;
+	left: 50%;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	gap: 10px;
+	transform: translateX(-50%);
+	z-index: 10000;
+}

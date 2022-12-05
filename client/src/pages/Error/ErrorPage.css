@@ -1,0 +1,22 @@
+/* ---- Error box --------------------------------------------------------------------------------------------------- */
+.Error-page .error-box {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* -- Error title */
+.Error-page .error-box .error-title { margin: 0.25em 0 0 0; }
+
+/* -- Error code */
+.Error-page .error-box .error-code {
+    font-size: 0.8em;
+    color: gray;
+}
+
+/* -- Bonk */
+.Error-page .error-box .bonk-dev { cursor: pointer; }
+.Error-page .error-box .bonk-dev:focus,
+.Error-page .error-box .bonk-dev:focus-visible,
+.Error-page .error-box .bonk-dev:focus-within { outline: none; }

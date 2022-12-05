@@ -1,0 +1,29 @@
+/* --- Container ---------------------------------------------------------------------------------------------------- */
+.error-box {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: stretch;
+	gap: 7px;
+	padding: 10px 15px;
+	background: var(--red-color);
+}
+
+/* --- Error bottom ------------------------------------------------------------------------------------------------- */
+.error-box .error-bottom {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+	font-size: 0.8em;
+}
+
+/* -- Error code */
+.error-box .error-bottom .error-code { color: rgba(0, 0, 0, 0.75); }
+
+/* -- Error close */
+.error-box .error-bottom .error-close {
+	font-style: italic;
+	cursor: pointer;
+}
+.error-box .error-bottom .error-close:hover { text-decoration: underline; }

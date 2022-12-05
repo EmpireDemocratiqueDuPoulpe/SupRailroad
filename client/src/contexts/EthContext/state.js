@@ -1,6 +1,4 @@
-const actions = {
-	init: "INIT",
-};
+const actions = { init: "INIT" };
 
 const initialState = {
 	artifact: null,

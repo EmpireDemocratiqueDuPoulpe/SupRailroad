@@ -1,6 +1,7 @@
 import PropTypes from "prop-types";
 
 function InterfaceChecker({ children }) {
+	/* ---- Page content ---------------------------- */
 	return (
 		<div className="interface-checker">
 			{window.ethereum ? children : (
@@ -12,8 +13,6 @@ function InterfaceChecker({ children }) {
 		</div>
 	);
 }
-InterfaceChecker.propTypes = {
-	children: PropTypes.node
-};
+InterfaceChecker.propTypes = { children: PropTypes.node };
 
 export default InterfaceChecker;

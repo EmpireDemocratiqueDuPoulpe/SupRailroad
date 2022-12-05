@@ -5,8 +5,10 @@ import EthContext from "./EthContext.js";
 import { reducer, actions, initialState } from "./state.js";
 
 function EthProvider({ children }) {
+	/* ---- States ---------------------------------- */
 	const [state, dispatch] = useReducer(reducer, initialState, undefined);
 
+	/* ---- Functions ------------------------------- */
 	const init = useCallback(
 		async artifact => {
 			if (artifact) {
@@ -31,6 +33,7 @@ function EthProvider({ children }) {
 			}
 		}, []);
 
+	/* ---- Effects --------------------------------- */
 	useEffect(() => {
 		const tryInit = async () => {
 			import("../../contracts/TicketFactory.json").then(init).catch(console.error);
@@ -51,11 +54,9 @@ function EthProvider({ children }) {
 		};
 	}, [init, state.artifact]);
 
+	/* ---- Page content ---------------------------- */
 	return (
-		<EthContext.Provider value={{
-			state,
-			dispatch
-		}}>
+		<EthContext.Provider value={{ state, dispatch }}>
 			{children}
 		</EthContext.Provider>
 	);
