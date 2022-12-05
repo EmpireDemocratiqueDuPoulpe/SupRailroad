@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import ErrorContext from "./ErrorContext.js";
 import ErrorBox from "./ErrorBox/ErrorBox.jsx";
 import { NotImplemented } from "../../helpers/customErrors.js";
+import "./ErrorProvider.css";
 
 /**
  * @typedef {Object} ErrObj
@@ -51,9 +52,11 @@ function ErrorProvider({ limit, children }) {
 	/* ---- Page content ---------------------------- */
 	return (
 		<ErrorContext.Provider value={{ add: addError, delete: delError }}>
-			{errors.slice(-limit).map((err => (
-				<ErrorBox key={`error-${err.id}`} id={err.id} code={err.code} message={err.message} onClose={() => delError(err.id)}/>
-			)))}
+			<div className="errors-wrapper">
+				{errors.slice(-limit).map((err => (
+					<ErrorBox key={`error-${err.id}`} id={err.id} code={err.code} message={err.message} onClose={() => delError(err.id)}/>
+				)))}
+			</div>
 			{children}
 		</ErrorContext.Provider>
 	);

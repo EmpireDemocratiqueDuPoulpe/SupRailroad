@@ -1,8 +1,5 @@
 /* --- Container ---------------------------------------------------------------------------------------------------- */
 .error-box {
-	position: absolute;
-	top: 10px;
-	left: 50%;
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
@@ -10,7 +7,6 @@
 	gap: 7px;
 	padding: 10px 15px;
 	background: var(--red-color);
-	transform: translateX(-50%);
 }
 
 /* --- Error bottom ------------------------------------------------------------------------------------------------- */
