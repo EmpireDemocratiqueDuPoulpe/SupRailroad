@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
+import { useErrors } from "../../contexts/ErrorContext";
 import { useEth } from "../../contexts/EthContext";
-import { getRPCError } from "../../helpers/errorHandling.js";
 
 function useWallet() {
 	/* ---- Contexts -------------------------------- */
+	const errors = useErrors();
 	const { state: { account, contract } } = useEth();
 
 	/* ---- States ---------------------------------- */
@@ -14,18 +15,19 @@ function useWallet() {
 		// Fetch the new wallet and update the hook state.
 		const update = async () => {
 			try {
-				const wallet = await contract.methods.getWallet().call({ from: account });
-				setWallet(wallet);
-			} catch (err) {
-				const rpcErr = getRPCError(err);
-				console.error(rpcErr.message);
-			}
+				if (contract) {
+					// noinspection JSUnresolvedFunction
+					const wallet = await contract.methods.getWallet().call({ from: account });
+					setWallet(wallet);
+				}
+			} catch (err) { errors.add(err, true); }
 		};
 
 		// Fetch the wallet once and start an event listener.
 		let ticketBoughtListener = null;
 		if (contract) {
 			update().catch(console.error);
+			// noinspection JSValidateTypes
 			ticketBoughtListener = contract.events.BoughtTicket({ filter: {owner: account} }).on("data", update);
 		}
 
@@ -35,7 +37,7 @@ function useWallet() {
 				ticketBoughtListener.removeAllListeners("data");
 			}
 		};
-	}, [contract, account]);
+	}, [contract, account, errors]);
 
 	/* ---- Expose hook ----------------------------- */
 	return wallet;

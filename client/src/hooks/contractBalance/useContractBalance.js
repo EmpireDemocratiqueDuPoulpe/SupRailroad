@@ -1,9 +1,11 @@
 import { useState, useEffect, useCallback } from "react";
 import Web3 from "web3";
+import { useErrors } from "../../contexts/ErrorContext";
 import { useEth } from "../../contexts/EthContext";
 
 function useContractBalance(contract) {
 	/* ---- Contexts -------------------------------- */
+	const errors = useErrors();
 	const { state: { account } } = useEth();
 
 	/* ---- States ---------------------------------- */
@@ -12,11 +14,13 @@ function useContractBalance(contract) {
 
 	/* ---- Functions ------------------------------- */
 	const getBalance = useCallback(async () => {
-		if (contract) {
-			setLoaded(false);
-			return await contract.methods.getBalance().call({ from: account });
-		}
-	}, [contract, account]);
+		try {
+			if (contract) {
+				setLoaded(false);
+				return await contract.methods.getBalance().call({ from: account });
+			}
+		} catch (err) { errors.add(err, true); }
+	}, [contract, account, errors]);
 
 	const updateBalance = useCallback(async () => {
 		const currBalance = await getBalance();
@@ -29,10 +33,11 @@ function useContractBalance(contract) {
 	}, [getBalance]);
 
 	const transferBalance = async (address) => {
-		if (contract) {
-			return await contract.methods.transfer(address).send({ from: account })
-				.then(updateBalance);
-		}
+		try {
+			if (contract) {
+				return await contract.methods.transfer(address).send({ from: account }).then(updateBalance);
+			}
+		} catch (err) { errors.add(err, true); }
 	};
 
 	/* ---- Effects --------------------------------- */

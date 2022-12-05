@@ -1,9 +1,11 @@
 import { useState, useEffect, useCallback } from "react";
 import Web3 from "web3";
+import { useErrors } from "../../contexts/ErrorContext";
 import { useEth } from "../../contexts/EthContext";
 
 function useTickets() {
 	/* ---- Contexts -------------------------------- */
+	const errors = useErrors();
 	const { state: { account, contract } } = useEth();
 
 	/* ---- States ---------------------------------- */
@@ -13,36 +15,43 @@ function useTickets() {
 
 	/* ---- Functions ------------------------------- */
 	const getStandardPrice = useCallback(async () => {
-		// noinspection JSUnresolvedFunction
-		const amount = await contract.methods.getStandardPrice().call({ from: account });
-		setStandardPrice(parseFloat(Web3.utils.fromWei(`${amount}`, "ether")));
-		setPrice(null);
-	}, [contract, account]);
+		try {
+			if (contract) {
+				// noinspection JSUnresolvedFunction
+				const amount = await contract.methods.getStandardPrice().call({ from: account });
+				setStandardPrice(parseFloat(Web3.utils.fromWei(`${amount}`, "ether")));
+				setPrice(null);
+			}
+		} catch (err) { errors.add(err, true); }
+
+	}, [contract, account, errors]);
 
 	const changeStandardPrice = async (newPrice) => {
 		try {
-			// noinspection JSUnresolvedFunction
-			await contract.methods.setPrice(Web3.utils.toWei(newPrice, "ether")).send({ from: account });
-		} catch (err) {
-			// TODO: Err modal
-			console.error(err);
-		}
+			if (contract) {
+				// noinspection JSUnresolvedFunction
+				await contract.methods.setPrice(Web3.utils.toWei(newPrice, "ether")).send({ from: account });
+			}
+		} catch (err) { errors.add(err, true); }
 	};
 
 	const getPrice = async points => {
-		// noinspection JSUnresolvedFunction
-		const requestId = await contract.methods.getPrice(points).send({ from: account });
-		setRequestId(requestId);
+		try {
+			if (contract) {
+				// noinspection JSUnresolvedFunction
+				const requestId = await contract.methods.getPrice(points).send({ from: account });
+				setRequestId(requestId);
+			}
+		} catch (err) { errors.add(err, true); }
 	};
 
 	const buyTicket = async () => {
 		try {
-			// noinspection JSUnresolvedFunction
-			await contract.methods.buyTicket().send({ from: account, value: Web3.utils.toWei(`${price}`, "ether") });
-		} catch (err) {
-			// TODO: Error modal
-			console.error(err);
-		}
+			if (contract) {
+				// noinspection JSUnresolvedFunction
+				await contract.methods.buyTicket().send({ from: account, value: Web3.utils.toWei(`${price}`, "ether") });
+			}
+		} catch (err) { errors.add(err, true); }
 	};
 
 	/* ---- Effects --------------------------------- */
