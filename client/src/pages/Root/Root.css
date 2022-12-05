@@ -28,10 +28,21 @@
 	box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
 }
 
-/* - Title */
+/* - Section */
 .App-root .App-body .Page .inner-page .inner-page-section:not(:last-child) { margin-bottom: 30px; }
 
+/* - Section title */
 .App-root .App-body .Page .inner-page .inner-page-section .inner-page-section-title {
 	margin-top: 0;
 	color: var(--secondary-color);
+}
+
+/* - Section body */
+.App-root .App-body .Page .inner-page .inner-page-section .inner-page-section-body { position: relative; }
+.App-root .App-body .Page .inner-page .inner-page-section .inner-page-section-body .loader {
+	position: relative;
+	top: auto;
+	left: auto;
+	margin: 7px auto 0 auto;
+	transform: none;
 }

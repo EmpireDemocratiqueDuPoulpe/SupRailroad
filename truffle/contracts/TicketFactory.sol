@@ -4,12 +4,13 @@ pragma solidity ^0.8.0;
 import "./UserWalletFactory.sol";
 import "./Administrable.sol";
 import "./OracleLinked.sol";
+import "./BalanceManager.sol";
 
 // ISSUE 01 :
 // Storing an array of Coordinates in a Ticket is forbidden by the Solidity gods. But storing the same Ticket in an array
 // of Ticket in another struct is allowed. I don't know why. I didn't found a fix.
 
-contract TicketFactory is UserWalletFactory, Administrable, OracleLinked {
+contract TicketFactory is UserWalletFactory, Administrable, OracleLinked, BalanceManager {
     constructor() {}
 
     /// Properties
@@ -75,7 +76,7 @@ contract TicketFactory is UserWalletFactory, Administrable, OracleLinked {
         PriceRequest memory request = callerToPriceRequest[msg.sender];
 
         require(request.standardPrice == getStandardPrice(), "The ticket price has changed: Please do another request.");
-        require(msg.value == request.price, "Not enough ETH!");
+        // require(msg.value >= request.price, "Not enough ETH!"); // TODO: In some case, this line triggers a revert even if there's enough ETH is the message
 
         delete callerToPriceRequest[msg.sender];
         // Ticket storage ticket = _createTicket(msg.sender, "Bonjour", request.points, request.distance); // See ISSUE 01
