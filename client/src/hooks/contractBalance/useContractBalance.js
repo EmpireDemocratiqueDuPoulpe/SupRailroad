@@ -20,7 +20,8 @@ function useContractBalance(contract) {
 				return await contract.methods.getBalance().call({ from: account });
 			}
 		} catch (err) { errors.add(err, true); }
-	}, [contract, account, errors]);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [contract, account]);
 
 	const updateBalance = useCallback(async () => {
 		const currBalance = await getBalance();

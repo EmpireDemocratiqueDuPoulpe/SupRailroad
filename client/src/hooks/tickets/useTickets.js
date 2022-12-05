@@ -23,8 +23,8 @@ function useTickets() {
 				setPrice(null);
 			}
 		} catch (err) { errors.add(err, true); }
-
-	}, [contract, account, errors]);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [contract, account]);
 
 	const changeStandardPrice = async (newPrice) => {
 		try {

@@ -37,7 +37,8 @@ function useWallet() {
 				ticketBoughtListener.removeAllListeners("data");
 			}
 		};
-	}, [contract, account, errors]);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [contract, account]);
 
 	/* ---- Expose hook ----------------------------- */
 	return wallet;
