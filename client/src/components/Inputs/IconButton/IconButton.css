@@ -1,0 +1,5 @@
+/* ---- Container --------------------------------------------------------------------------------------------------- */
+.icon-button { cursor: pointer; }
+
+.icon-button.positive:hover { color: var(--tertiary-color); }
+.icon-button.negative:hover { color: var(--red-color); }

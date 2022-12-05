@@ -25,6 +25,7 @@
 	outline: none;
 }
 
+/* -- Editing */
 .input.text-input.editing input, .input.number-input.editing input {
 	background: var(--background-color⨣2);
 	border-color: rgba(0, 0, 0, 0.45);

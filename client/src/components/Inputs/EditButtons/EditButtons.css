@@ -1,0 +1,10 @@
+/* ---- Container --------------------------------------------------------------------------------------------------- */
+.input-edit {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	gap: 10px;
+	font-size: 0.9em;
+	margin-left: 0.5em;
+}

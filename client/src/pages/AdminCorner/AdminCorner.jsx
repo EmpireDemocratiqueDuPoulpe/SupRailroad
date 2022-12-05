@@ -1,4 +1,3 @@
-import { useState, useEffect } from "react";
 import useTickets from "../../hooks/tickets/useTickets.js";
 import Inputs from "../../components/Inputs";
 import "./AdminCorner.css";
@@ -7,22 +6,10 @@ function AdminCorner() {
 	/* ---- Contexts -------------------------------- */
 	const tickets = useTickets();
 
-	/* ---- States ---------------------------------- */
-	const [newPrice, setNewPrice] = useState(/** @type {string} */ "");
-
 	/* ---- Functions ------------------------------- */
-	// noinspection JSUnusedLocalSymbols
-	// eslint-disable-next-line no-unused-vars
-	const updatePrice = () => {
-		tickets.setStandardPrice(newPrice).catch(console.error);
+	const onPriceChange = price => {
+		tickets.setStandardPrice(price).catch(console.error);
 	};
-
-	/* ---- Effects --------------------------------- */
-	useEffect(() => {
-		if (!newPrice && tickets.standardPrice) {
-			setNewPrice(tickets.standardPrice.toString());
-		}
-	}, [newPrice, tickets.standardPrice]);
 
 	/* ---- Page content ---------------------------- */
 	return (
@@ -34,7 +21,7 @@ function AdminCorner() {
 					<Inputs.Number
 						label="Prix du ticket (par km) :" postLabel="ETH"
 						step={0.0001}
-						value={newPrice} onChange={p => setNewPrice(p)}
+						defaultValue={tickets.standardPrice?.toString()} onChange={onPriceChange}
 						disabled={!tickets.standardPrice}
 					/>
 					<Inputs.Checkbox label="Gagner un max d'argent" checked readOnly/>
