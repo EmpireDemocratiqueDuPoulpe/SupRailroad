@@ -10,7 +10,7 @@ contract UserWalletFactory {
     /// Properties
     struct UserWallet {
         TicketFactory.Ticket[] tickets;
-        uint256[] cards;
+        CardFactory.Card[] cards;
     }
 
     /// Mappings
@@ -37,7 +37,15 @@ contract UserWalletFactory {
         return wallet.tickets[_id];
     }
 
-    function _addCard(address _to, uint256 _cardId) internal {
-        userToWallet[_to].cards.push(_cardId);
+    function _addCard(address _to, CardFactory.Card memory _card) internal {
+        userToWallet[_to].cards.push(_card);
+    }
+
+    function _getCard(uint256 cardId) public view returns(CardFactory.Card memory) {
+        return userToWallet[msg.sender].cards[cardId];
+    }
+
+    function _setCard(uint256 cardId, CardFactory.Card memory card) public {
+        userToWallet[msg.sender].cards[cardId] = card;
     }
 }
