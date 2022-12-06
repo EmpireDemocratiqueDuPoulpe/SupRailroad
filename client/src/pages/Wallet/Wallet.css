@@ -22,3 +22,8 @@
 	color: var(--text-attenuate_background);
 	font-style: italic;
 }
+
+body.crt-mode .Wallet-page .collection-box .empty-collection {
+	color: var(--primary-color);
+	opacity: 0.5;
+}

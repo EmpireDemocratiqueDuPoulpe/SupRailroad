@@ -11,5 +11,7 @@ header {
     background: var(--background-color⨣1);
 }
 
+body.crt-mode header { border-bottom: 3px var(--primary-border-color) solid; }
+
 /* -- User account */
 header .user-account { margin-left: auto; }

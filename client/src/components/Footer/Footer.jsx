@@ -23,7 +23,7 @@ function Footer() {
 	/* ---- Page content ---------------------------- */
 	return (
 		<div className="footer">
-			{messages[messageId]} - Made in d&eacute;centralis&eacute;™.
+			<span className="footer-content">{messages[messageId]} - Made in d&eacute;centralis&eacute;™.</span>
 		</div>
 	);
 }

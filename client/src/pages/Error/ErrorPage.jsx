@@ -27,7 +27,7 @@ function ErrorPage() {
 	/* ---- Page content ---------------------------- */
 	return (
 		<div className="Page Error-page">
-			<div className="error-box">
+			<div className="error-container">
 				<button className="back-link" onClick={goBack}>&larr; Retour</button>
 
 				<h1 className="error-title">Woopsy doopsy!</h1>

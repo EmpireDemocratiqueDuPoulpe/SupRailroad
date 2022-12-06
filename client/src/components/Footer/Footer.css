@@ -11,3 +11,11 @@
 	background: var(--background-color-1);
 	color: var(--background-color⨣2);
 }
+
+body.crt-mode .footer {
+	border: 1px var(--primary-border-color) solid;
+	border-top: 2px var(--primary-border-color) dashed;
+	color: var(--primary-color);
+}
+
+body.crt-mode .footer .footer-content { opacity: 0.5; }

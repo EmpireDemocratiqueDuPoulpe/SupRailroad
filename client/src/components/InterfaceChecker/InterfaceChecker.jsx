@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 function InterfaceChecker({ children }) {
 	/* ---- Page content ---------------------------- */
 	return (
-		<div className="interface-checker">
+		<div className="interface-checker expand-all">
 			{window.ethereum ? children : (
 				<div>
 					<p>Vous n&apos;avez pas Metamask/Mist d&apos;installé.</p>
