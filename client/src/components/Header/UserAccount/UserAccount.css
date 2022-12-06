@@ -7,6 +7,8 @@
     background: inherit;
 }
 
+.user-account .outside-alerter { background: inherit; }
+
 .user-account .user-account-wrapper {
     box-sizing: border-box;
     position: relative;
