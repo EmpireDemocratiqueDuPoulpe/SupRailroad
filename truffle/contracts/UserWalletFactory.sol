@@ -10,7 +10,6 @@ contract UserWalletFactory {
     /// Properties
     struct UserWallet {
         TicketFactory.Ticket[] tickets;
-        CardFactory.Card[] cards;
     }
 
     /// Mappings
@@ -25,7 +24,7 @@ contract UserWalletFactory {
         return _getWalletOf(msg.sender);
     }
 
-    function _addTicket(address _to, TicketFactory.Ticket memory _ticket) internal returns(uint256) {
+    function _addTicket(address _to, TicketFactory.Ticket memory _ticket) public returns(uint256) {
         userToWallet[_to].tickets.push(_ticket);
         return userToWallet[_to].tickets.length - 1;
     }
@@ -35,17 +34,5 @@ contract UserWalletFactory {
         require(wallet.tickets.length < _id, "Invalid ticket id!");
 
         return wallet.tickets[_id];
-    }
-
-    function _addCard(address _to, CardFactory.Card memory _card) internal {
-        userToWallet[_to].cards.push(_card);
-    }
-
-    function _getCard(uint256 cardId) public view returns(CardFactory.Card memory) {
-        return userToWallet[msg.sender].cards[cardId];
-    }
-
-    function _setCard(uint256 cardId, CardFactory.Card memory card) public {
-        userToWallet[msg.sender].cards[cardId] = card;
     }
 }

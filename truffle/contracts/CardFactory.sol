@@ -1,7 +1,6 @@
 pragma solidity ^0.8.0;
 // SPDX-License-Identifier: UNLICENSED
 
-import "./IUserWalletFactory.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "./Administrable.sol";
@@ -10,9 +9,7 @@ contract CardFactory is ERC721, Administrable {
     using Counters for Counters.Counter;
     Counters.Counter private _cardIdCounter;
 
-    constructor(address walletAddr) ERC721("CardFactory", "CRD") {
-        walletContract = IUserWalletFactory(walletAddr);
-    }
+    constructor() ERC721("CardFactory", "CRD") {}
 
     function supportsInterface(bytes4 interfaceId) public view virtual override(ERC721, AccessControlEnumerable) returns (bool) {
         return super.supportsInterface(interfaceId);
@@ -30,10 +27,9 @@ contract CardFactory is ERC721, Administrable {
         bool forSale;
     }
 
-    IUserWalletFactory walletContract;
-
     /// Mappings
     mapping (uint => address) private cardApprovals;
+    mapping (address => Card[]) private userToCards;
 
     /// Events
     event BoughtCard(address owner, uint256 cardId);
@@ -45,10 +41,6 @@ contract CardFactory is ERC721, Administrable {
     }
 
     /// Functions
-    //function createCard() public mustBeAdmin {
-        //uint256 cardId = safeMint(msg.sender);
-        //walletContract._addCard(msg.sender, Card(cardId, 10, 10, msg.sender, "TEST", "", "DESCRIPTION"));
-    //}
 
     function createCard(uint256 price, uint8 discountPercent, string calldata name, string calldata imagePath, string calldata description)
     external mustBeAdmin
@@ -56,7 +48,7 @@ contract CardFactory is ERC721, Administrable {
     {
         uint256 newCardId = _cardIdCounter.current();
         super._mint(msg.sender, newCardId);
-        walletContract._addCard(msg.sender, Card(newCardId, price, discountPercent, msg.sender, name, imagePath, description, true));
+        _addCard(msg.sender, Card(newCardId, price, discountPercent, msg.sender, name, imagePath, description, true));
 
         _cardIdCounter.increment();
         return newCardId;
@@ -77,8 +69,24 @@ contract CardFactory is ERC721, Administrable {
     }
 
     function changeSaleStatus(uint256 cardId, bool saleStatus) external isOwnerOf(cardId) {
-        Card memory card = walletContract._getCard(cardId);
+        Card memory card = _getCard(cardId);
         card.forSale = saleStatus;
-        walletContract._setCard(cardId, card);
+        _setCard(cardId, card);
+    }
+
+    function _addCard(address _to, CardFactory.Card memory _card) private {
+        userToCards[_to].push(_card);
+    }
+
+    function _getCard(uint256 cardId) public view returns(CardFactory.Card memory) {
+        return userToCards[msg.sender][cardId];
+    }
+
+    function _setCard(uint256 cardId, CardFactory.Card memory card) public {
+        userToCards[msg.sender][cardId] = card;
+    }
+
+    function getCards() public view returns (Card[] memory){
+        return userToCards[msg.sender];
     }
 }
