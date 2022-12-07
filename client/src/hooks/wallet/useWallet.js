@@ -5,7 +5,7 @@ import { useEth } from "../../contexts/EthContext";
 function useWallet() {
 	/* ---- Contexts -------------------------------- */
 	const errors = useErrors();
-	const { state: { account, contract } } = useEth();
+	const { state: { account, contracts: {ticketFactory} } } = useEth();
 
 	/* ---- States ---------------------------------- */
 	const [wallet, setWallet] = useState(null);
@@ -15,9 +15,9 @@ function useWallet() {
 		// Fetch the new wallet and update the hook state.
 		const update = async () => {
 			try {
-				if (contract) {
+				if (ticketFactory) {
 					// noinspection JSUnresolvedFunction
-					const wallet = await contract.methods.getWallet().call({ from: account });
+					const wallet = await ticketFactory.methods.getWallet().call({ from: account });
 					setWallet(wallet);
 				}
 			} catch (err) { errors.add(err, true); }
@@ -25,10 +25,10 @@ function useWallet() {
 
 		// Fetch the wallet once and start an event listener.
 		let ticketBoughtListener = null;
-		if (contract) {
+		if (ticketFactory) {
 			update().catch(console.error);
 			// noinspection JSValidateTypes
-			ticketBoughtListener = contract.events.BoughtTicket({ filter: {owner: account} }).on("data", update);
+			ticketBoughtListener = ticketFactory.events.BoughtTicket({ filter: {owner: account} }).on("data", update);
 		}
 
 		// The event listener is stopped when this hook is unmounted.
@@ -38,7 +38,7 @@ function useWallet() {
 			}
 		};
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [contract, account]);
+	}, [ticketFactory, account]);
 
 	/* ---- Expose hook ----------------------------- */
 	return wallet;

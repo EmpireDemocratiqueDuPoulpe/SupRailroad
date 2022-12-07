@@ -5,7 +5,7 @@ const initialState = {
 	web3: null,
 	accounts: null,
 	networkID: null,
-	contract: null
+	contracts: {}
 };
 
 const reducer = (state, action) => {

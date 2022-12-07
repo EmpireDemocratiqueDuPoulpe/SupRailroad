@@ -6,7 +6,7 @@ import { useEth } from "../../contexts/EthContext";
 function useTickets() {
 	/* ---- Contexts -------------------------------- */
 	const errors = useErrors();
-	const { state: { account, contract } } = useEth();
+	const { state: { account, contracts: {ticketFactory} } } = useEth();
 
 	/* ---- States ---------------------------------- */
 	const [standardPrice, setStandardPrice] = useState(/** @type {number} */ null);
@@ -16,30 +16,30 @@ function useTickets() {
 	/* ---- Functions ------------------------------- */
 	const getStandardPrice = useCallback(async () => {
 		try {
-			if (contract) {
+			if (ticketFactory) {
 				// noinspection JSUnresolvedFunction
-				const amount = await contract.methods.getStandardPrice().call({ from: account });
+				const amount = await ticketFactory.methods.getStandardPrice().call({ from: account });
 				setStandardPrice(parseFloat(Web3.utils.fromWei(`${amount}`, "ether")));
 				setPrice(null);
 			}
 		} catch (err) { errors.add(err, true); }
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [contract, account]);
+	}, [ticketFactory, account]);
 
 	const changeStandardPrice = async (newPrice) => {
 		try {
-			if (contract) {
+			if (ticketFactory) {
 				// noinspection JSUnresolvedFunction
-				await contract.methods.setPrice(Web3.utils.toWei(newPrice, "ether")).send({ from: account });
+				await ticketFactory.methods.setPrice(Web3.utils.toWei(newPrice, "ether")).send({ from: account });
 			}
 		} catch (err) { errors.add(err, true); }
 	};
 
 	const getPrice = async points => {
 		try {
-			if (contract) {
+			if (ticketFactory) {
 				// noinspection JSUnresolvedFunction
-				const requestId = await contract.methods.getPrice(points).send({ from: account });
+				const requestId = await ticketFactory.methods.getPrice(points).send({ from: account });
 				setRequestId(requestId);
 			}
 		} catch (err) { errors.add(err, true); }
@@ -47,9 +47,9 @@ function useTickets() {
 
 	const buyTicket = async () => {
 		try {
-			if (contract) {
+			if (ticketFactory) {
 				// noinspection JSUnresolvedFunction
-				await contract.methods.buyTicket().send({ from: account, value: Web3.utils.toWei(`${price}`, "ether") });
+				await ticketFactory.methods.buyTicket().send({ from: account, value: Web3.utils.toWei(`${price}`, "ether") });
 			}
 		} catch (err) { errors.add(err, true); }
 	};
@@ -59,10 +59,10 @@ function useTickets() {
 	useEffect(() => {
 		// Fetch the price once and start an event listener.
 		let priceChangeListener = null;
-		if (contract) {
+		if (ticketFactory) {
 			getStandardPrice().catch(console.error);
 			// noinspection JSValidateTypes
-			priceChangeListener = contract.events.TicketPriceChanged().on("data", getStandardPrice);
+			priceChangeListener = ticketFactory.events.TicketPriceChanged().on("data", getStandardPrice);
 		}
 
 		// The event listener is stopped when this hook is unmounted.
@@ -71,15 +71,15 @@ function useTickets() {
 				priceChangeListener.removeAllListeners("data");
 			}
 		};
-	}, [contract, account, getStandardPrice]);
+	}, [ticketFactory, account, getStandardPrice]);
 
 	// Listen for a requested price
 	useEffect(() => {
 		// Start an event listener.
 		let receivedPriceListener = null;
-		if (contract) {
+		if (ticketFactory) {
 			// noinspection JSValidateTypes
-			receivedPriceListener = contract.events.TicketPriceCalculated({ filter: {caller: account, requestId} }).on("data", data => {
+			receivedPriceListener = ticketFactory.events.TicketPriceCalculated({ filter: {caller: account, requestId} }).on("data", data => {
 				setRequestId(null);
 				setPrice(parseFloat(Web3.utils.fromWei(data.returnValues.price, "ether")));
 			});
@@ -91,7 +91,7 @@ function useTickets() {
 				receivedPriceListener.removeAllListeners("data");
 			}
 		};
-	}, [contract, account, requestId]);
+	}, [ticketFactory, account, requestId]);
 
 	/* ---- Expose hook ----------------------------- */
 	return { standardPrice, setStandardPrice: changeStandardPrice, currentPrice: price, requestPrice: getPrice, buy: buyTicket };
