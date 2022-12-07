@@ -15,7 +15,7 @@ contract Administrable is AccessControlEnumerable {
     bytes32 public constant ADMIN_ROLE = keccak256("ADMIN_ROLE");
     address private constant ADMIN = 0x9cF106fea3E1d92Cc04b3F9C34DAb57a21F3828D; // A.L. : PC-1
     address private constant ADMIN2 = 0x5fA3fe5ECBF931dfeF04147BDDd590D8dE30313E; // M.P. : PC-1
-    address private constant ADMIN3 = 0x19f482ef846536dE8C692B05351f27587dD34842; // M.P. : PC-hyd-ROG-lisseur
+    address private constant ADMIN3 = 0x663e106f3eaB2608d48D5eC7937798Cb9336b113; // M.P. : PC-hyd-ROG-lisseur
     address private constant ADMIN4 = 0x889b2fd9a32Af9FC8fD9A066f77a1Cea7257164d; // A.L. : PC-KingdomKhum
 
     /// Modifiers
