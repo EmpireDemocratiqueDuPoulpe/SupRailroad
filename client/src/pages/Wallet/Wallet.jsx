@@ -3,6 +3,7 @@ import useWallet from "../../hooks/wallet/useWallet.js";
 import useCardWallet from "../../hooks/wallet/useCardWallet.js";
 import Loader from "../../components/Loader/Loader.jsx";
 import Ticket from "../../components/Ticket/Ticket.jsx";
+import Card from "../../components/Card/Card.jsx";
 import "./Wallet.css";
 
 function Wallet() {
@@ -27,9 +28,10 @@ function Wallet() {
 
 					<div className="collection-box">
 						<h2 className="collection-title">Cartes de r&eacute;duction</h2>
+						<Card id={0} name="Carte test" description="Yo description" discount={15} price={0.015} imageURI="https://.../" forSale/>
 						{!cardWallet?.length ? <p className="empty-collection">Vous ne possédez aucune carte de r&eacute;duction.</p> : (
 							<div>
-								{cardWallet.map((card, idx) => `${idx} - ${JSON.stringify(card)}`)}
+								{cardWallet.map((card, idx) => <Card key={`card-${account}-${idx}`} id={idx} {...card}/>)}
 							</div>
 						)}
 					</div>
