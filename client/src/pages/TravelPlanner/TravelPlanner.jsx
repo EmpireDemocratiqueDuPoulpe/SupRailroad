@@ -14,12 +14,20 @@ function DynamicSections() {
 
 	/* ---- States ---------------------------------- */
 	const [travelTypes, setTravelTypes] = useState(/** @type {Array<string>} */ []);
+	const [points, setPoints] = useState(/** @type {Array<Array<number>>} */ []);
+	const [distance, setDistance] = useState(/** @type {string} */ "");
 
 	/* ---- Functions ------------------------------- */
 	const handleTypesChange = types => { setTravelTypes(types); };
 
+	const handlePointsChange = (points, distance) => {
+		setPoints(points.map(pt => ({ lat: Math.round(pt[1] * 1_000_000), long: Math.round(pt[0] * 1_000_000) })));
+		setDistance(distance ?? "");
+	};
+
 	const calcTicketPrice = async () => {
-		tickets.requestPrice([{ lat: 48840056, long: 2361997 }, { lat: 49878677, long: 2280633 }, { lat: 50285914, long: 2785091 }]).catch(console.error);
+		console.log(points);
+		tickets.requestPrice(points).catch(console.error);
 	};
 
 	const buyTicket = async () => {
@@ -42,8 +50,10 @@ function DynamicSections() {
 			</ProgressiveSection>
 
 			<ProgressiveSection idx={1} title="Tracez votre route (et marchez à l'ombre svp) :">
-				<Map/>
-				<p>[&#123; lat: 48840056, long: 2361997 &#125;, &#123; lat: 49878677, long: 2280633 &#125;, &#123; lat: 50285914, long: 2785091 &#125;]</p>
+				<Map onPointsChange={handlePointsChange}/>
+
+				<p>&Eacute;tapes : {points.length}</p>
+				<p>Distance : {distance}</p>
 				<button onClick={calcTicketPrice}>Calculer le prix</button>
 				<button onClick={buyTicket} disabled={!tickets.currentPrice}>
 					Acheter un ticket {tickets.currentPrice && <>({tickets.currentPrice} ETH)</>}
