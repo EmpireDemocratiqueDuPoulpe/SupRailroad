@@ -14,7 +14,16 @@ function useCards() {
 		} catch (err) { errors.add(err, true); }
 	};
 
-	return { create: createCard };
+	const approveCard = async (to, cardId) => {
+		try {
+			if (cardFactory) {
+				// noinspection JSUnresolvedFunction
+				await cardFactory.methods.setApproval(to, cardId).send({ from: account });
+			}
+		} catch (err) { errors.add(err, true); }
+	};
+
+	return { create: createCard, approve: approveCard };
 }
 
 export default useCards;

@@ -21,6 +21,7 @@ contract CardFactory is ERC721, Administrable {
         uint256 price;
         uint8 discountPercent;
         address owner;
+        address approvedTo;
         string name;
         string imagePath;
         string description;
@@ -28,7 +29,7 @@ contract CardFactory is ERC721, Administrable {
     }
 
     /// Mappings
-    mapping (uint => address) private cardApprovals;
+    mapping (address => uint256[]) private userApprovals;
     mapping (address => Card[]) private userToCards;
 
     /// Events
@@ -48,10 +49,16 @@ contract CardFactory is ERC721, Administrable {
     {
         uint256 newCardId = _cardIdCounter.current();
         super._mint(msg.sender, newCardId);
-        _addCard(msg.sender, Card(newCardId, price, discountPercent, msg.sender, name, imagePath, description, true));
+        _addCard(msg.sender, Card(newCardId, price, discountPercent, msg.sender, address(0), name, imagePath, description, true));
 
         _cardIdCounter.increment();
         return newCardId;
+    }
+
+    function setApproval(address to, uint256 cardId) public {
+        super.approve(to, cardId);
+        userApprovals[to].push(cardId);
+        userToCards[msg.sender][cardId].approvedTo = to;
     }
 
     function buyCard(address from, address to, uint256 cardId, uint256 price) public payable {
@@ -78,15 +85,35 @@ contract CardFactory is ERC721, Administrable {
         userToCards[_to].push(_card);
     }
 
-    function _getCard(uint256 cardId) public view returns(CardFactory.Card memory) {
+    function _getCard(uint256 cardId) private view returns(CardFactory.Card memory) {
         return userToCards[msg.sender][cardId];
     }
 
-    function _setCard(uint256 cardId, CardFactory.Card memory card) public {
+    function _setCard(uint256 cardId, CardFactory.Card memory card) private {
         userToCards[msg.sender][cardId] = card;
     }
 
     function getCards() public view returns (Card[] memory){
         return userToCards[msg.sender];
+    }
+
+    function getUserApprovals(address user) public view returns (Card[] memory) {
+        uint256[] cardsIDs = userApprovals[msg.sender];
+        Card[] approvedCards;
+
+        for (uint i = 0; i < cardsIDs.length; i++) {
+            uint256 id = cardsIDs[i];
+            address cardsOwner = super.ownerOf(id);
+            Card[] ownerCards = userToCards[cardsOwner];
+
+            for (uint j = 0; ownerCards.length - 1; j++) {
+                if (ownerCards[j].cardId == id) {
+                    approvedCards.push(ownerCards[j]);
+                    break;
+                }
+            }
+        }
+
+        return approvedCards;
     }
 }
