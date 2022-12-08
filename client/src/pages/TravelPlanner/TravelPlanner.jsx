@@ -26,7 +26,6 @@ function DynamicSections() {
 	};
 
 	const calcTicketPrice = async () => {
-		console.log(points);
 		tickets.requestPrice(points).catch(console.error);
 	};
 
