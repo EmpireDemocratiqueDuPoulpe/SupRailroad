@@ -1,4 +1,5 @@
 import { useState, useRef, useCallback } from "react";
+import PropTypes from "prop-types";
 import * as turf from "@turf/turf";
 import mapboxgl from "mapbox-gl";
 import ReactMap, { FullscreenControl, NavigationControl, ScaleControl, Source, Layer } from "react-map-gl";
@@ -20,11 +21,10 @@ function lineDistance(line) {
 	return line ? format(turf.length(line).toLocaleString()) : format(0);
 }
 
-function Map() {
+function Map({ onPointsChange }) {
 	/* ---- States ---------------------------------- */
 	const mapRef = useRef(null);
 	const [geoJSON, setGeoJSON] = useState({ type: "FeatureCollection", features: [] });
-	const [distance, setDistance] = useState(/** @type {string} */ lineDistance(null));
 
 	/* ---- Functions ------------------------------- */
 	const onMapLoad = useCallback(() => {
@@ -59,14 +59,22 @@ function Map() {
 		}
 
 		// Draw the line if there's enough points
+		let distance = null;
 		if (currentGeoJSON.features.length > 1) {
 			lineString.geometry.coordinates = currentGeoJSON.features.map(pt => pt.geometry.coordinates);
 			currentGeoJSON.features.push(lineString);
-			setDistance(lineDistance(lineString));
+			distance = lineDistance(lineString);
 		}
 
+		// Update the geoJSON
 		setGeoJSON(prevState => ({ ...prevState, ...currentGeoJSON }));
-	}, [geoJSON]);
+
+		// Notify the listener
+		if (onPointsChange) {
+			const points = currentGeoJSON.features.filter(f => f.geometry.type === "Point").map(f => f.geometry.coordinates);
+			onPointsChange(points, distance);
+		}
+	}, [geoJSON, onPointsChange]);
 
 	/* ---- Page content ---------------------------- */
 	return (
@@ -85,10 +93,6 @@ function Map() {
 									<Layer id="measure-points" type="circle" source="geojson" paint={{ "circle-radius": 5, "circle-color": "#000000" }} filter={[ "in", "$type", "Point" ]}/>
 								</Source>
 							)}
-
-							<div className="travel-distance-container">
-								<span className="travel-distance">{distance}</span>
-							</div>
 						</ReactMap>
 					) : <p>La carte ne peut pas être affichée : votre navigateur n&apos;est pas compatible.</p>}
 				</>
@@ -96,5 +100,8 @@ function Map() {
 		</div>
 	);
 }
+Map.propTypes = {
+	onPointsChange: PropTypes.func
+};
 
 export default Map;
