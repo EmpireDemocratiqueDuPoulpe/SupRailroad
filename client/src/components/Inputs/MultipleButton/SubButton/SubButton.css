@@ -14,5 +14,5 @@
 .button.multiple-button .sub-button:hover,
 .button.multiple-button .sub-button.enabled { background: var(--primary-color); }
 
-.button.multiple-button .sub-button:focus,
-.button.multiple-button .sub-button:focus-within { border-color: var(--secondary-color); outline: none; }
+.button.multiple-button .sub-button:focus-visible { border-color: var(--secondary-color); outline: none; }
+.button.multiple-button .sub-button:focus-visible + .sub-button { border-left-color: var(--secondary-color); }
