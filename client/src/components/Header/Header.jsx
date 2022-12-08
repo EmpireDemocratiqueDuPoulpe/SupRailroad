@@ -7,8 +7,11 @@ function Header() {
 	/* ---- Page content ---------------------------- */
 	return (
 		<header>
-			<AppLogo/>
-			<NavLinks/>
+			<div className="no-overflow">
+				<AppLogo/>
+				<NavLinks/>
+			</div>
+
 			<UserAccount/>
 		</header>
 	);
