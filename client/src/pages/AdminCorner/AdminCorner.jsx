@@ -1,5 +1,6 @@
 import { useEth } from "../../contexts/EthContext";
 import useTickets from "../../hooks/tickets/useTickets.js";
+import useCards from "../../hooks/cards/useCards.js";
 import useContractBalance from "../../hooks/contractBalance/useContractBalance.js";
 import Loader from "../../components/Loader/Loader.jsx";
 import Inputs from "../../components/Inputs";
@@ -9,11 +10,16 @@ function AdminCorner() {
 	/* ---- Contexts -------------------------------- */
 	const { state: { contract, account } } = useEth();
 	const tickets = useTickets();
+	const cards = useCards();
 	const contractBalance = useContractBalance(contract);
 
 	/* ---- Functions ------------------------------- */
 	const onPriceChange = price => {
 		tickets.setStandardPrice(price).catch(console.error);
+	};
+
+	const createCard = () => {
+		cards.create(10, 20, "Test card", "image_path", "Test card description");
 	};
 
 	const transfertBalance = () => {
@@ -42,7 +48,7 @@ function AdminCorner() {
 					<h2 className="inner-page-section-title">Cartes de r&eacute;duction</h2>
 
 					<div className="inner-page-section-body">
-						&Agrave; faire.
+						<button onClick={createCard}>Create card</button>
 					</div>
 				</div>
 
