@@ -97,18 +97,18 @@ contract CardFactory is ERC721, Administrable {
         return userToCards[msg.sender];
     }
 
-    function getUserApprovals(address user) public view returns (Card[] memory) {
-        uint256[] cardsIDs = userApprovals[msg.sender];
-        Card[] approvedCards;
+    function getUserApprovals() public view returns (Card[] memory) {
+        uint256[] memory cardsIDs = userApprovals[msg.sender];
+        Card[] memory approvedCards = new Card[](cardsIDs.length);
 
         for (uint i = 0; i < cardsIDs.length; i++) {
             uint256 id = cardsIDs[i];
             address cardsOwner = super.ownerOf(id);
-            Card[] ownerCards = userToCards[cardsOwner];
+            Card[] memory ownerCards = userToCards[cardsOwner];
 
-            for (uint j = 0; ownerCards.length - 1; j++) {
+            for (uint j = 0; j < ownerCards.length; j++) {
                 if (ownerCards[j].cardId == id) {
-                    approvedCards.push(ownerCards[j]);
+                    approvedCards[i] = ownerCards[j];
                     break;
                 }
             }

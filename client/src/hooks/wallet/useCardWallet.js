@@ -8,7 +8,7 @@ function useCardWallet() {
 	const { state: { account, contracts: {cardFactory} } } = useEth();
 
 	/* ---- States ---------------------------------- */
-	const [wallet, setWallet] = useState(null);
+	const [wallet, setWallet] = useState({});
 
 	/* ---- Effects --------------------------------- */
 	useEffect(() => {
@@ -16,8 +16,10 @@ function useCardWallet() {
 		const update = async () => {
 			try {
 				if (cardFactory) {
-					// noinspection JSUnresolvedFunction
-					const wallet = await cardFactory.methods.getCards().call({ from: account });
+					const wallet = {
+						cards: await cardFactory.methods.getCards().call({ from: account }),
+						approvedCards: await cardFactory.methods.getUserApprovals().call({ from: account })
+					};
 					setWallet(wallet);
 				}
 			} catch (err) { errors.add(err, true); }
