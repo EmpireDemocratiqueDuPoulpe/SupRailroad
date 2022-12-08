@@ -30,16 +30,16 @@
 
 body.crt-mode .App-root .App-body .Page .inner-page { box-shadow: none; }
 
-/* - Section */
+/* - ProgressiveSection */
 .App-root .App-body .Page .inner-page .inner-page-section:not(:last-child) { margin-bottom: 30px; }
 
-/* - Section title */
+/* - ProgressiveSection title */
 .App-root .App-body .Page .inner-page .inner-page-section .inner-page-section-title {
 	margin-top: 0;
 	color: var(--secondary-color);
 }
 
-/* - Section body */
+/* - ProgressiveSection body */
 .App-root .App-body .Page .inner-page .inner-page-section .inner-page-section-body { position: relative; }
 .App-root .App-body .Page .inner-page .inner-page-section .inner-page-section-body .loader {
 	position: relative;

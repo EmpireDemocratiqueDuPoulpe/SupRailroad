@@ -1,0 +1,18 @@
+/* ---- Container --------------------------------------------------------------------------------------------------- */
+.button.multiple-button .sub-button {
+    --border-radius: 5px;
+
+    flex-grow: 1;
+    text-align: center;
+    cursor: pointer;
+    border: 2px var(--primary-color) solid;
+}
+.button.multiple-button .sub-button:first-child { border-radius: var(--border-radius) 0 0 var(--border-radius); }
+.button.multiple-button .sub-button:not(:last-child) { border-right: none; }
+.button.multiple-button .sub-button:last-child { border-radius: 0 var(--border-radius) var(--border-radius) 0; }
+
+.button.multiple-button .sub-button:hover,
+.button.multiple-button .sub-button.enabled { background: var(--primary-color); }
+
+.button.multiple-button .sub-button:focus,
+.button.multiple-button .sub-button:focus-within { border-color: var(--secondary-color); outline: none; }

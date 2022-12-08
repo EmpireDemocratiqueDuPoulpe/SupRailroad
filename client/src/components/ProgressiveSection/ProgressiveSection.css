@@ -1,0 +1,44 @@
+/* ---- Container --------------------------------------------------------------------------------------------------- */
+.progressive-sections.section { --title-size: 1.5em; }
+
+/* - Hidden */
+.progressive-sections.section.hidden {
+    opacity: 0.25;
+    pointer-events: none;
+    cursor: default;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
+.progressive-sections.section.hidden ~ .progressive-sections.section.hidden { opacity: 0; }
+
+/* - Inlined */
+.progressive-sections.section.inlined {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    gap: var(--title-size);
+}
+
+/* -- ProgressiveSection title */
+.progressive-sections.section .section-title {
+    display: inline-block;
+    font-size: var(--title-size);
+}
+
+/* - ProgressiveSection index */
+.progressive-sections.section .section-title .section-index {
+    font-size: var(--title-size);
+    color: var(--secondary-color);
+}
+
+/* -- ProgressiveSection body */
+.progressive-sections.section .section-body {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: stretch;
+}
+
+.progressive-sections.section.inlined .section-body { margin-top: calc(var(--title-size) / 2); }
