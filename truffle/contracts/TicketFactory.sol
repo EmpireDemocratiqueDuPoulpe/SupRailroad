@@ -17,6 +17,7 @@ contract TicketFactory is UserWalletFactory, Administrable, OracleLinked, Balanc
     struct PriceRequest {
         bool requested;
         // Coordinate[] points; // See ISSUE 01
+        uint256 id;
         uint256 standardPrice;
         uint256 distance;
         uint256 price;
@@ -41,26 +42,24 @@ contract TicketFactory is UserWalletFactory, Administrable, OracleLinked, Balanc
 
     /// Events
     event TicketPriceChanged(uint256 newPrice);
-    event TicketPriceRequested(uint256 requestId, address caller, Coordinate[] points);
-    event TicketPriceCalculated(uint256 requestId, address caller, uint256 price);
-    event BoughtTicket(address indexed owner, string name);
+    event TicketPriceRequested(uint256 requestId, address indexed caller, Coordinate[] points);
+    event TicketPriceCalculated(uint256 indexed requestId, address indexed caller, uint256 price);
+    event BoughtTicket(uint256 indexed requestId, address indexed owner);
 
     /// Functions
     function getStandardPrice() public view returns(uint256) {
         return ticketPrice;
     }
 
-    function getPrice(Coordinate[] calldata _points) external returns(uint256) {
+    function getPrice(Coordinate[] calldata _points) external {
         uint256 requestId = super._addRequest();
         emit TicketPriceRequested(requestId, msg.sender, _points);
-
-        return requestId;
     }
 
     function setCalculatedPrice(uint256 _requestId, address _caller, uint256 _standardPrice, uint256 _distance, uint256 _price) public validRequestId(_requestId) mustBeOracle {
         super._removeRequest(_requestId);
         // callerToPriceRequest[_caller] = PriceRequest(true, _points, _standardPrice, _distance, _price); // See ISSUE 01
-        callerToPriceRequest[_caller] = PriceRequest(true, _standardPrice, _distance, _price);
+        callerToPriceRequest[_caller] = PriceRequest(true, _requestId, _standardPrice, _distance, _price);
 
         emit TicketPriceCalculated(_requestId, _caller, _price);
     }
@@ -82,7 +81,7 @@ contract TicketFactory is UserWalletFactory, Administrable, OracleLinked, Balanc
         // Ticket storage ticket = _createTicket(msg.sender, "Bonjour", request.points, request.distance); // See ISSUE 01
         Ticket memory ticket = _createTicket(msg.sender, "Bonjour", request.distance);
 
-        emit BoughtTicket(ticket.owner, ticket.name);
+        emit BoughtTicket(request.id, ticket.owner);
     }
 
     function _createTicket(address _owner, string memory _name, uint256 _distance) private returns(Ticket memory) {
