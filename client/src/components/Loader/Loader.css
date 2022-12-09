@@ -1,38 +1,125 @@
 /* --- Container ---------------------------------------------------------------------------------------------------- */
 .loader {
-	--size: 50px;
+	--track-width: 3px;
+	--track-angle: 45deg;
+	--track-color: #DADADA;
+	--train-color: #FFFFFF;
+	--train-secondary-color: rgba(0, 0, 0, 0.5);
 
+	box-sizing: border-box;
+	position: relative;
+	width: 50px;
+	height: 100px;
+	background: inherit;
+}
+
+.loader.centered {
 	position: absolute;
 	top: 50%;
 	left: 50%;
-	width: var(--size);
-	height: var(--size);
-	background: linear-gradient(165deg, #FFFFFF 0%, #DCDCDC 40%, #AAAAAA 98%, #0A0A0A 100%);
-	border-radius: 50%;
 	transform: translate(-50%, -50%);
 }
 
-.loader::before {
-	content: "";
-	position: absolute;
+/* -- Track */
+.loader .loader-track {
+	box-sizing: border-box;
+	position: relative;
 	width: 100%;
 	height: 100%;
-	border-bottom: 0 solid #FFFFFF05;
-	border-radius: 100%;
-	box-shadow:
-		0 -7px 13px 13px #FFFFFF40 inset,
-		0 -5px 10px 7px #FFFFFF50 inset,
-		0 -2px 5px #0466C880 inset,
-		0 -3px 2px #0466C8BB inset,
-		0 2px 0 #0466C8,
-		0 2px 3px #0466C8,
-		0 5px 5px #0466C890,
-		0 7px 10px #0466C860,
-		0 7px 13px 13px #0466C840;
-	filter: blur(3px);
-	animation: rotateLoader 2s linear infinite;
+	background: inherit;
+	border-left: var(--track-width) var(--track-color) solid;
+	transform: skew(-10deg) rotateX(var(--track-angle));
+	overflow: hidden;
+	clip-path: polygon(0% 0%, 45% 0%, 95% 100%, 0% 100%);
 }
 
-@keyframes rotateLoader {
-	100% { transform: rotate(360deg); }
+.loader .loader-track::before,
+.loader .loader-track::after { content: ""; position: absolute; }
+
+/* - Middle track */
+.loader .loader-track::before {
+	top: 90px;
+	width: 100%;
+	height: var(--track-width);
+	background: var(--track-color);
+	box-shadow:
+		0 0 var(--track-color),
+		0 -10px var(--track-color),
+		0 -20px var(--track-color),
+		0 -30px var(--track-color),
+		0 -40px var(--track-color),
+		0 -50px var(--track-color),
+		0 -50px var(--track-color),
+		0 -60px var(--track-color),
+		0 -70px var(--track-color),
+		0 -80px var(--track-color),
+		0 -90px var(--track-color),
+		0 -100px var(--track-color),
+		0 -110px var(--track-color),
+		0 -120px var(--track-color),
+		0 -130px var(--track-color),
+		0 -140px var(--track-color);
+	animation: trackMovement 1s linear infinite;
+}
+
+@keyframes trackMovement {
+	0% { transform: translateY(70px) rotateX(var(--track-angle)); }
+	100% { transform: translateY(0px) rotateX(var(--track-angle)); }
+}
+
+/* - Right track */
+.loader .loader-track::after {
+	top: -10px;
+	left: 30px;
+	width: 50px;
+	height: 120px;
+	background-color: inherit;
+	border-left: var(--track-width) var(--track-color) solid;
+	transform: rotate(-15deg);
+}
+
+/* -- Train */
+.loader .loader-train {
+	position: absolute;
+	top: 0;
+	left: -13px;
+	width: 60px;
+	height: 60px;
+	background: var(--train-color);
+	border-radius: 15px;
+	transform-origin: bottom;
+	animation: rotateTrain 1s linear infinite;
+}
+
+@keyframes rotateTrain {
+	0% { transform: rotate(0); }
+	25% { transform: rotate(2deg); }
+	50% { transform: rotate(0); }
+	75% { transform: rotate(-2deg); }
+	100% { transform: rotate(0); }
+}
+
+.loader .loader-train::before,
+.loader .loader-train::after { content: ""; position: absolute; background: var(--train-secondary-color); }
+
+/* - Windshield */
+.loader .loader-train::before {
+	top: 15px;
+	left: 9px;
+	width: 20px;
+	height: 15px;
+	background-image: url("../../assets/images/train-driver.png");
+	background-size: contain;
+	background-repeat: no-repeat;
+	box-shadow: 22px 0 var(--train-secondary-color);
+}
+
+/* - Lights */
+.loader .loader-train::after {
+	top: 45px;
+	left: 10px;
+	width: 10px;
+	height: 10px;
+	border-radius: 50%;
+	box-shadow: 30px 0 var(--train-secondary-color);
 }

@@ -41,10 +41,4 @@ body.crt-mode .App-root .App-body .Page .inner-page { box-shadow: none; }
 
 /* - ProgressiveSection body */
 .App-root .App-body .Page .inner-page .inner-page-section .inner-page-section-body { position: relative; }
-.App-root .App-body .Page .inner-page .inner-page-section .inner-page-section-body .loader {
-	position: relative;
-	top: auto;
-	left: auto;
-	margin: 7px auto 0 auto;
-	transform: none;
-}
+.App-root .App-body .Page .inner-page .inner-page-section .inner-page-section-body .loader.centered { margin: 7px auto 0 auto; }
