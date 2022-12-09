@@ -23,7 +23,15 @@ function useCards() {
 		} catch (err) { errors.add(err, true); }
 	};
 
-	return { create: createCard, approve: approveCard };
+	const retrieveCard = async (to, cardId) => {
+		try {
+			if (cardFactory) {
+				await cardFactory.methods.transferCard(to, cardId).send({ from :account });
+			}
+		} catch (err) { errors.add(err, true); }
+	};
+
+	return { create: createCard, approve: approveCard, retrieve: retrieveCard };
 }
 
 export default useCards;

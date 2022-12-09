@@ -6,6 +6,7 @@ import "./Card.css";
 
 function Card({ id, name, description, discountPercent, approvedTo, price, imageURI, forSale }) {
 	/* ---- States ---------------------------------- */
+	const cards = useCards();
 	const [flipped, setFlipped] = useState(/** @type {boolean} */ false);
 	const [approvedAddress, setApprovedAddress] = useState(/** @type {string} */ "");
 
@@ -13,7 +14,6 @@ function Card({ id, name, description, discountPercent, approvedTo, price, image
 	const showFront = () => setFlipped(false);
 	const showBack = () => setFlipped(true);
 	const flip = () => flipped ? showFront() : showBack();
-	const cards = useCards();
 
 	const killEvent = event => event.stopPropagation();
 
@@ -22,7 +22,7 @@ function Card({ id, name, description, discountPercent, approvedTo, price, image
 	};
 	const confirmApproval = event => {
 		killEvent(event);
-		cards.approve(approvedAddress, id);
+		cards.approve(approvedAddress, id).catch(console.error);
 	};
 
 	return (
@@ -58,7 +58,7 @@ function Card({ id, name, description, discountPercent, approvedTo, price, image
 	);
 }
 Card.propTypes = {
-	id: PropTypes.number.isRequired,
+	id: PropTypes.string.isRequired,
 	name: PropTypes.string.isRequired,
 	description: PropTypes.string,
 	discountPercent: PropTypes.string.isRequired,

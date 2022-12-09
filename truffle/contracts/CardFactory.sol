@@ -67,6 +67,25 @@ contract CardFactory is ERC721, Administrable {
         emit BoughtCard(msg.sender, cardId);
     }
 
+    function transferCard(address from, address to, uint256 cardId) public {
+        super.safeTransferFrom(from, to, cardId);
+
+        Card memory card = userToCards[from][cardId];
+        Card memory newCard = Card(card.cardId, card.price, card.discountPercent, to, address(0), card.name, card.imagePath, card.description, false);
+        userToCards[to][cardId].push(newCard);
+        delete userToCards[from][cardId]; // Delete the card from the old owner
+
+        uint256[] memory newApprovals;
+        for (uint i = 0; j < userApprovals[to].length; i++) {
+            if (ownerCards[j].cardId != id) {
+                newApprovals.push(cardId);
+            }
+        }
+        userApprovals[to] = newApprovals;
+
+        emit TransferCard(msg.sender, cardId);
+    }
+
     function safeTransferFrom(address, address, uint256) override public pure {
         revert("You must use buyCard.");
     }
