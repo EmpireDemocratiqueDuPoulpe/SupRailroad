@@ -1,11 +1,11 @@
 import { useState, useEffect, useCallback } from "react";
 import Web3 from "web3";
-import { useErrors } from "../../contexts/ErrorContext";
+import { useMessages } from "../../contexts/MessageContext";
 import { useEth } from "../../contexts/EthContext";
 
 function useTickets() {
 	/* ---- Contexts -------------------------------- */
-	const errors = useErrors();
+	const messages = useMessages();
 	const { state: { account, contracts: {ticketFactory} } } = useEth();
 
 	/* ---- States ---------------------------------- */
@@ -22,7 +22,7 @@ function useTickets() {
 				setStandardPrice(parseFloat(Web3.utils.fromWei(`${amount}`, "ether")));
 				setPrice(null);
 			}
-		} catch (err) { errors.add(err, true); }
+		} catch (err) { messages.addError(err, true); }
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [ticketFactory, account]);
 
@@ -32,7 +32,7 @@ function useTickets() {
 				// noinspection JSUnresolvedFunction
 				await ticketFactory.methods.setPrice(Web3.utils.toWei(newPrice, "ether")).send({ from: account });
 			}
-		} catch (err) { errors.add(err, true); }
+		} catch (err) { messages.addError(err, true); }
 	};
 
 	const getPrice = async points => {
@@ -41,7 +41,7 @@ function useTickets() {
 				// noinspection JSUnresolvedFunction
 				await ticketFactory.methods.getPrice(points).send({ from: account });
 			}
-		} catch (err) { errors.add(err, true); }
+		} catch (err) { messages.addError(err, true); }
 	};
 
 	const buyTicket = async () => {
@@ -50,7 +50,7 @@ function useTickets() {
 				// noinspection JSUnresolvedFunction
 				await ticketFactory.methods.buyTicket().send({ from: account, value: Web3.utils.toWei(`${price}`, "ether") });
 			}
-		} catch (err) { errors.add(err, true); }
+		} catch (err) { messages.addError(err, true); }
 	};
 
 	/* ---- Effects --------------------------------- */
@@ -118,7 +118,7 @@ function useTickets() {
 			// noinspection JSValidateTypes
 			ticketBoughtListener = ticketFactory.events.BoughtTicket({ filter: {requestId, owner: account} }).on("data", () => {
 				setRequestId(null);
-				console.log("Ticket acheté");
+				messages.addSuccess("Achat validé : Bon voyage !");
 			});
 		}
 
@@ -128,7 +128,7 @@ function useTickets() {
 				ticketBoughtListener.removeAllListeners("data");
 			}
 		};
-	}, [ticketFactory, account, requestId]);
+	}, [ticketFactory, account, requestId, messages]);
 
 	/* ---- Expose hook ----------------------------- */
 	return { standardPrice, setStandardPrice: changeStandardPrice, currentPrice: price, requestPrice: getPrice, buy: buyTicket };
