@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
-import { useErrors } from "../../contexts/ErrorContext";
+import { useMessages } from "../../contexts/MessageContext";
 import { useEth } from "../../contexts/EthContext";
 
 function useWallet() {
 	/* ---- Contexts -------------------------------- */
-	const errors = useErrors();
+	const messages = useMessages();
 	const { state: { account, contracts: {ticketFactory} } } = useEth();
 
 	/* ---- States ---------------------------------- */
@@ -20,7 +20,7 @@ function useWallet() {
 					const wallet = await ticketFactory.methods.getWallet().call({ from: account });
 					setWallet(wallet);
 				}
-			} catch (err) { errors.add(err, true); }
+			} catch (err) { messages.addError(err, true); }
 		};
 
 		// Fetch the wallet once and start an event listener.

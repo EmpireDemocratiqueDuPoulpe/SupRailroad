@@ -1,11 +1,11 @@
 import { useState, useEffect, useCallback } from "react";
 import Web3 from "web3";
-import { useErrors } from "../../contexts/ErrorContext";
+import { useMessages } from "../../contexts/MessageContext";
 import { useEth } from "../../contexts/EthContext";
 
 function useContractBalance(contract) {
 	/* ---- Contexts -------------------------------- */
-	const errors = useErrors();
+	const messages = useMessages();
 	const { state: { account } } = useEth();
 
 	/* ---- States ---------------------------------- */
@@ -19,7 +19,7 @@ function useContractBalance(contract) {
 				setLoaded(false);
 				return await contract.methods.getBalance().call({ from: account });
 			}
-		} catch (err) { errors.add(err, true); }
+		} catch (err) { messages.addError(err, true); }
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [contract, account]);
 
@@ -38,7 +38,7 @@ function useContractBalance(contract) {
 			if (contract) {
 				return await contract.methods.transfer(address).send({ from: account }).then(updateBalance);
 			}
-		} catch (err) { errors.add(err, true); }
+		} catch (err) { messages.addError(err, true); }
 	};
 
 	/* ---- Effects --------------------------------- */

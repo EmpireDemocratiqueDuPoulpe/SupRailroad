@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { ErrorProvider } from "./contexts/ErrorContext";
+import { MessageProvider } from "./contexts/MessageContext";
 import { EthProvider } from "./contexts/EthContext";
 import CRT from "./components/CRT/CRT.jsx";
 import InterfaceChecker from "./components/InterfaceChecker/InterfaceChecker.jsx";
@@ -24,7 +24,7 @@ const router = createBrowserRouter([
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
 	<React.StrictMode>
-		<ErrorProvider>
+		<MessageProvider>
 			<CRT enabled={false}>
 				<InterfaceChecker>
 					<EthProvider>
@@ -32,6 +32,6 @@ root.render(
 					</EthProvider>
 				</InterfaceChecker>
 			</CRT>
-		</ErrorProvider>
+		</MessageProvider>
 	</React.StrictMode>
 );

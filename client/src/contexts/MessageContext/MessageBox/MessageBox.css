@@ -1,0 +1,35 @@
+/* --- Container ---------------------------------------------------------------------------------------------------- */
+.message-box {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: stretch;
+	gap: 7px;
+	padding: 10px 15px;
+
+}
+
+.message-box.success { background: green; }
+.message-box.info { background: dodgerblue; }
+.message-box.warn { background: orangered; }
+.message-box.error { background: var(--red-color); }
+
+/* --- Box bottom --------------------------------------------------------------------------------------------------- */
+.message-box .message-box-bottom {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+	font-size: 0.8em;
+}
+
+/* -- Message code */
+.message-box .message-box-bottom .message-code { color: rgba(0, 0, 0, 0.75); }
+
+/* -- Message close */
+.message-box .message-box-bottom .message-close {
+	margin-left: 15px;
+	font-style: italic;
+	cursor: pointer;
+}
+.message-box .message-box-bottom .message-close:hover { text-decoration: underline; }

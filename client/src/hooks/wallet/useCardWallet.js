@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
-import { useErrors } from "../../contexts/ErrorContext";
+import { useMessages } from "../../contexts/MessageContext";
 import { useEth } from "../../contexts/EthContext";
 
 function useCardWallet() {
 	/* ---- Contexts -------------------------------- */
-	const errors = useErrors();
+	const messages = useMessages();
 	const { state: { account, contracts: {cardMarket} } } = useEth();
 
 	/* ---- States ---------------------------------- */
@@ -23,7 +23,7 @@ function useCardWallet() {
 					};
 					setWallet(wallet);
 				}
-			} catch (err) { errors.add(err, true); }
+			} catch (err) { messages.addError(err, true); }
 		};
 
 		// Fetch the wallet once and start an event listener.
