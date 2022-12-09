@@ -4,14 +4,13 @@ import useCards from "../../hooks/cards/useCards.js";
 import useContractBalance from "../../hooks/contractBalance/useContractBalance.js";
 import Loader from "../../components/Loader/Loader.jsx";
 import Inputs from "../../components/Inputs";
-import "./AdminCorner.css";
 
 function AdminCorner() {
 	/* ---- Contexts -------------------------------- */
-	const { state: { contract, account } } = useEth();
+	const { state: { contracts: {ticketFactory}, account } } = useEth();
 	const tickets = useTickets();
 	const cards = useCards();
-	const contractBalance = useContractBalance(contract);
+	const contractBalance = useContractBalance(ticketFactory);
 
 	/* ---- Functions ------------------------------- */
 	const onPriceChange = price => {
@@ -56,7 +55,7 @@ function AdminCorner() {
 					<h2 className="inner-page-section-title">Transfert de fonds</h2>
 
 					<div className="inner-page-section-body">
-						{!contractBalance.loaded ? <Loader/> : (
+						{!contractBalance.loaded ? <Loader centered/> : (
 							<>
 								<p className="inner-page-section-data">Balance : {contractBalance.balance} ETH</p>
 

@@ -39,8 +39,7 @@ function useTickets() {
 		try {
 			if (ticketFactory) {
 				// noinspection JSUnresolvedFunction
-				const requestId = await ticketFactory.methods.getPrice(points).send({ from: account });
-				setRequestId(requestId);
+				await ticketFactory.methods.getPrice(points).send({ from: account });
 			}
 		} catch (err) { errors.add(err, true); }
 	};
@@ -73,14 +72,32 @@ function useTickets() {
 		};
 	}, [ticketFactory, account, getStandardPrice]);
 
+	// Listen for a request id
+	useEffect(() => {
+		// Start an event listener.
+		let requestedPriceListener = null;
+		if (ticketFactory) {
+			// noinspection JSValidateTypes
+			requestedPriceListener = ticketFactory.events.TicketPriceRequested({ filter: {caller: account} }).on("data", data => {
+				setRequestId(parseInt(data.returnValues.requestId, 10));
+			});
+		}
+
+		// The event listener is stopped when this hook is unmounted.
+		return () => {
+			if (requestedPriceListener) {
+				requestedPriceListener.removeAllListeners("data");
+			}
+		};
+	}, [ticketFactory, account, requestId]);
+
 	// Listen for a requested price
 	useEffect(() => {
 		// Start an event listener.
 		let receivedPriceListener = null;
-		if (ticketFactory) {
+		if (ticketFactory && requestId) {
 			// noinspection JSValidateTypes
-			receivedPriceListener = ticketFactory.events.TicketPriceCalculated({ filter: {caller: account, requestId} }).on("data", data => {
-				setRequestId(null);
+			receivedPriceListener = ticketFactory.events.TicketPriceCalculated({ filter: {requestId, caller: account} }).on("data", data => {
 				setPrice(parseFloat(Web3.utils.fromWei(data.returnValues.price, "ether")));
 			});
 		}
@@ -89,6 +106,26 @@ function useTickets() {
 		return () => {
 			if (receivedPriceListener) {
 				receivedPriceListener.removeAllListeners("data");
+			}
+		};
+	}, [ticketFactory, account, requestId]);
+
+	// Listen for a bought ticket
+	useEffect(() => {
+		// Start an event listener.
+		let ticketBoughtListener = null;
+		if (ticketFactory) {
+			// noinspection JSValidateTypes
+			ticketBoughtListener = ticketFactory.events.BoughtTicket({ filter: {requestId, owner: account} }).on("data", () => {
+				setRequestId(null);
+				console.log("Ticket acheté");
+			});
+		}
+
+		// The event listener is stopped when this hook is unmounted.
+		return () => {
+			if (ticketBoughtListener) {
+				ticketBoughtListener.removeAllListeners("data");
 			}
 		};
 	}, [ticketFactory, account, requestId]);

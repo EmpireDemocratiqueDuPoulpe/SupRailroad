@@ -1,18 +1,25 @@
 /* --- Container ---------------------------------------------------------------------------------------------------- */
 header {
     box-sizing: border-box;
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
-    align-items: center;
     width: 100%;
     height: 5rem;
     padding: 0 0.75rem;
     background: var(--background-color⨣1);
-    overflow: hidden;
+}
+body.crt-mode header { border-bottom: 3px var(--primary-border-color) solid; }
+
+/* -- Overflow */
+header, header div.no-overflow {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
 }
 
-body.crt-mode header { border-bottom: 3px var(--primary-border-color) solid; }
+header div.no-overflow {
+    align-self: stretch;
+    overflow: hidden;
+}
 
 /* -- User account */
 header .user-account { margin-left: auto; }

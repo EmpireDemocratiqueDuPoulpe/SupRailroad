@@ -27,22 +27,27 @@ function ErrorProvider({ limit, children }) {
 	};
 
 	const getRPCError = err => {
-		// Parse the RPC string
-		const openPos = err.stack.indexOf("{");
-		const closePos = err.stack.lastIndexOf("}");
-		const parsedJSON = JSON.parse(err.stack.substring(openPos, closePos + 1));
+		try {
+			// Parse the RPC string
+			const openPos = err.stack.indexOf("{");
+			const closePos = err.stack.lastIndexOf("}");
+			const parsedJSON = JSON.parse(err.stack.substring(openPos, closePos + 1));
 
-		// Flatten the data object
-		let data = {};
-		Object.entries(parsedJSON.data).forEach(([k, v]) => {
-			if (Object.prototype.hasOwnProperty.call(v, "reason")) {
-				data = { ...data, ...v };
-			} else data[k] = v;
-		});
-		parsedJSON.data = data;
+			// Flatten the data object
+			let data = {};
+			Object.entries(parsedJSON.data).forEach(([k, v]) => {
+				if (Object.prototype.hasOwnProperty.call(v, "reason")) {
+					data = { ...data, ...v };
+				} else data[k] = v;
+			});
+			parsedJSON.data = data;
 
-		// Return the parsed error
-		return parsedJSON;
+			// Return the parsed error
+			return parsedJSON;
+		} catch (parseErr) {
+			console.error(`Cannot parse the RPC error (${parseErr.message}):\n${err}`);
+			return { code: -1, data: {reason: `${err}`} };
+		}
 	};
 
 	const delError = errId => {
