@@ -45,8 +45,8 @@ function EthProvider({ children }) {
 		const tryInit = async () => {
 			try {
 				const ticketFactory = await import("../../contracts/TicketFactory.json");
-				const cardFactory = await import("../../contracts/CardFactory.json");
-				await init([ {name: "ticketFactory", build: ticketFactory}, {name: "cardFactory", build: cardFactory} ]);
+				const cardMarket = await import("../../contracts/CardMarket.json");
+				await init([ {name: "ticketFactory", build: ticketFactory}, {name: "cardMarket", build: cardMarket} ]);
 			} catch (err) { console.error(err); }
 		};
 

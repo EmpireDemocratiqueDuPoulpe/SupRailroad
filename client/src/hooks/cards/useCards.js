@@ -3,30 +3,31 @@ import { useEth } from "../../contexts/EthContext";
 
 function useCards() {
 	const errors = useErrors();
-	const { state: { account, contracts: {cardFactory} } } = useEth();
+	const { state: { account, contracts: {cardMarket} } } = useEth();
 
 	const createCard = async (price, discountPercent, name, imageURI, description) => {
 		try {
-			if (cardFactory) {
+			if (cardMarket) {
 				// noinspection JSUnresolvedFunction
-				await cardFactory.methods.createCard(price, discountPercent, name, imageURI, description).send({ from: account });
+				await cardMarket.methods.createCard(price, discountPercent, name, imageURI, description).send({ from: account });
 			}
 		} catch (err) { errors.add(err, true); }
 	};
 
-	const approveCard = async (to, cardId) => {
+	const approveCard = async (target, cardId) => {
 		try {
-			if (cardFactory) {
+			if (cardMarket) {
 				// noinspection JSUnresolvedFunction
-				await cardFactory.methods.setApproval(to, cardId).send({ from: account });
+				await cardMarket.methods.setApproval(target, cardId).send({ from: account });
 			}
 		} catch (err) { errors.add(err, true); }
 	};
 
-	const retrieveCard = async (from, to, cardId) => {
+	const retrieveCard = async (owner, target, cardId) => {
 		try {
-			if (cardFactory) {
-				await cardFactory.methods.transferCard(from, to, cardId).send({ from :account });
+			if (cardMarket) {
+				// noinspection JSUnresolvedFunction
+				await cardMarket.methods.transferCard(owner, target, cardId).send({ from: account });
 			}
 		} catch (err) { errors.add(err, true); }
 	};

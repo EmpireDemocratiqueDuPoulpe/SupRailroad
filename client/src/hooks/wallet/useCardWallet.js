@@ -5,7 +5,7 @@ import { useEth } from "../../contexts/EthContext";
 function useCardWallet() {
 	/* ---- Contexts -------------------------------- */
 	const errors = useErrors();
-	const { state: { account, contracts: {cardFactory} } } = useEth();
+	const { state: { account, contracts: {cardMarket} } } = useEth();
 
 	/* ---- States ---------------------------------- */
 	const [wallet, setWallet] = useState({});
@@ -15,10 +15,11 @@ function useCardWallet() {
 		// Fetch the new wallet and update the hook state.
 		const update = async () => {
 			try {
-				if (cardFactory) {
+				if (cardMarket) {
+					// noinspection JSUnresolvedFunction
 					const wallet = {
-						cards: await cardFactory.methods.getCards().call({ from: account }),
-						approvedCards: await cardFactory.methods.getUserApprovals().call({ from: account })
+						cards: await cardMarket.methods.getCards().call({ from: account }),
+						approvedCards: await cardMarket.methods.getApprovals().call({ from: account })
 					};
 					setWallet(wallet);
 				}
@@ -27,10 +28,10 @@ function useCardWallet() {
 
 		// Fetch the wallet once and start an event listener.
 		let cardBoughtListener = null;
-		if (cardFactory) {
+		if (cardMarket) {
 			update().catch(console.error);
 			// noinspection JSValidateTypes
-			cardBoughtListener = cardFactory.events.BoughtCard({ filter: {owner: account} }).on("data", update);
+			cardBoughtListener = cardMarket.events.BoughtCard({ filter: {owner: account} }).on("data", update);
 		}
 
 		// The event listener is stopped when this hook is unmounted.
@@ -40,7 +41,7 @@ function useCardWallet() {
 			}
 		};
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [cardFactory, account]);
+	}, [cardMarket, account]);
 
 	/* ---- Expose hook ----------------------------- */
 	return wallet;

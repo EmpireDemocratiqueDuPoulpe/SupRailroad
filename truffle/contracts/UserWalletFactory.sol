@@ -2,7 +2,6 @@ pragma solidity ^0.8.0;
 // SPDX-License-Identifier: UNLICENSED
 
 import "./TicketFactory.sol";
-import "./CardFactory.sol";
 
 contract UserWalletFactory {
     constructor() {}
