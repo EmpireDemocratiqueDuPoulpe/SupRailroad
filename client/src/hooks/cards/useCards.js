@@ -23,10 +23,10 @@ function useCards() {
 		} catch (err) { errors.add(err, true); }
 	};
 
-	const retrieveCard = async (to, cardId) => {
+	const retrieveCard = async (from, to, cardId) => {
 		try {
 			if (cardFactory) {
-				await cardFactory.methods.transferCard(to, cardId).send({ from :account });
+				await cardFactory.methods.transferCard(from, to, cardId).send({ from :account });
 			}
 		} catch (err) { errors.add(err, true); }
 	};

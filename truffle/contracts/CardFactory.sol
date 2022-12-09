@@ -33,7 +33,8 @@ contract CardFactory is ERC721, Administrable {
     mapping (address => Card[]) private userToCards;
 
     /// Events
-    event BoughtCard(address owner, uint256 cardId);
+    event BoughtCard(address indexed owner, uint256 indexed cardId);
+    event TransferCard(address indexed owner, uint256 indexed cardId);
 
     /// Modifiers
     modifier isOwnerOf(uint256 cardId) {
@@ -72,13 +73,44 @@ contract CardFactory is ERC721, Administrable {
 
         Card memory card = userToCards[from][cardId];
         Card memory newCard = Card(card.cardId, card.price, card.discountPercent, to, address(0), card.name, card.imagePath, card.description, false);
-        userToCards[to][cardId].push(newCard);
-        delete userToCards[from][cardId]; // Delete the card from the old owner
 
-        uint256[] memory newApprovals;
-        for (uint i = 0; j < userApprovals[to].length; i++) {
-            if (ownerCards[j].cardId != id) {
-                newApprovals.push(cardId);
+        //Card[] memory newCards = new Card[](userToCards[from].length - 1);
+        //uint256 currentIndex = 0;
+        //for (uint i = 0; i < userToCards[from].length; i++) {
+        //    if (userToCards[from][i].cardId != cardId) {
+        //        newCards[currentIndex] = userToCards[from][i];
+        //        currentIndex++;
+        //    }
+        //}
+        //userToCards[from] = newCards;
+
+        Card[] storage fromCards = userToCards[from];
+        for (uint256 i = 0; i < userToCards[from].length; i++) {
+            if (userToCards[from][i].cardId == cardId) {
+                delete fromCards[i];
+                break;
+            }
+        }
+
+        uint256 offset = 0;
+        for (uint256 i = 0; i < userToCards[from].length; i++) {
+            if (offset > 0) {
+                userToCards[from][i - offset] = userToCards[from][i];
+            }
+            if (userToCards[from][i].discountPercent == 0) {
+                offset++;
+            }
+        }
+        userToCards[from].pop();
+
+        userToCards[to].push(newCard);
+
+        uint256[] memory newApprovals = new uint256[](userApprovals[to].length - 1);
+        uint256 currentIndex = 0;
+        for (uint256 i = 0; i < userApprovals[to].length; i++) {
+            if (userApprovals[to][i] != cardId) {
+                newApprovals[currentIndex] = cardId;
+                currentIndex++;
             }
         }
         userApprovals[to] = newApprovals;

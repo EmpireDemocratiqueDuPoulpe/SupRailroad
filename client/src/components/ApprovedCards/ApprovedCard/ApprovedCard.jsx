@@ -8,7 +8,7 @@ function ApprovedCard({ id, name, description, discount, approvedTo, from }) {
 
 	/* ---- Functions ------------------------------- */
 	const confirmRetrieval = () => {
-		cards.retrieve(approvedTo, id).catch(console.error);
+		cards.retrieve(from, approvedTo, id).catch(console.error);
 	};
 
 	return (
