@@ -6,6 +6,7 @@ import Inputs from "../../components/Inputs";
 import Map from "../../components/Map/Map.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
+import "./TravelPlanner.css";
 
 function DynamicSections() {
 	/* ---- Contexts -------------------------------- */
@@ -49,14 +50,26 @@ function DynamicSections() {
 			</ProgressiveSection>
 
 			<ProgressiveSection idx={1} title="Tracez votre route (et marchez à l'ombre svp) :">
-				<Map onPointsChange={handlePointsChange}/>
+				<div className="travel-map">
+					<Map onPointsChange={handlePointsChange}/>
+				</div>
 
-				<p>&Eacute;tapes : {points.length}</p>
-				<p>Distance : {distance}</p>
-				<button onClick={calcTicketPrice}>Calculer le prix</button>
-				<button onClick={buyTicket} disabled={!tickets.currentPrice}>
-					Acheter un ticket {tickets.currentPrice && <>({tickets.currentPrice} ETH)</>}
-				</button>
+				<div className="travel-data">
+					<h3>Votre voyage</h3>
+
+					<div>
+						<p>{points.length ? (<>&Eacute;tapes : {points.length}</>) : "Cliquez sur la carte afin d'ajouter une étape."}</p>
+						<p>Distance : {distance}</p>
+					</div>
+
+					<button onClick={calcTicketPrice}>Calculer le prix</button>
+
+					<div className="travel-price">
+						<button onClick={buyTicket} disabled={!tickets.currentPrice}>
+							Acheter un ticket {tickets.currentPrice && <>({tickets.currentPrice} ETH)</>}
+						</button>
+					</div>
+				</div>
 			</ProgressiveSection>
 
 			<ProgressiveSection idx={2} title="Faites vos valises !">

@@ -8,7 +8,7 @@ function ProgressiveSection({ className, idx, title, inline, children }) {
 
 	/* ---- Page content ---------------------------- */
 	return (
-		<div className={`progressive-sections section${inline ? " inlined" : ""}${!progressiveSections.isStep(idx) ? " hidden" : ""} ${className}`}>
+		<div className={`progressive-sections section${inline ? " inlined" : ""} ${!progressiveSections.isStep(idx) ? "hidden" : "shown"} ${className ?? ""}`}>
 			<h2 className="section-title"><span className="section-index">{idx + 1}.</span> {title}</h2>
 
 			<div className="section-body">

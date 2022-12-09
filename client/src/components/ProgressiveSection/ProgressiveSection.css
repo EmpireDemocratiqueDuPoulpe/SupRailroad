@@ -10,7 +10,9 @@
     -webkit-user-select: none;
     user-select: none;
 }
-.progressive-sections.section.hidden ~ .progressive-sections.section.hidden { opacity: 0; }
+.progressive-sections.section.shown ~ .progressive-sections.section.hidden ~ .progressive-sections.section.hidden { opacity: 0; }
+
+.progressive-sections.section.shown ~ .progressive-sections.section.hidden .section-body { opacity: 0; }
 
 /* - Inlined */
 .progressive-sections.section.inlined {

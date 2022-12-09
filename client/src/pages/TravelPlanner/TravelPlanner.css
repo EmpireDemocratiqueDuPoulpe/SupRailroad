@@ -1,0 +1,26 @@
+/* ---- Page container ---------------------------------------------------------------------------------------------- */
+.TravelPlanner-page { padding: 0 15vw !important; }
+
+/* ---- Travel map -------------------------------------------------------------------------------------------------- */
+.TravelPlanner-page .travel-map { flex-shrink: 0; }
+
+/* ---- Travel data ------------------------------------------------------------------------------------------------- */
+.TravelPlanner-page .travel-data {
+	flex: 1;
+	padding: 0 20px;
+}
+
+/* -- Travel data title */
+.TravelPlanner-page .travel-data h3 {
+	box-sizing: border-box;
+	display: inline-block;
+	width: 100%;
+	margin: 0 0 0.5em 0;
+	padding: 5px 40px 5px 10px;
+	background: var(--primary-color);
+	color: var(--text-color_background);
+	border-radius: 5px;
+}
+
+.TravelPlanner-page .travel-data p { margin-bottom: 0; }
+.TravelPlanner-page .travel-data p:not(:first-child) { margin-top: 0.25em; }
