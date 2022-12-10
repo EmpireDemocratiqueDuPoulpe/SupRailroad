@@ -48,15 +48,15 @@ body.crt-mode {
   --primary-border-color: #26F087;
 }
 
-/* -- Special classes */
-/* - Link */
+/* ---- Special classes --------------------------------------------------------------------------------------------- */
+/* -- Link */
 .link {
   color: var(--text-color_background);
   text-decoration: none;
 }
 .link:hover { color: var(--secondary-color); }
 
-/* - Back link */
+/* -- Back link */
 .back-link {
   margin: 0;
   padding: 0;
@@ -73,5 +73,10 @@ body.crt-mode {
 
 body.crt-mode .back-link { color: var(--primary-color); }
 
-/* - Event killers */
+/* -- Event killers */
 .no-event { cursor: auto !important; }
+
+/* -- Emphasis */
+.emphasis {
+  font-weight: bold;
+}

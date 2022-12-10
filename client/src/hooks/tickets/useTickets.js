@@ -3,7 +3,7 @@ import Web3 from "web3";
 import { useMessages } from "../../contexts/MessageContext";
 import { useEth } from "../../contexts/EthContext";
 
-function useTickets() {
+function useTickets({ onTicketBought } = {}) {
 	/* ---- Contexts -------------------------------- */
 	const messages = useMessages();
 	const { state: { account, contracts: {ticketFactory} } } = useEth();
@@ -119,6 +119,10 @@ function useTickets() {
 			ticketBoughtListener = ticketFactory.events.BoughtTicket({ filter: {requestId, owner: account} }).on("data", () => {
 				setRequestId(null);
 				messages.addSuccess("Achat validé : Bon voyage !");
+
+				if (onTicketBought) {
+					onTicketBought();
+				}
 			});
 		}
 
@@ -128,7 +132,7 @@ function useTickets() {
 				ticketBoughtListener.removeAllListeners("data");
 			}
 		};
-	}, [ticketFactory, account, requestId, messages]);
+	}, [ticketFactory, account, requestId, messages, onTicketBought]);
 
 	/* ---- Expose hook ----------------------------- */
 	return { standardPrice, setStandardPrice: changeStandardPrice, currentPrice: price, requestPrice: getPrice, buy: buyTicket };
