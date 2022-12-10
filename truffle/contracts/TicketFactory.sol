@@ -21,6 +21,7 @@ contract TicketFactory is UserWalletFactory, Administrable, OracleLinked, Balanc
         uint256 standardPrice;
         uint256 distance;
         uint256 price;
+        string[] types;
     }
 
     struct Coordinate {
@@ -31,6 +32,7 @@ contract TicketFactory is UserWalletFactory, Administrable, OracleLinked, Balanc
     struct Ticket {
         address owner;
         string name;
+        string[] types;
         // Coordinate[] points; // See ISSUE 01
         uint256 distance;
     }
@@ -42,7 +44,7 @@ contract TicketFactory is UserWalletFactory, Administrable, OracleLinked, Balanc
 
     /// Events
     event TicketPriceChanged(uint256 newPrice);
-    event TicketPriceRequested(uint256 requestId, address indexed caller, Coordinate[] points);
+    event TicketPriceRequested(uint256 requestId, address indexed caller, string[] types, Coordinate[] points);
     event TicketPriceCalculated(uint256 indexed requestId, address indexed caller, uint256 price);
     event BoughtTicket(uint256 indexed requestId, address indexed owner);
 
@@ -51,15 +53,15 @@ contract TicketFactory is UserWalletFactory, Administrable, OracleLinked, Balanc
         return ticketPrice;
     }
 
-    function getPrice(Coordinate[] calldata _points) external {
+    function getPrice(string[] calldata _types, Coordinate[] calldata _points) external {
         uint256 requestId = super._addRequest();
-        emit TicketPriceRequested(requestId, msg.sender, _points);
+        emit TicketPriceRequested(requestId, msg.sender, _types, _points);
     }
 
-    function setCalculatedPrice(uint256 _requestId, address _caller, uint256 _standardPrice, uint256 _distance, uint256 _price) public validRequestId(_requestId) mustBeOracle {
+    function setCalculatedPrice(uint256 _requestId, address _caller, uint256 _standardPrice, uint256 _distance, uint256 _price, string[] calldata _types) public validRequestId(_requestId) mustBeOracle {
         super._removeRequest(_requestId);
         // callerToPriceRequest[_caller] = PriceRequest(true, _points, _standardPrice, _distance, _price); // See ISSUE 01
-        callerToPriceRequest[_caller] = PriceRequest(true, _requestId, _standardPrice, _distance, _price);
+        callerToPriceRequest[_caller] = PriceRequest(true, _requestId, _standardPrice, _distance, _price, _types);
 
         emit TicketPriceCalculated(_requestId, _caller, _price);
     }
@@ -79,14 +81,14 @@ contract TicketFactory is UserWalletFactory, Administrable, OracleLinked, Balanc
 
         delete callerToPriceRequest[msg.sender];
         // Ticket storage ticket = _createTicket(msg.sender, "Bonjour", request.points, request.distance); // See ISSUE 01
-        Ticket memory ticket = _createTicket(msg.sender, "Bonjour", request.distance);
+        Ticket memory ticket = _createTicket(msg.sender, "Bonjour", request.types, request.distance);
 
         emit BoughtTicket(request.id, ticket.owner);
     }
 
-    function _createTicket(address _owner, string memory _name, uint256 _distance) private returns(Ticket memory) {
+    function _createTicket(address _owner, string memory _name, string[] memory _types, uint256 _distance) private returns(Ticket memory) {
         // Ticket storage ticket = super._addTicket(_owner, Ticket(_owner, _name, new Coordinate[](_points.length), _distance)); // See ISSUE 01
-        Ticket memory ticket = Ticket(_owner, _name, _distance);
+        Ticket memory ticket = Ticket(_owner, _name, _types, _distance);
         super._addTicket(_owner, ticket);
 
         // for(uint i = 0; i < _points.length; i++) { // See ISSUE 01

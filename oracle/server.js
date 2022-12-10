@@ -92,7 +92,7 @@ async function processRequest(request, ticketContract) {
 	try {
 		// noinspection JSUnresolvedFunction
 		await sendWithEstimatedGas(
-			ticketContract.methods.setCalculatedPrice(request.requestId, request.caller, standardPrice, (distance * constants.FLOAT_FACTOR).toFixed(), `${price}`),
+			ticketContract.methods.setCalculatedPrice(request.requestId, request.caller, standardPrice, (distance * constants.FLOAT_FACTOR).toFixed(), `${price}`, request.data.types),
 			{ from: process.env.ACCOUNT }
 		);
 		console.log(`Price calculated ${`(caller: "${request.caller}", requestId: ${request.requestId})`.grey}`);

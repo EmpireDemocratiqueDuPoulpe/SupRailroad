@@ -22,7 +22,7 @@ function Wallet() {
 						<h2 className="collection-title">Tickets</h2>
 						{!wallet.tickets.length ? <p className="empty-collection">Vous ne possédez aucun ticket.</p> : (
 							<div>
-								{wallet.tickets.map((ticket, idx) => <Ticket key={`ticket-${account}-${idx}`} id={idx} types={["bus", "train", "subway"]} {...ticket}/>)}
+								{wallet.tickets.map((ticket, idx) => <Ticket key={`ticket-${account}-${idx}`} id={idx} {...ticket}/>)}
 							</div>
 						)}
 					</div>
