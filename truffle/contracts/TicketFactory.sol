@@ -81,7 +81,7 @@ contract TicketFactory is UserWalletFactory, Administrable, OracleLinked, Balanc
 
         delete callerToPriceRequest[msg.sender];
         // Ticket storage ticket = _createTicket(msg.sender, "Bonjour", request.points, request.distance); // See ISSUE 01
-        Ticket memory ticket = _createTicket(msg.sender, "Bonjour", request.types, request.distance);
+        Ticket memory ticket = _createTicket(msg.sender, "Ticket", request.types, request.distance);
 
         emit BoughtTicket(request.id, ticket.owner);
     }
