@@ -132,7 +132,8 @@ function useTickets({ onTicketBought } = {}) {
 				ticketBoughtListener.removeAllListeners("data");
 			}
 		};
-	}, [ticketFactory, account, requestId, messages, onTicketBought]);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [ticketFactory, account, requestId]);
 
 	/* ---- Expose hook ----------------------------- */
 	return { standardPrice, setStandardPrice: changeStandardPrice, currentPrice: price, requestPrice: getPrice, buy: buyTicket };
