@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useProgressiveSections, ProgressiveSectionsProvider } from "../../contexts/ProgressiveSectionsContext";
 import useTickets from "../../hooks/tickets/useTickets.js";
 import ProgressiveSection from "../../components/ProgressiveSection/ProgressiveSection.jsx";
@@ -6,11 +7,13 @@ import Inputs from "../../components/Inputs";
 import Map from "../../components/Map/Map.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
+import "./TravelPlanner.css";
 
 function DynamicSections() {
 	/* ---- Contexts -------------------------------- */
 	const progressiveSections = useProgressiveSections();
-	const tickets = useTickets();
+	const tickets = useTickets({ onTicketBought: progressiveSections.nextStep });
+	const navigate = useNavigate();
 
 	/* ---- States ---------------------------------- */
 	const [travelTypes, setTravelTypes] = useState(/** @type {Array<string>} */ []);
@@ -25,13 +28,8 @@ function DynamicSections() {
 		setDistance(distance ?? "");
 	};
 
-	const calcTicketPrice = async () => {
-		tickets.requestPrice(points).catch(console.error);
-	};
-
-	const buyTicket = async () => {
-		tickets.buy().catch(console.error);
-	};
+	const calcTicketPrice = () => { tickets.requestPrice(travelTypes, points).catch(console.error); };
+	const buyTicket = () => { tickets.buy().catch(console.error); };
 
 	/* ---- Page content ---------------------------- */
 	return (
@@ -43,23 +41,37 @@ function DynamicSections() {
 					<Inputs.SubButton label="Train" value="train"/>
 				</Inputs.MultipleButton>
 
-				<button onClick={() => progressiveSections.nextStep()} disabled={!travelTypes.length}>
+				<button onClick={progressiveSections.nextStep} disabled={!travelTypes.length}>
 					<FontAwesomeIcon icon={solid("check")}/>
 				</button>
 			</ProgressiveSection>
 
 			<ProgressiveSection idx={1} title="Tracez votre route (et marchez à l'ombre svp) :">
-				<Map onPointsChange={handlePointsChange}/>
+				<div className="travel-map">
+					<Map onPointsChange={handlePointsChange}/>
+				</div>
 
-				<p>&Eacute;tapes : {points.length}</p>
-				<p>Distance : {distance}</p>
-				<button onClick={calcTicketPrice}>Calculer le prix</button>
-				<button onClick={buyTicket} disabled={!tickets.currentPrice}>
-					Acheter un ticket {tickets.currentPrice && <>({tickets.currentPrice} ETH)</>}
-				</button>
+				<div className="travel-data">
+					<h3>Votre voyage</h3>
+
+					<div className="travel-data-content">
+						<p>{points.length ? (<>&Eacute;tapes : {points.length}</>) : "Cliquez sur la carte afin d'ajouter une étape."}</p>
+						<p>Distance : {distance}</p>
+					</div>
+
+					<div className="travel-actions">
+						<button onClick={calcTicketPrice} disabled={points.length < 2}>Calculer le prix</button>
+
+						<div className={`travel-price ${tickets.currentPrice ? "shown" : "hidden"}`}>
+							<p>Votre voyage est estim&eacute; &agrave; <span className="emphasis">{tickets.currentPrice} ETH</span>.</p>
+							<button onClick={buyTicket} disabled={!tickets.currentPrice}>Acheter un ticket</button>
+						</div>
+					</div>
+				</div>
 			</ProgressiveSection>
 
 			<ProgressiveSection idx={2} title="Faites vos valises !">
+				<button onClick={() => navigate(0)}>Acheter un autre ticket</button>
 			</ProgressiveSection>
 		</div>
 	);

@@ -27,6 +27,12 @@ function Map({ onPointsChange }) {
 	const [geoJSON, setGeoJSON] = useState({ type: "FeatureCollection", features: [] });
 
 	/* ---- Functions ------------------------------- */
+	const handlePointChange = useCallback((points, distance) => {
+		if (onPointsChange) {
+			onPointsChange(points, distance ?? lineDistance(null));
+		}
+	}, [onPointsChange]);
+
 	const onMapLoad = useCallback(() => {
 		const mapInstance = mapRef.current.getMap();
 
@@ -37,7 +43,9 @@ function Map({ onPointsChange }) {
 			"\n", {},
 			[ "get", "name_en" ], { "font-scale": 0.8, "text-font": ["literal", ["DIN Offc Pro Italic", "Arial Unicode MS Regular"]] }
 		]);
-	}, []);
+
+		handlePointChange([], null);
+	}, [handlePointChange]);
 
 	const onMapClick = useCallback(event => {
 		const mapInstance = mapRef.current.getMap();
@@ -72,9 +80,9 @@ function Map({ onPointsChange }) {
 		// Notify the listener
 		if (onPointsChange) {
 			const points = currentGeoJSON.features.filter(f => f.geometry.type === "Point").map(f => f.geometry.coordinates);
-			onPointsChange(points, distance);
+			handlePointChange(points, distance);
 		}
-	}, [geoJSON, onPointsChange]);
+	}, [geoJSON, onPointsChange, handlePointChange]);
 
 	/* ---- Page content ---------------------------- */
 	return (

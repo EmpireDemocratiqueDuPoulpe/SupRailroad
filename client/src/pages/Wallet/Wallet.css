@@ -27,3 +27,12 @@ body.crt-mode .Wallet-page .collection-box .empty-collection {
 	color: var(--primary-color);
 	opacity: 0.5;
 }
+
+/* -- Collection content */
+.Wallet-page .collection-box .collection-content {
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-start;
+	align-items: center;
+	gap: 10px;
+}

@@ -2,8 +2,8 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { MessageProvider } from "./contexts/MessageContext";
+import { CRTProvider } from "./contexts/CRTContext";
 import { EthProvider } from "./contexts/EthContext";
-import CRT from "./components/CRT/CRT.jsx";
 import InterfaceChecker from "./components/InterfaceChecker/InterfaceChecker.jsx";
 import Root from "./pages/Root/Root.jsx";
 import ErrorPage from "./pages/Error/ErrorPage.jsx";
@@ -27,13 +27,13 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
 	<React.StrictMode>
 		<MessageProvider>
-			<CRT enabled={false}>
+			<CRTProvider enabled={false}>
 				<InterfaceChecker>
 					<EthProvider>
 						<RouterProvider router={router}/>
 					</EthProvider>
 				</InterfaceChecker>
-			</CRT>
+			</CRTProvider>
 		</MessageProvider>
 	</React.StrictMode>
 );

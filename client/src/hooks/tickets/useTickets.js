@@ -3,7 +3,7 @@ import Web3 from "web3";
 import { useMessages } from "../../contexts/MessageContext";
 import { useEth } from "../../contexts/EthContext";
 
-function useTickets() {
+function useTickets({ onTicketBought } = {}) {
 	/* ---- Contexts -------------------------------- */
 	const messages = useMessages();
 	const { state: { account, contracts: {ticketFactory} } } = useEth();
@@ -35,11 +35,11 @@ function useTickets() {
 		} catch (err) { messages.addError(err, true); }
 	};
 
-	const getPrice = async points => {
+	const getPrice = async (types, points) => {
 		try {
 			if (ticketFactory) {
 				// noinspection JSUnresolvedFunction
-				await ticketFactory.methods.getPrice(points).send({ from: account });
+				await ticketFactory.methods.getPrice(types, points).send({ from: account });
 			}
 		} catch (err) { messages.addError(err, true); }
 	};
@@ -119,6 +119,10 @@ function useTickets() {
 			ticketBoughtListener = ticketFactory.events.BoughtTicket({ filter: {requestId, owner: account} }).on("data", () => {
 				setRequestId(null);
 				messages.addSuccess("Achat validé : Bon voyage !");
+
+				if (onTicketBought) {
+					onTicketBought();
+				}
 			});
 		}
 
@@ -128,7 +132,8 @@ function useTickets() {
 				ticketBoughtListener.removeAllListeners("data");
 			}
 		};
-	}, [ticketFactory, account, requestId, messages]);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [ticketFactory, account, requestId]);
 
 	/* ---- Expose hook ----------------------------- */
 	return { standardPrice, setStandardPrice: changeStandardPrice, currentPrice: price, requestPrice: getPrice, buy: buyTicket };
