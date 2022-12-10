@@ -17,6 +17,7 @@ contract CardMarket is ERC721, Administrable, CardFactory {
 
     /// Mappings
     mapping (address => uint256[]) private userApprovals;
+    uint256[] private onSaleCards;
 
     /// Events
     event BoughtCard(address indexed owner, uint256 indexed cardId);
@@ -41,6 +42,7 @@ contract CardMarket is ERC721, Administrable, CardFactory {
 
         // Return its id
         cardCounter.increment();
+        onSaleCards.push(newCardId);
         return newCardId;
     }
 
@@ -105,6 +107,19 @@ contract CardMarket is ERC721, Administrable, CardFactory {
         userApprovals[_target] = newApprovals;
 
         emit TransferredCard(_target, _cardId);
+    }
+
+    function getAllOnSale() public view returns (CardFactory.Card[] memory) {
+        Card[] memory saleCards = new Card[](onSaleCards.length);
+
+        for (uint256 i = 0; i < onSaleCards.length; i++) {
+            address cardOwner = super.ownerOf(onSaleCards[i]);
+            Card memory card = super._getCardById(cardOwner, onSaleCards[i]);
+
+            saleCards[i] = card;
+        }
+
+        return saleCards;
     }
 
     // Functions - Overrides
