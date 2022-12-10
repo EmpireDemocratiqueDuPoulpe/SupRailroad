@@ -21,7 +21,7 @@ function Wallet() {
 					<div className="collection-box">
 						<h2 className="collection-title">Tickets</h2>
 						{!wallet.tickets.length ? <p className="empty-collection">Vous ne possédez aucun ticket.</p> : (
-							<div>
+							<div className="collection-content">
 								{wallet.tickets.map((ticket, idx) => <Ticket key={`ticket-${account}-${idx}`} id={idx} {...ticket}/>)}
 							</div>
 						)}
@@ -30,7 +30,7 @@ function Wallet() {
 					<div className="collection-box">
 						<h2 className="collection-title">Cartes de r&eacute;duction</h2>
 						{!cardWallet.cards?.length ? <p className="empty-collection">Vous ne possédez aucune carte de r&eacute;duction.</p> : (
-							<div>
+							<div className="collection-content">
 								{cardWallet.cards.map((card, idx) => <Card key={`card-${account}-${idx}`} id={card.cardId} {...card}/>)}
 							</div>
 						)}
@@ -39,7 +39,7 @@ function Wallet() {
 					<div className="collection-box">
 						<h2 className="collection-title">Cartes de r&eacute;duction approuvées</h2>
 						{!cardWallet.approvedCards?.length ? <p className="empty-collection">Vous ne possédez aucune carte de r&eacute;duction en attente de récupération.</p> : (
-							<div>
+							<div className="collection-content">
 								<ApprovedCards>
 									{cardWallet.approvedCards.map((approvedCard, idx) => (
 										<ApprovedCard key={`approved-card-${account}-${idx}`}
