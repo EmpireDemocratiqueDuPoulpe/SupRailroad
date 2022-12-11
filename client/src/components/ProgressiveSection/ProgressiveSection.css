@@ -1,5 +1,8 @@
 /* ---- Container --------------------------------------------------------------------------------------------------- */
-.progressive-sections.section { --title-size: 1.5em; }
+.progressive-sections.section {
+    --title-size: 1.5em;
+    transition: opacity 150ms ease-in-out;
+}
 
 /* - Hidden */
 .progressive-sections.section.hidden {
