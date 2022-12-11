@@ -6,7 +6,7 @@ import { CRTProvider } from "./contexts/CRTContext";
 import { EthProvider } from "./contexts/EthContext";
 import InterfaceChecker from "./components/InterfaceChecker/InterfaceChecker.jsx";
 import Root from "./pages/Root/Root.jsx";
-import ErrorPage from "./pages/Error/ErrorPage.jsx";
+import Error, { Error403, UnexpectedError } from "./pages/Errors";
 import TravelPlanner from "./pages/TravelPlanner/TravelPlanner.jsx";
 import Wallet from "./pages/Wallet/Wallet.jsx";
 import Market from "./pages/Market/Market.jsx";
@@ -15,12 +15,15 @@ import "normalize.css";
 import "./index.css";
 
 const router = createBrowserRouter([
-	{ path: "/", element: <Root/>, errorElement: <ErrorPage/>, children: [
+	{ path: "/", element: <Root/>, errorElement: <UnexpectedError/>, children: [
 		{ path: "/travel", element: <TravelPlanner/> },
 		{ path: "/wallet", element: <Wallet/> },
 		{ path: "/market", element: <Market/> },
 		{ path: "/admin", element: <AdminCorner/> },
 	]},
+	{ path: "/error", element: <Error/>, errorElement: <UnexpectedError/>, children: [
+		{ path: "/error/403", element: <Error403/> },
+	]}
 ]);
 
 const root = ReactDOM.createRoot(document.getElementById("root"));

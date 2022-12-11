@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import Web3 from "web3";
 import EthContext from "./EthContext.js";
 import { reducer, actions, initialState } from "./state.js";
+import { useMessages } from "../MessageContext";
 
 /**
  * @typedef {Object} artifact
@@ -11,6 +12,9 @@ import { reducer, actions, initialState } from "./state.js";
  */
 
 function EthProvider({ children }) {
+	/* ---- Contexts -------------------------------- */
+	const messages = useMessages();
+
 	/* ---- States ---------------------------------- */
 	const [state, dispatch] = useReducer(reducer, initialState, undefined);
 
@@ -33,11 +37,18 @@ function EthProvider({ children }) {
 					} catch (err) { console.error(err); }
 				}
 
+				let isAdmin = false;
+				if (Object.prototype.hasOwnProperty.call(contracts, "ticketFactory")) {
+					// noinspection JSUnresolvedVariable
+					isAdmin = await contracts.ticketFactory.methods.isAdmin().call({ from: account });
+				} else { messages.addError(new Error("Cannot check if the user is an administrator!")); }
+
 				dispatch({
 					type: actions.init,
-					data: { artifacts, web3, account, balance, networkID, contracts }
+					data: { artifacts, web3, account, balance, isAdmin, networkID, contracts }
 				});
 			}
+			// eslint-disable-next-line react-hooks/exhaustive-deps
 		}, []);
 
 	/* ---- Effects --------------------------------- */

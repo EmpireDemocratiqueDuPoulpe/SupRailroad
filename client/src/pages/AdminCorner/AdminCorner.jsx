@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useEth } from "../../contexts/EthContext";
 import useTickets from "../../hooks/tickets/useTickets.js";
 import useCards from "../../hooks/cards/useCards.js";
@@ -7,7 +9,8 @@ import Inputs from "../../components/Inputs";
 
 function AdminCorner() {
 	/* ---- Contexts -------------------------------- */
-	const { state: { contracts: {ticketFactory}, account } } = useEth();
+	const navigate = useNavigate();
+	const { state: { contracts: {ticketFactory}, account, isAdmin } } = useEth();
 	const tickets = useTickets();
 	const cards = useCards();
 	const contractBalance = useContractBalance(ticketFactory);
@@ -18,12 +21,23 @@ function AdminCorner() {
 	};
 
 	const createCard = () => {
-		cards.create(10, 20, "Test card", "image_path", "Test card description");
+		cards.create(10, 20, "Test card", "image_path", "Test card description").catch(console.error);
 	};
 
 	const transfertBalance = () => {
 		contractBalance.transfert(account).catch(console.error);
 	};
+
+	/* ---- Effects --------------------------------- */
+	useEffect(() => {
+		const redirectUnauthorized = () => {
+			if (!isAdmin) {
+				navigate("/error/403");
+			}
+		};
+
+		redirectUnauthorized();
+	}, [isAdmin, navigate]);
 
 	/* ---- Page content ---------------------------- */
 	return (
