@@ -1,14 +1,14 @@
 import { useNavigate, useRouteError } from "react-router-dom";
-import { eventOnElement } from "../../helpers/accessibility.js";
-import BonkImage from "../../assets/images/bonk.png";
-import BonkSound from "../../assets/sounds/bonk.mp3";
-import "./ErrorPage.css";
+import { eventOnElement } from "../../../helpers/accessibility.js";
+import BonkImage from "../../../assets/images/bonk.png";
+import BonkSound from "../../../assets/sounds/bonk.mp3";
+import "./UnexpectedError.css";
 
 // Constants
 const bonkSound = new Audio(BonkSound);
 
 // Page
-function ErrorPage() {
+function UnexpectedError() {
 	/* ---- Contexts -------------------------------- */
 	const navigate = useNavigate();
 	const error = useRouteError();
@@ -39,4 +39,4 @@ function ErrorPage() {
 	);
 }
 
-export default ErrorPage;
+export default UnexpectedError;

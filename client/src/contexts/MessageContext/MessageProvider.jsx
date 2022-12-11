@@ -2,7 +2,6 @@ import { useState } from "react";
 import PropTypes from "prop-types";
 import MessageContext from "./MessageContext.js";
 import MessageBox from "./MessageBox/MessageBox.jsx";
-import { NotImplemented } from "../../helpers/customErrors.js";
 import "./MessageProvider.css";
 
 /**
@@ -30,7 +29,7 @@ function MessageProvider({ limit, children }) {
 			const parsedErr = getRPCError(err);
 			addMessage(parsedErr.data.reason, "error", parsedErr.code);
 		} else {
-			throw new NotImplemented("Non-RPC error handling");
+			addMessage(err.message, "error", err.code);
 		}
 	};
 
