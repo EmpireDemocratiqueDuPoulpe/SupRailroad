@@ -1,3 +1,4 @@
+import Web3 from "web3";
 import { useEth } from "../../contexts/EthContext";
 import useMarket from "../../hooks/market/useMarket.js";
 import Loader from "../../components/Loader/Loader.jsx";
@@ -22,7 +23,7 @@ function Market() {
 									id={card.cardId}
 									name={card.name}
 									description={card.description}
-									price={card.price}
+									price={Web3.utils.fromWei(card.price, "ether")}
 									from={card.owner}
 									discount={card.discountPercent}/>)}
 							</div>

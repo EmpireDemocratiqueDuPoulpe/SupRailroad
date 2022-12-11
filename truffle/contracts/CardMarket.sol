@@ -34,25 +34,20 @@ contract CardMarket is ERC721, Administrable, CardFactory {
     function createCard(uint256 price, uint8 discountPercent, string calldata name, string calldata imagePath, string calldata description) external mustBeAdmin returns (uint256) {
         // Create the card
         uint256 newCardId = cardCounter.current();
-        //super._mint(msg.sender, newCardId);
-        Card memory newCard = Card(newCardId, price, discountPercent, msg.sender, address(0), name, imagePath, description, true);
-        //super._addCard(
-        //    msg.sender,
-        //    newCard
-        //);
+        onSaleCards.push(Card(newCardId, price, discountPercent, msg.sender, address(0), name, imagePath, description));
 
         // Return its id
         cardCounter.increment();
-        onSaleCards.push(newCard);
         return newCardId;
     }
 
-    function changeSaleStatus(uint256 _cardId, bool _status) external isOwnerOf(_cardId) {
-        super._updateSaleStatus(msg.sender, _cardId, _status);
+    // Functions - Cards market
+    function getSaleableCards() public view returns(CardFactory.Card[] memory) {
+        return onSaleCards;
     }
 
-    // Functions - Cards market
     function buyCard(uint256 cardId) public payable {
+        // Get the card for the sale array
         Card memory card;
         uint256 onSaleCardIndex;
         for (uint i = 0; i < onSaleCards.length; i++) {
@@ -62,16 +57,38 @@ contract CardMarket is ERC721, Administrable, CardFactory {
                 break;
             }
         }
-        uint256 cardPrice = card.price;
 
-        require(msg.value == cardPrice);
-        Card memory newCard = Card(card.cardId, card.price, card.discountPercent, msg.sender, address(0), card.name, card.imagePath, card.description, false);
+        // Add the card to the user inventory
+        require(msg.value >= card.price, "Not enough ETH!");
+        Card memory newCard = Card(card.cardId, card.price, card.discountPercent, msg.sender, address(0), card.name, card.imagePath, card.description);
         super._mint(msg.sender, newCard.cardId);
         super._addCard(msg.sender, newCard);
 
+        // Remove the card from the sale array
         _removeOnSaleCard(onSaleCardIndex);
 
         emit BoughtCard(msg.sender, newCard.cardId);
+    }
+
+    function _removeOnSaleCard(uint256 idToRemove) internal {
+        delete onSaleCards[idToRemove];
+
+        // Sort the array and truncate it
+        uint256 offset = 0;
+
+        for (uint256 idx = 0; idx < onSaleCards.length; idx++) {
+            if (offset > 0) {
+                onSaleCards[idx - offset] = onSaleCards[idx];
+            }
+
+            if (onSaleCards[idx].discountPercent == 0) {
+                offset++;
+            }
+        }
+
+        for (uint256 i = 0; i < offset; i++) {
+            onSaleCards.pop();
+        }
     }
 
     // Functions - Cards transfer
@@ -106,7 +123,7 @@ contract CardMarket is ERC721, Administrable, CardFactory {
 
         // Duplicate the transferred card
         Card memory card = super._getCardById(_owner, _cardId);
-        Card memory newCard = Card(card.cardId, card.price, card.discountPercent, _target, address(0), card.name, card.imagePath, card.description, false);
+        Card memory newCard = Card(card.cardId, card.price, card.discountPercent, _target, address(0), card.name, card.imagePath, card.description);
 
         // Delete the card from the owner inventory and add it to the new owner inventory
         super._removeCard(_owner, _cardId);
@@ -124,25 +141,6 @@ contract CardMarket is ERC721, Administrable, CardFactory {
         userApprovals[_target] = newApprovals;
 
         emit TransferredCard(_target, _cardId);
-    }
-
-    function _removeOnSaleCard(uint256 idToRemove) internal {
-        delete onSaleCards[idToRemove];
-
-        // Sort the array and truncate it
-        uint256 offset = 0;
-
-        for (uint256 idx = 0; idx < onSaleCards.length; idx++) {
-            if (offset > 0) {
-                onSaleCards[idx - offset] = onSaleCards[idx];
-            }
-
-            if (onSaleCards[idx].discountPercent == 0) {
-                offset++;
-            }
-        }
-
-        onSaleCards.pop();
     }
 
     // Functions - Overrides

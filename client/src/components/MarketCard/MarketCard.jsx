@@ -13,18 +13,16 @@ function MarketCard({ id, name, description, discount, price, imageURI }) {
 
 	return (
 		<div className="market-card">
-			<div className="market-card-inner">
-				<div className="market-card-info">
-					<div className="market-card-text">
-						<p className="market-card-name market-card-info-line">{name} - {id}</p>
-						<p className="market-card-description market-card-info-line">{description}</p>
-					</div>
-					<div className="market-card-img-container" style={{backgroundImage: "url('https://files.voicy.network/public/Content/Clips/Images/10bc3580-a840-4ebe-a8be-3b25fe5039b8-small.jpeg')"}}>
-						<p className="market-card-discount market-card-info-line">{discount}%</p>
-					</div>
+			<div className="market-card-info">
+				<div className="market-card-text">
+					<p className="market-card-name market-card-info-line">{name} - {id}</p>
+					<p className="market-card-description market-card-info-line">{description}</p>
 				</div>
-				<button className="market-card-buyButton market-card-info-line" onClick={buyCard}>Acheter: {price}</button>
+				<div className="market-card-img-container" style={{backgroundImage: "url('https://files.voicy.network/public/Content/Clips/Images/10bc3580-a840-4ebe-a8be-3b25fe5039b8-small.jpeg')"}}>
+					<p className="market-card-discount market-card-info-line">{discount}%</p>
+				</div>
 			</div>
+			<button className="market-card-buyButton market-card-info-line" onClick={buyCard}>Acheter: {price}</button>
 		</div>
 	);
 }

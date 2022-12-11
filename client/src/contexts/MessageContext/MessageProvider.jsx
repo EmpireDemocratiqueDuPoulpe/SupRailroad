@@ -43,6 +43,7 @@ function MessageProvider({ limit, children }) {
 			// Flatten the data object
 			let data = {};
 			Object.entries(parsedJSON.data).forEach(([k, v]) => {
+				console.error(k, v);
 				if (Object.prototype.hasOwnProperty.call(v, "reason")) {
 					data = { ...data, ...v };
 				} else data[k] = v;

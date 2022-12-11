@@ -14,7 +14,6 @@ contract CardFactory {
         string name;
         string imagePath;
         string description;
-        bool forSale;
     }
 
     /// Mappings
@@ -71,11 +70,6 @@ contract CardFactory {
         userToCards[_owner][index].approvedTo = _target;
     }
 
-    function _updateSaleStatus(address _owner, uint256 _cardId, bool _status) internal {
-        uint256 index = _findCardIndex(_owner, _cardId);
-        userToCards[_owner][index].forSale = _status;
-    }
-
     // Functions - Delete
     function _removeCard(address _owner, uint256 _cardId) internal {
         Card[] storage cards = userToCards[_owner];
@@ -95,6 +89,8 @@ contract CardFactory {
             }
         }
 
-        cards.pop();
+        for (uint256 i = 0; i < offset; i++) {
+            cards.pop();
+        }
     }
 }

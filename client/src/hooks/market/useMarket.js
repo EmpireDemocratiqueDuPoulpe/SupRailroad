@@ -15,7 +15,7 @@ function useMarket() {
 		try {
 			if (cardMarket) {
 				// noinspection JSUnresolvedFunction
-				await cardMarket.methods.buyCard().send({ from: account, cardId: cardId, value: Web3.utils.toWei(`${price}`, "ether") });
+				await cardMarket.methods.buyCard(cardId).send({ from: account, value: Web3.utils.toWei(price, "ether") });
 			}
 		} catch (err) { messages.addError(err, true); }
 	};
@@ -26,13 +26,13 @@ function useMarket() {
 			try {
 				if (cardMarket) {
 					// noinspection JSUnresolvedFunction
-					const onSaleCards = await cardMarket.methods.getAllOnSale().call({ from: account });
+					const onSaleCards = await cardMarket.methods.getSaleableCards().call({ from: account });
 					setOnSaleCards(onSaleCards);
 				}
 			} catch (err) { messages.addError(err, true); }
 		};
 		getAllOnSale().catch(console.error);
-        
+
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [cardMarket, account]);
 

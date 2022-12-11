@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import Web3 from "web3";
 import { useEth } from "../../contexts/EthContext";
 import useTickets from "../../hooks/tickets/useTickets.js";
 import useCards from "../../hooks/cards/useCards.js";
@@ -21,7 +22,7 @@ function AdminCorner() {
 	};
 
 	const createCard = () => {
-		cards.create(10, 20, "Test card", "image_path", "Test card description").catch(console.error);
+		cards.create(Web3.utils.toWei("0.015", "ether"), 20, "Test card", "image_path", "Test card description").catch(console.error);
 	};
 
 	const transfertBalance = () => {

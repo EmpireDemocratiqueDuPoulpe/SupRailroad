@@ -5,7 +5,8 @@
   "main": "truffle-config.js",
   "dependencies": {
     "@openzeppelin/contracts": "^4.8.0",
-    "@truffle/hdwallet-provider": "^2.0.10"
+    "@truffle/hdwallet-provider": "^2.0.10",
+    "truffle-contract-size": "^2.0.1"
   },
   "scripts": {
     "migrate-w10": "truffle migrate && postMigrate.cmd",
