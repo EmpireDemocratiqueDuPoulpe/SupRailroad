@@ -1,0 +1,40 @@
+.market-card {
+    background-color: var(--tertiary-color);
+    width: 400px;
+    height: 200px;
+}
+
+.market-card-info {
+    height: 150px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.market-card-img-container {
+    position: relative;
+    width: 150px;
+    background-size: cover;
+}
+
+.market-card-discount {
+    position: absolute;
+    margin: 0;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 4em;
+    font-family: Calibri, sans-serif;
+    font-weight: bold;
+}
+
+.market-card-buyButton {
+    width: 100%;
+    height: 50px;
+    background-color: var(--primary-color);
+    border: none;
+}
+
+.market-card-text {
+    padding: 10px;
+}

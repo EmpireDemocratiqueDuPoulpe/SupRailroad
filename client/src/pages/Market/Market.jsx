@@ -1,7 +1,7 @@
 import { useEth } from "../../contexts/EthContext";
 import useMarket from "../../hooks/market/useMarket.js";
 import Loader from "../../components/Loader/Loader.jsx";
-import Card from "../../components/Card/Card.jsx";
+import MarketCard from "../../components/MarketCard/MarketCard.jsx";
 //import "./Market.css";
 
 function Market() {
@@ -18,7 +18,13 @@ function Market() {
 						<h2 className="collection-title">Vente de cartes de r&eacute;duction</h2>
 						{!cardMarket.onSaleCards.length ? <p className="empty-collection">Aucune carte en vente actuellement.</p> : (
 							<div>
-								{cardMarket.onSaleCards.map((card, idx) => <Card key={`card-${account}-${idx}`} id={card.cardId} {...card}/>)}
+								{cardMarket.onSaleCards.map((card, idx) => <MarketCard key={`approved-card-${account}-${idx}`}
+									id={card.cardId}
+									name={card.name}
+									description={card.description}
+									price={card.price}
+									from={card.owner}
+									discount={card.discountPercent}/>)}
 							</div>
 						)}
 					</div>

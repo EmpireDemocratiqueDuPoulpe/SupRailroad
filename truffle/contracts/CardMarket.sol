@@ -17,7 +17,7 @@ contract CardMarket is ERC721, Administrable, CardFactory {
 
     /// Mappings
     mapping (address => uint256[]) private userApprovals;
-    uint256[] private onSaleCards;
+    Card[] private onSaleCards;
 
     /// Events
     event BoughtCard(address indexed owner, uint256 indexed cardId);
@@ -34,15 +34,16 @@ contract CardMarket is ERC721, Administrable, CardFactory {
     function createCard(uint256 price, uint8 discountPercent, string calldata name, string calldata imagePath, string calldata description) external mustBeAdmin returns (uint256) {
         // Create the card
         uint256 newCardId = cardCounter.current();
-        super._mint(msg.sender, newCardId);
-        super._addCard(
-            msg.sender,
-            Card(newCardId, price, discountPercent, msg.sender, address(0), name, imagePath, description, true)
-        );
+        //super._mint(msg.sender, newCardId);
+        Card memory newCard = Card(newCardId, price, discountPercent, msg.sender, address(0), name, imagePath, description, true);
+        //super._addCard(
+        //    msg.sender,
+        //    newCard
+        //);
 
         // Return its id
         cardCounter.increment();
-        onSaleCards.push(newCardId);
+        onSaleCards.push(newCard);
         return newCardId;
     }
 
@@ -51,10 +52,26 @@ contract CardMarket is ERC721, Administrable, CardFactory {
     }
 
     // Functions - Cards market
-    function buyCard(address _owner, address _target, uint256 _cardId, uint256 _price) public payable {
-        require(msg.value == _price);
-        super.safeTransferFrom(_owner, _target, _cardId);
-        emit BoughtCard(_target, _cardId);
+    function buyCard(uint256 cardId) public payable {
+        Card memory card;
+        uint256 onSaleCardIndex;
+        for (uint i = 0; i < onSaleCards.length; i++) {
+            if (onSaleCards[i].cardId == cardId) {
+                card = onSaleCards[i];
+                onSaleCardIndex = i;
+                break;
+            }
+        }
+        uint256 cardPrice = card.price;
+
+        require(msg.value == cardPrice);
+        Card memory newCard = Card(card.cardId, card.price, card.discountPercent, msg.sender, address(0), card.name, card.imagePath, card.description, false);
+        super._mint(msg.sender, newCard.cardId);
+        super._addCard(msg.sender, newCard);
+
+        _removeOnSaleCard(onSaleCardIndex);
+
+        emit BoughtCard(msg.sender, newCard.cardId);
     }
 
     // Functions - Cards transfer
@@ -109,17 +126,23 @@ contract CardMarket is ERC721, Administrable, CardFactory {
         emit TransferredCard(_target, _cardId);
     }
 
-    function getAllOnSale() public view returns (CardFactory.Card[] memory) {
-        Card[] memory saleCards = new Card[](onSaleCards.length);
+    function _removeOnSaleCard(uint256 idToRemove) internal {
+        delete onSaleCards[idToRemove];
 
-        for (uint256 i = 0; i < onSaleCards.length; i++) {
-            address cardOwner = super.ownerOf(onSaleCards[i]);
-            Card memory card = super._getCardById(cardOwner, onSaleCards[i]);
+        // Sort the array and truncate it
+        uint256 offset = 0;
 
-            saleCards[i] = card;
+        for (uint256 idx = 0; idx < onSaleCards.length; idx++) {
+            if (offset > 0) {
+                onSaleCards[idx - offset] = onSaleCards[idx];
+            }
+
+            if (onSaleCards[idx].discountPercent == 0) {
+                offset++;
+            }
         }
 
-        return saleCards;
+        onSaleCards.pop();
     }
 
     // Functions - Overrides

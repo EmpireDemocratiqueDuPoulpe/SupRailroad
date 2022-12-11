@@ -1,6 +1,7 @@
 import { useMessages } from "../../contexts/MessageContext";
 import { useEth } from "../../contexts/EthContext";
 import {useEffect, useState} from "react";
+import Web3 from "web3";
 
 function useMarket() {
 	const messages = useMessages();
@@ -8,6 +9,16 @@ function useMarket() {
 
 	/* ---- States ---------------------------------- */
 	const [onSaleCards, setOnSaleCards] = useState(/** @type {Array<Object>} */ []);
+
+	/* ---- Functions ------------------------------- */
+	const buyCard = async (price, cardId) => {
+		try {
+			if (cardMarket) {
+				// noinspection JSUnresolvedFunction
+				await cardMarket.methods.buyCard().send({ from: account, cardId: cardId, value: Web3.utils.toWei(`${price}`, "ether") });
+			}
+		} catch (err) { messages.addError(err, true); }
+	};
 
 	/* ---- Effects --------------------------------- */
 	useEffect(() => {
@@ -26,7 +37,7 @@ function useMarket() {
 	}, [cardMarket, account]);
 
 	/* ---- Expose hook ----------------------------- */
-	return { onSaleCards };
+	return { onSaleCards, buy: buyCard };
 }
 
 export default useMarket;
