@@ -5,11 +5,11 @@ function useCards() {
 	const messages = useMessages();
 	const { state: { account, contracts: {cardMarket} } } = useEth();
 
-	const createCard = async (price, discountPercent, name, imageURI, description) => {
+	const createCard = async (price, discountPercent, name, imageURI, description, number) => {
 		try {
 			if (cardMarket) {
 				// noinspection JSUnresolvedFunction
-				await cardMarket.methods.createCard(price, discountPercent, name, imageURI, description).send({ from: account });
+				await cardMarket.methods.createCard(price, discountPercent, name, imageURI, description, number).send({ from: account });
 			}
 		} catch (err) { messages.addError(err, true); }
 	};

@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Web3 from "web3";
 import { useEth } from "../../contexts/EthContext";
@@ -16,13 +16,49 @@ function AdminCorner() {
 	const cards = useCards();
 	const contractBalance = useContractBalance(ticketFactory);
 
+	/* ---- Constants ------------------------------- */
+	const [cardName, setCardName] = useState(/** @type {string} */ "");
+	const [cardDescription, setCardDescription] = useState(/** @type {string} */ "");
+	const [cardImage, setCardImage] = useState(/** @type {string} */ "");
+	const [cardPrice, setCardPrice] = useState(/** @type {string} */ "");
+	const [cardDiscount, setCardDiscount] = useState(/** @type {number} */ "");
+	const [cardsNumber, setCardsNumber] = useState(/** @type {number} */ "");
+
 	/* ---- Functions ------------------------------- */
+	/* ┌─────────New card form functions─────────┐ */
+
+	const handleCardName = event => {
+		setCardName(event.target.value);
+	};
+
+	const handleCardDescription = event => {
+		setCardDescription(event.target.value);
+	};
+
+	const handleCardImage = event => {
+		setCardImage(event.target.value);
+	};
+
+	const handleCardPrice = event => {
+		setCardPrice(event.target.value.toString());
+	};
+
+	const handleCardDiscount = event => {
+		setCardDiscount(event.target.value);
+	};
+
+	const handleCardsNumber = event => {
+		setCardsNumber(event.target.value);
+	};
+
+	/* └─────────────────────────────────────────┘ */
+
 	const onPriceChange = price => {
 		tickets.setStandardPrice(price).catch(console.error);
 	};
 
 	const createCard = () => {
-		cards.create(Web3.utils.toWei("0.015", "ether"), 20, "Test card", "image_path", "Test card description").catch(console.error);
+		cards.create(Web3.utils.toWei(cardPrice, "ether"), cardDiscount, cardName, cardImage, cardDescription, cardsNumber).catch(console.error);
 	};
 
 	const transfertBalance = () => {
@@ -62,6 +98,12 @@ function AdminCorner() {
 					<h2 className="inner-page-section-title">Cartes de r&eacute;duction</h2>
 
 					<div className="inner-page-section-body">
+						<span>Nom :</span><input type="text" minLength="1" placeholder="Nom de la carte" value={cardName} onChange={handleCardName}/><br/>
+						<span>Description :</span><input type="text" placeholder="Description de la carte" value={cardDescription} onChange={handleCardDescription}/><br/>
+						<span>Image (url) :</span><input type="text" placeholder="Image de la carte" value={cardImage} onChange={handleCardImage}/><br/>
+						<span>Prix (ETH) :</span><input type="number" step="0.0001" placeholder="Prix de la carte" value={cardPrice} onChange={handleCardPrice}/><br/>
+						<span>Réduction (%) :</span><input type="number" step="1" min="1" max="100" placeholder="Pourcentage de réduction" value={cardDiscount} onChange={handleCardDiscount}/><br/>
+						<span>Nombre :</span><input type="number" step="1" min="1" max="100" placeholder="Nombre de cartes" value={cardsNumber} onChange={handleCardsNumber}/><br/>
 						<button onClick={createCard}>Create card</button>
 					</div>
 				</div>

@@ -1,19 +1,18 @@
 .market-card {
     background-color: var(--tertiary-color);
-    width: 400px;
-    height: 200px;
+    width: 450px;
+    height: 250px;
 }
 
 .market-card-info {
-    height: 150px;
+    height: 200px;
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
 }
 
 .market-card-img-container {
     position: relative;
-    width: 150px;
+    width: 200px;
     background-size: cover;
 }
 
@@ -26,6 +25,7 @@
     font-size: 4em;
     font-family: Calibri, sans-serif;
     font-weight: bold;
+    text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
 }
 
 .market-card-buyButton {
@@ -37,4 +37,5 @@
 
 .market-card-text {
     padding: 10px;
+    width: 250px;
 }

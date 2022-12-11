@@ -31,14 +31,17 @@ contract CardMarket is ERC721, Administrable, CardFactory {
 
     /// Functions
     // Functions - Cards creation and updates
-    function createCard(uint256 price, uint8 discountPercent, string calldata name, string calldata imagePath, string calldata description) external mustBeAdmin returns (uint256) {
-        // Create the card
-        uint256 newCardId = cardCounter.current();
-        onSaleCards.push(Card(newCardId, price, discountPercent, msg.sender, address(0), name, imagePath, description));
+    function createCard(uint256 price, uint8 discountPercent, string calldata name, string calldata imagePath, string calldata description, uint8 cardsNumber) external mustBeAdmin {
+        require(cardsNumber >= 1, "Not enough cards to create !");
+        require(discountPercent >= 1, "Discount cant be below 1% !");
 
-        // Return its id
-        cardCounter.increment();
-        return newCardId;
+        // Create the cards
+        for (uint8 i = 1; i <= cardsNumber; i++) {
+            uint256 newCardId = cardCounter.current();
+            onSaleCards.push(Card(newCardId, price, discountPercent, msg.sender, address(0), name, imagePath, description));
+
+            cardCounter.increment();
+        }
     }
 
     // Functions - Cards market

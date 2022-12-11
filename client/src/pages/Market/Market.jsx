@@ -24,6 +24,7 @@ function Market() {
 									name={card.name}
 									description={card.description}
 									price={Web3.utils.fromWei(card.price, "ether")}
+									imageURI={card.imagePath}
 									from={card.owner}
 									discount={card.discountPercent}/>)}
 							</div>
