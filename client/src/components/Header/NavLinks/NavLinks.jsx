@@ -5,6 +5,7 @@ function NavLinks() {
 	return (
 		<div className="nav-links">
 			<Link className="link" to="/travel">Acheter un ticket</Link>
+			<Link className="link" to="/market">Acheter une carte</Link>
 			<Link className="link" to="/admin">Administration</Link>
 		</div>
 	);
