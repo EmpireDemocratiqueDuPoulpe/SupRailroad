@@ -33,4 +33,5 @@ MultipleButton.propTypes = {
 	children: PropTypes.node
 };
 
+export { default as SubButton } from "./SubButton/SubButton.jsx";
 export default MultipleButton;

@@ -1,7 +1,8 @@
+/* --- Container ---------------------------------------------------------------------------------------------------- */
 .market-card {
-    background-color: var(--tertiary-color);
     width: 450px;
     height: 250px;
+    background-color: var(--tertiary-color);
 }
 
 .market-card-info {

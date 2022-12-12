@@ -6,6 +6,10 @@ import ReactMap, { FullscreenControl, NavigationControl, ScaleControl, Source, L
 import "mapbox-gl/dist/mapbox-gl.css";
 import "./Map.css";
 
+/*****************************************************
+ * Constants
+ *****************************************************/
+
 // eslint-disable-next-line no-undef
 mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_GL_KEY_MOVE_TO_DYNAMIC_PLACEHOLDER || null;
 
@@ -16,10 +20,18 @@ const lineString = {
 	geometry: { type: "LineString", coordinates: [] }
 };
 
+/*****************************************************
+ * Functions
+ *****************************************************/
+
 function lineDistance(line) {
 	const format = distance => `${distance} km`;
 	return line ? format(turf.length(line).toLocaleString()) : format(0);
 }
+
+/*****************************************************
+ * Map
+ *****************************************************/
 
 function Map({ onPointsChange }) {
 	/* ---- States ---------------------------------- */

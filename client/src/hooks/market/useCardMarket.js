@@ -1,7 +1,7 @@
+import { useState, useEffect } from "react";
+import Web3 from "web3";
 import { useMessages } from "../../contexts/MessageContext";
 import { useEth } from "../../contexts/EthContext";
-import {useEffect, useState} from "react";
-import Web3 from "web3";
 
 function useCardMarket() {
 	const messages = useMessages();

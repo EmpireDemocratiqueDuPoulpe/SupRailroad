@@ -1,10 +1,10 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
-import { eventOnElement } from "../../helpers/accessibility.js";
 import useCards from "../../hooks/cards/useCards.js";
+import { eventOnElement } from "../../helpers/accessibility.js";
 import "./Card.css";
 
-function Card({ id, name, description, discountPercent, approvedTo, price, imageURI, forSale }) {
+function Card({ id, name, description, discountPercent, approvedTo, price, imageURI }) {
 	/* ---- States ---------------------------------- */
 	const cards = useCards();
 	const [flipped, setFlipped] = useState(/** @type {boolean} */ false);
@@ -17,9 +17,7 @@ function Card({ id, name, description, discountPercent, approvedTo, price, image
 
 	const killEvent = event => event.stopPropagation();
 
-	const handleApprovedAddress = event => {
-		setApprovedAddress(event.target.value);
-	};
+	const handleApprovedAddress = event => setApprovedAddress(event.target.value);
 	const confirmApproval = event => {
 		killEvent(event);
 		cards.approve(approvedAddress, id).catch(console.error);
@@ -37,7 +35,6 @@ function Card({ id, name, description, discountPercent, approvedTo, price, image
 							<p className="card-discount card-info-line no-event" {...eventOnElement(killEvent)}>discount: {discountPercent}</p>
 							<p className="card-price card-info-line no-event" {...eventOnElement(killEvent)}>price: {price}</p>
 							<p className="card-imageURI card-info-line no-event" {...eventOnElement(killEvent)}>image: {imageURI}</p>
-							<p className="card-forSale card-info-line no-event" {...eventOnElement(killEvent)}>for sale?: {forSale ? "true" : "false"}</p>
 						</div>
 					</div>
 
@@ -65,7 +62,6 @@ Card.propTypes = {
 	approvedTo: PropTypes.string,
 	price: PropTypes.string.isRequired,
 	imageURI: PropTypes.string,
-	forSale: PropTypes.bool
 };
 
 export default Card;

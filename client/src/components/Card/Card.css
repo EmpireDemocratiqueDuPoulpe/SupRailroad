@@ -69,11 +69,6 @@
 /* -- Card info */
 .card .card-inner .card-front .card-info .card-info-line {
 	margin-top: 0;
-
-	/* TODO: REMOVE */
-	color: chartreuse;
-	font-size: 0.8em;
-	margin: 0;
 }
 .card .card-inner .card-front .card-info p:last-of-type { margin-bottom: 0; }
 

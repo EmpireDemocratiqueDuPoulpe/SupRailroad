@@ -6,11 +6,11 @@ import "./MarketCard.css";
 function MarketCard({ id, name, description, discount, price, imageURI }) {
 	/* ---- States ---------------------------------- */
 	const cardMarket = useCardMarket();
-	const buyCard = () => { cardMarket.buy(price, id).catch(console.error); };
 
 	/* ---- Functions ------------------------------- */
+	const buyCard = () => cardMarket.buy(price, id).catch(console.error);
 
-
+	/* ---- Page content ---------------------------- */
 	return (
 		<div className="market-card">
 			<div className="market-card-info">
@@ -18,7 +18,7 @@ function MarketCard({ id, name, description, discount, price, imageURI }) {
 					<p className="market-card-name market-card-info-line">{name} - {id}</p>
 					<p className="market-card-description market-card-info-line">{description}</p>
 				</div>
-				<div className="market-card-img-container" style={{backgroundImage: `url(${imageURI})`}}>
+				<div className="market-card-img-container" style={{ backgroundImage: `url(${imageURI})` }}>
 					<p className="market-card-discount market-card-info-line">{discount}%</p>
 				</div>
 			</div>

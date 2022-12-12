@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import IconButton from "../IconButton/IconButton.jsx";
+import IconButton from "./IconButton/IconButton.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
 import { eventOnElement } from "../../../helpers/accessibility.js";

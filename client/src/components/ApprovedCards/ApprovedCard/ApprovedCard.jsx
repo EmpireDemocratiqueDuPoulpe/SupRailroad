@@ -1,16 +1,14 @@
 import PropTypes from "prop-types";
 import useCards from "../../../hooks/cards/useCards.js";
-import "./ApprovedCard.css";
 
 function ApprovedCard({ id, name, description, discount, approvedTo, from }) {
 	/* ---- States ---------------------------------- */
 	const cards = useCards();
 
 	/* ---- Functions ------------------------------- */
-	const confirmRetrieval = () => {
-		cards.retrieve(from, approvedTo, id).catch(console.error);
-	};
+	const confirmRetrieval = () => cards.retrieve(from, approvedTo, id).catch(console.error);
 
+	/* ---- Page content ---------------------------- */
 	return (
 		<div className="approved-card">
 			<p>ID : {id}</p>

@@ -43,6 +43,7 @@ function EthProvider({ children }) {
 					isAdmin = await contracts.ticketMarket.methods.isAdmin().call({ from: account });
 				} else { messages.addError(new Error("Cannot check if the user is an administrator!")); }
 
+				// noinspection JSCheckFunctionSignatures
 				dispatch({
 					type: actions.init,
 					data: { artifacts, web3, account, balance, isAdmin, networkID, contracts }
@@ -70,8 +71,10 @@ function EthProvider({ children }) {
 			init(state.artifacts).catch(console.error);
 		};
 
+		// noinspection JSUnresolvedVariable
 		events.forEach(e => window.ethereum.on(e, handleChange));
-		return () => { events.forEach(e => window.ethereum.removeListener(e, handleChange)); };
+		return () => { // noinspection JSUnresolvedVariable
+			events.forEach(e => window.ethereum.removeListener(e, handleChange)); };
 	}, [init, state.artifacts]);
 
 	/* ---- Page content ---------------------------- */
