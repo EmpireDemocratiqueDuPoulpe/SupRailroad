@@ -4,7 +4,7 @@ import { useProgressiveSections, ProgressiveSectionsProvider } from "../../conte
 import useTicketsMarket from "../../hooks/market/useTicketsMarket.js";
 import useCardWallet from "../../hooks/wallet/useCardWallet.js";
 import ProgressiveSection from "../../components/ProgressiveSection/ProgressiveSection.jsx";
-import Inputs from "../../components/Inputs";
+import Buttons from "../../components/Buttons";
 import Card from "../../components/Card/Card.jsx";
 import Map from "../../components/Map/Map.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -24,7 +24,7 @@ function DynamicSections() {
 	const [distance, setDistance] = useState(/** @type {string} */ "");
 	const usedCard = useMemo(() => {
 		if (cards?.cards) {
-			return cards.cards.slice().sort((a, b) => a.discountPercent - b.discountPercent).shift() ?? null;
+			return cards.cards.slice().sort((a, b) => b.discountPercent - a.discountPercent).shift() ?? null;
 		} else return null;
 	}, [cards]);
 
@@ -43,11 +43,11 @@ function DynamicSections() {
 	return (
 		<div className="travel-dynamic-sections">
 			<ProgressiveSection idx={0} title="Sélectionnez votre moyen de transport :" inline>
-				<Inputs.MultipleButton onChange={handleTypesChange}>
-					<Inputs.SubButton label="Bus" value="bus"/>
-					<Inputs.SubButton label="Métro" value="subway"/>
-					<Inputs.SubButton label="Train" value="train"/>
-				</Inputs.MultipleButton>
+				<Buttons.MultipleButton onChange={handleTypesChange}>
+					<Buttons.SubButton label="Bus" value="bus"/>
+					<Buttons.SubButton label="Métro" value="subway"/>
+					<Buttons.SubButton label="Train" value="train"/>
+				</Buttons.MultipleButton>
 
 				<button onClick={progressiveSections.nextStep} disabled={!travelTypes.length}>
 					<FontAwesomeIcon icon={solid("check")}/>
