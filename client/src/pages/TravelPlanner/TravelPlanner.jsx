@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useProgressiveSections, ProgressiveSectionsProvider } from "../../contexts/ProgressiveSectionsContext";
 import useTickets from "../../hooks/tickets/useTickets.js";
+import useCardWallet from "../../hooks/wallet/useCardWallet.js";
 import ProgressiveSection from "../../components/ProgressiveSection/ProgressiveSection.jsx";
 import Inputs from "../../components/Inputs";
+import Card from "../../components/Card/Card.jsx";
 import Map from "../../components/Map/Map.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
@@ -13,12 +15,18 @@ function DynamicSections() {
 	/* ---- Contexts -------------------------------- */
 	const progressiveSections = useProgressiveSections();
 	const tickets = useTickets({ onTicketBought: progressiveSections.nextStep });
+	const cards = useCardWallet();
 	const navigate = useNavigate();
 
 	/* ---- States ---------------------------------- */
 	const [travelTypes, setTravelTypes] = useState(/** @type {Array<string>} */ []);
 	const [points, setPoints] = useState(/** @type {Array<Array<number>>} */ []);
 	const [distance, setDistance] = useState(/** @type {string} */ "");
+	const usedCard = useMemo(() => {
+		if (cards?.cards) {
+			return cards.cards.slice().sort((a, b) => a.discountPercent - b.discountPercent).shift() ?? null;
+		} else return null;
+	}, [cards]);
 
 	/* ---- Functions ------------------------------- */
 	const handleTypesChange = types => { setTravelTypes(types); };
@@ -28,7 +36,7 @@ function DynamicSections() {
 		setDistance(distance ?? "");
 	};
 
-	const calcTicketPrice = () => { tickets.requestPrice(travelTypes, points).catch(console.error); };
+	const calcTicketPrice = () => { tickets.requestPrice(travelTypes, points, (usedCard?.cardId ?? -1)).catch(console.error); };
 	const buyTicket = () => { tickets.buy().catch(console.error); };
 
 	/* ---- Page content ---------------------------- */
@@ -57,6 +65,12 @@ function DynamicSections() {
 					<div className="travel-data-content">
 						<p>{points.length ? (<>&Eacute;tapes : {points.length}</>) : "Cliquez sur la carte afin d'ajouter une étape."}</p>
 						<p>Distance : {distance}</p>
+						{ usedCard && (
+							<>
+								<p>Carte de r&eacute;duction utilis&eacute;e :</p>
+								<Card id={usedCard.cardId} {...usedCard}/>
+							</>
+						)}
 					</div>
 
 					<div className="travel-actions">

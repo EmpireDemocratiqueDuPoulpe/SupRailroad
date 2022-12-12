@@ -44,7 +44,7 @@ contract TicketFactory is UserWalletFactory, Administrable, OracleLinked, Balanc
 
     /// Events
     event TicketPriceChanged(uint256 newPrice);
-    event TicketPriceRequested(uint256 requestId, address indexed caller, string[] types, Coordinate[] points);
+    event TicketPriceRequested(uint256 requestId, address indexed caller, string[] types, Coordinate[] points, int256 cardId);
     event TicketPriceCalculated(uint256 indexed requestId, address indexed caller, uint256 price);
     event BoughtTicket(uint256 indexed requestId, address indexed owner);
 
@@ -53,9 +53,9 @@ contract TicketFactory is UserWalletFactory, Administrable, OracleLinked, Balanc
         return ticketPrice;
     }
 
-    function getPrice(string[] calldata _types, Coordinate[] calldata _points) external {
+    function getPrice(string[] calldata _types, Coordinate[] calldata _points, int256 _cardId) external {
         uint256 requestId = super._addRequest();
-        emit TicketPriceRequested(requestId, msg.sender, _types, _points);
+        emit TicketPriceRequested(requestId, msg.sender, _types, _points, _cardId);
     }
 
     function setCalculatedPrice(uint256 _requestId, address _caller, uint256 _standardPrice, uint256 _distance, uint256 _price, string[] calldata _types) public validRequestId(_requestId) mustBeOracle {

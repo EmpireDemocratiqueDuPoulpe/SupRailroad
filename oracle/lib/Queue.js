@@ -63,10 +63,10 @@ export default class Queue {
 	 * @param {*} args - Additional args passed down to the request handler.
 	 * @return {Promise<void>}
 	 */
-	async start(args) {
+	async start(...args) {
 		this.running = true;
 		while (this.running) {
-			await this.#processQueue(args);
+			await this.#processQueue(...args);
 			await this.#delay(constants.SLEEP_INTERVAL);
 		}
 	}
@@ -88,10 +88,10 @@ export default class Queue {
 	 * @param {*} args - Additional args passed down to the request handler.
 	 * @return {Promise<void>}
 	 */
-	async #processQueue(args) {
+	async #processQueue(...args) {
 		for (let i = 0; (this.#q.length > 0) && (i < constants.CHUNK_SIZE); i++) {
 			const request = this.#q.shift();
-			await this.#processRequest(request, args);
+			await this.#processRequest(request, ...args);
 		}
 	}
 
@@ -105,9 +105,9 @@ export default class Queue {
 	 * @param {*} args - Additional args passed down to the request handler.
 	 * @return {Promise<void>}
 	 */
-	async #processRequest(request, args) {
+	async #processRequest(request, ...args) {
 		try {
-			await this.onRequest(request, args);
+			await this.onRequest(request, ...args);
 		} catch (err) {
 			console.error(`An error occurred during a request processing: ${err}`.red);
 		}

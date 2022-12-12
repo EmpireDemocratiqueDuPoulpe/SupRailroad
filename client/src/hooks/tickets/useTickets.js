@@ -35,11 +35,11 @@ function useTickets({ onTicketBought } = {}) {
 		} catch (err) { messages.addError(err, true); }
 	};
 
-	const getPrice = async (types, points) => {
+	const getPrice = async (types, points, cardId) => {
 		try {
 			if (ticketFactory) {
 				// noinspection JSUnresolvedFunction
-				await ticketFactory.methods.getPrice(types, points).send({ from: account });
+				await ticketFactory.methods.getPrice(types, points, cardId).send({ from: account });
 			}
 		} catch (err) { messages.addError(err, true); }
 	};

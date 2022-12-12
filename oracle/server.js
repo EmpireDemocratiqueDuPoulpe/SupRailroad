@@ -12,7 +12,9 @@ import Web3 from "web3";
 import constants from "./lib/constants.js";
 import Queue from "./lib/Queue.js";
 import { calculatePrice } from "./lib/geoStuff.js";
+import { useDiscountCard } from "./lib/discounts.js";
 import TicketFactoryBuild from "./contracts/TicketFactory.json" assert {type: "json"};
+import CardMarketBuild from "./contracts/CardMarket.json" assert {type: "json"};
 
 /*** Functions - Events ***********************************************************************************************/
 /**
@@ -81,15 +83,18 @@ async function onForcedClose(queue, ticketContract, err) {
  *
  * @param {Request} request - The request.
  * @param {Contract} ticketContract - Ticket contract.
+ * @param {Contract} cardMarket - Card market.
  * @return {Promise<void>}
  */
-async function processRequest(request, ticketContract) {
-	// Calculate the ticket price.
-	// noinspection JSUnresolvedFunction
-	const standardPrice = await ticketContract.methods.getStandardPrice().call({ from: request.caller });
-	const { distance, price } = calculatePrice(request.data.points, standardPrice);
-
+async function processRequest(request, ticketContract, cardMarket) {
 	try {
+		// Calculate the ticket price.
+		// noinspection JSUnresolvedFunction
+		const standardPrice = await ticketContract.methods.getStandardPrice().call({ from: request.caller });
+		let { distance, price } = calculatePrice(request.data.points, standardPrice);
+		price = await useDiscountCard(cardMarket, request.caller, request.data.cardId, price);
+
+		// Send the response
 		// noinspection JSUnresolvedFunction
 		await sendWithEstimatedGas(
 			ticketContract.methods.setCalculatedPrice(request.requestId, request.caller, standardPrice, (distance * constants.FLOAT_FACTOR).toFixed(), `${price}`, request.data.types),
@@ -227,6 +232,7 @@ async function startOracle() {
 
 	// Load contracts
 	const ticketContract = await getContract(web3, TicketFactoryBuild);
+	const cardMarket = await getContract(web3, CardMarketBuild);
 
 	// Announce oracle
 	await announceOracle(web3, ticketContract);
@@ -241,7 +247,7 @@ async function startOracle() {
 	});
 
 	// Listen for contract events
-	queue.start(ticketContract).catch(err => onForcedClose(queue, ticketContract, err));
+	queue.start(ticketContract, cardMarket).catch(err => onForcedClose(queue, ticketContract, err));
 }
 
 startOracle().catch(err => console.error(`${err}`.red));
