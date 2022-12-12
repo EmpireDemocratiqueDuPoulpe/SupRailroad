@@ -20,7 +20,7 @@ Install the dependencies with the following command: `npm install`.
 
 ### Environnement
 This site needs a MapboxGL API key, it's a maxi tool that we will use later. If you are the teacher who will evaluate our
-work (hello), the `.env` file already exists in your archives. If we forgot or if you are not the teacher, you can create
+work (hello), the `.env` file already exists in your archive. If we forgot or if you are not the teacher, you can create
 a free account on [mapbox.com](https://www.mapbox.com/) to receive your API key. Once this is done, create an `.env` file
 in the [client root folder](https://github.com/EmpireDemocratiqueDuPoulpe/SupRailroad/tree/main/client) containing the
 following data:
