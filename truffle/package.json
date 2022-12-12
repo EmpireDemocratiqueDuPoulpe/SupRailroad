@@ -9,8 +9,8 @@
     "truffle-contract-size": "^2.0.1"
   },
   "scripts": {
-    "migrate-w10": "truffle migrate && postMigrate.cmd",
-    "migrate-w11": "truffle migrate && ./postMigrate.cmd",
+    "migrate-v1": "truffle migrate && postMigrate.cmd",
+    "migrate-v2": "truffle migrate && ./postMigrate.cmd",
     "test": "truffle test"
   },
   "author": "",
