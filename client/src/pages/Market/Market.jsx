@@ -1,6 +1,6 @@
 import Web3 from "web3";
 import { useEth } from "../../contexts/EthContext";
-import useMarket from "../../hooks/market/useMarket.js";
+import useCardMarket from "../../hooks/market/useCardMarket.js";
 import Loader from "../../components/Loader/Loader.jsx";
 import MarketCard from "../../components/MarketCard/MarketCard.jsx";
 //import "./Market.css";
@@ -8,7 +8,7 @@ import MarketCard from "../../components/MarketCard/MarketCard.jsx";
 function Market() {
 	/* ---- Contexts -------------------------------- */
 	const { state: { account } } = useEth();
-	const cardMarket = useMarket();
+	const cardMarket = useCardMarket();
 
 	/* ---- Page content ---------------------------- */
 	return (

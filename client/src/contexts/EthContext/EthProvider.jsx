@@ -38,9 +38,9 @@ function EthProvider({ children }) {
 				}
 
 				let isAdmin = false;
-				if (Object.prototype.hasOwnProperty.call(contracts, "ticketFactory")) {
+				if (Object.prototype.hasOwnProperty.call(contracts, "ticketMarket")) {
 					// noinspection JSUnresolvedVariable
-					isAdmin = await contracts.ticketFactory.methods.isAdmin().call({ from: account });
+					isAdmin = await contracts.ticketMarket.methods.isAdmin().call({ from: account });
 				} else { messages.addError(new Error("Cannot check if the user is an administrator!")); }
 
 				dispatch({
@@ -55,9 +55,9 @@ function EthProvider({ children }) {
 	useEffect(() => {
 		const tryInit = async () => {
 			try {
-				const ticketFactory = await import("../../contracts/TicketFactory.json");
+				const ticketMarket = await import("../../contracts/TicketMarket.json");
 				const cardMarket = await import("../../contracts/CardMarket.json");
-				await init([ {name: "ticketFactory", build: ticketFactory}, {name: "cardMarket", build: cardMarket} ]);
+				await init([ {name: "ticketMarket", build: ticketMarket}, {name: "cardMarket", build: cardMarket} ]);
 			} catch (err) { console.error(err); }
 		};
 

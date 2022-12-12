@@ -1,5 +1,5 @@
 import { useEth } from "../../contexts/EthContext";
-import useWallet from "../../hooks/wallet/useWallet.js";
+import useTicketWallet from "../../hooks/wallet/useTicketWallet.js";
 import useCardWallet from "../../hooks/wallet/useCardWallet.js";
 import Loader from "../../components/Loader/Loader.jsx";
 import Ticket from "../../components/Ticket/Ticket.jsx";
@@ -10,7 +10,7 @@ import "./Wallet.css";
 function Wallet() {
 	/* ---- Contexts -------------------------------- */
 	const { state: { account } } = useEth();
-	const wallet = useWallet();
+	const wallet = useTicketWallet();
 	const cardWallet = useCardWallet();
 
 	/* ---- Page content ---------------------------- */
@@ -20,9 +20,9 @@ function Wallet() {
 				<>
 					<div className="collection-box">
 						<h2 className="collection-title">Tickets</h2>
-						{!wallet.tickets.length ? <p className="empty-collection">Vous ne possédez aucun ticket.</p> : (
+						{!wallet.length ? <p className="empty-collection">Vous ne possédez aucun ticket.</p> : (
 							<div className="collection-content">
-								{wallet.tickets.map((ticket, idx) => <Ticket key={`ticket-${account}-${idx}`} id={idx} {...ticket}/>)}
+								{wallet.map((ticket, idx) => <Ticket key={`ticket-${account}-${idx}`} id={idx} {...ticket}/>)}
 							</div>
 						)}
 					</div>

@@ -3,10 +3,10 @@ import Web3 from "web3";
 import { useMessages } from "../../contexts/MessageContext";
 import { useEth } from "../../contexts/EthContext";
 
-function useTickets({ onTicketBought } = {}) {
+function useTicketsMarket({ onTicketBought } = {}) {
 	/* ---- Contexts -------------------------------- */
 	const messages = useMessages();
-	const { state: { account, contracts: {ticketFactory} } } = useEth();
+	const { state: { account, contracts: {ticketMarket} } } = useEth();
 
 	/* ---- States ---------------------------------- */
 	const [standardPrice, setStandardPrice] = useState(/** @type {number} */ null);
@@ -16,39 +16,39 @@ function useTickets({ onTicketBought } = {}) {
 	/* ---- Functions ------------------------------- */
 	const getStandardPrice = useCallback(async () => {
 		try {
-			if (ticketFactory) {
+			if (ticketMarket) {
 				// noinspection JSUnresolvedFunction
-				const amount = await ticketFactory.methods.getStandardPrice().call({ from: account });
+				const amount = await ticketMarket.methods.getStandardPrice().call({ from: account });
 				setStandardPrice(parseFloat(Web3.utils.fromWei(`${amount}`, "ether")));
 				setPrice(null);
 			}
 		} catch (err) { messages.addError(err, true); }
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [ticketFactory, account]);
+	}, [ticketMarket, account]);
 
 	const changeStandardPrice = async (newPrice) => {
 		try {
-			if (ticketFactory) {
+			if (ticketMarket) {
 				// noinspection JSUnresolvedFunction
-				await ticketFactory.methods.setPrice(Web3.utils.toWei(newPrice, "ether")).send({ from: account });
+				await ticketMarket.methods.setPrice(Web3.utils.toWei(newPrice, "ether")).send({ from: account });
 			}
 		} catch (err) { messages.addError(err, true); }
 	};
 
 	const getPrice = async (types, points, cardId) => {
 		try {
-			if (ticketFactory) {
+			if (ticketMarket) {
 				// noinspection JSUnresolvedFunction
-				await ticketFactory.methods.getPrice(types, points, cardId).send({ from: account });
+				await ticketMarket.methods.getPrice(types, points, cardId).send({ from: account });
 			}
 		} catch (err) { messages.addError(err, true); }
 	};
 
 	const buyTicket = async () => {
 		try {
-			if (ticketFactory) {
+			if (ticketMarket) {
 				// noinspection JSUnresolvedFunction
-				await ticketFactory.methods.buyTicket().send({ from: account, value: Web3.utils.toWei(`${price}`, "ether") });
+				await ticketMarket.methods.buyTicket().send({ from: account, value: Web3.utils.toWei(`${price}`, "ether") });
 			}
 		} catch (err) { messages.addError(err, true); }
 	};
@@ -58,10 +58,10 @@ function useTickets({ onTicketBought } = {}) {
 	useEffect(() => {
 		// Fetch the price once and start an event listener.
 		let priceChangeListener = null;
-		if (ticketFactory) {
+		if (ticketMarket) {
 			getStandardPrice().catch(console.error);
 			// noinspection JSValidateTypes
-			priceChangeListener = ticketFactory.events.TicketPriceChanged().on("data", getStandardPrice);
+			priceChangeListener = ticketMarket.events.TicketPriceChanged().on("data", getStandardPrice);
 		}
 
 		// The event listener is stopped when this hook is unmounted.
@@ -70,15 +70,15 @@ function useTickets({ onTicketBought } = {}) {
 				priceChangeListener.removeAllListeners("data");
 			}
 		};
-	}, [ticketFactory, account, getStandardPrice]);
+	}, [ticketMarket, account, getStandardPrice]);
 
 	// Listen for a request id
 	useEffect(() => {
 		// Start an event listener.
 		let requestedPriceListener = null;
-		if (ticketFactory) {
+		if (ticketMarket) {
 			// noinspection JSValidateTypes
-			requestedPriceListener = ticketFactory.events.TicketPriceRequested({ filter: {caller: account} }).on("data", data => {
+			requestedPriceListener = ticketMarket.events.TicketPriceRequested({ filter: {caller: account} }).on("data", data => {
 				setRequestId(parseInt(data.returnValues.requestId, 10));
 			});
 		}
@@ -89,15 +89,15 @@ function useTickets({ onTicketBought } = {}) {
 				requestedPriceListener.removeAllListeners("data");
 			}
 		};
-	}, [ticketFactory, account, requestId]);
+	}, [ticketMarket, account, requestId]);
 
 	// Listen for a requested price
 	useEffect(() => {
 		// Start an event listener.
 		let receivedPriceListener = null;
-		if (ticketFactory && requestId) {
+		if (ticketMarket && requestId) {
 			// noinspection JSValidateTypes
-			receivedPriceListener = ticketFactory.events.TicketPriceCalculated({ filter: {requestId, caller: account} }).on("data", data => {
+			receivedPriceListener = ticketMarket.events.TicketPriceCalculated({ filter: {requestId, caller: account} }).on("data", data => {
 				setPrice(parseFloat(Web3.utils.fromWei(data.returnValues.price, "ether")));
 			});
 		}
@@ -108,15 +108,15 @@ function useTickets({ onTicketBought } = {}) {
 				receivedPriceListener.removeAllListeners("data");
 			}
 		};
-	}, [ticketFactory, account, requestId]);
+	}, [ticketMarket, account, requestId]);
 
 	// Listen for a bought ticket
 	useEffect(() => {
 		// Start an event listener.
 		let ticketBoughtListener = null;
-		if (ticketFactory) {
+		if (ticketMarket) {
 			// noinspection JSValidateTypes
-			ticketBoughtListener = ticketFactory.events.BoughtTicket({ filter: {requestId, owner: account} }).on("data", () => {
+			ticketBoughtListener = ticketMarket.events.BoughtTicket({ filter: {requestId, owner: account} }).on("data", () => {
 				setRequestId(null);
 				messages.addSuccess("Achat validé : Bon voyage !");
 
@@ -133,10 +133,10 @@ function useTickets({ onTicketBought } = {}) {
 			}
 		};
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [ticketFactory, account, requestId]);
+	}, [ticketMarket, account, requestId]);
 
 	/* ---- Expose hook ----------------------------- */
 	return { standardPrice, setStandardPrice: changeStandardPrice, currentPrice: price, requestPrice: getPrice, buy: buyTicket };
 }
 
-export default useTickets;
+export default useTicketsMarket;

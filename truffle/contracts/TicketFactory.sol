@@ -1,34 +1,14 @@
 pragma solidity ^0.8.0;
 // SPDX-License-Identifier: UNLICENSED
 
-import "./UserWalletFactory.sol";
-import "./Administrable.sol";
-import "./OracleLinked.sol";
-import "./BalanceManager.sol";
-
 // ISSUE 01 :
 // Storing an array of Coordinates in a Ticket is forbidden by the Solidity gods. But storing the same Ticket in an array
 // of Ticket in another struct is allowed. I don't know why. I didn't found a fix.
 
-contract TicketFactory is UserWalletFactory, Administrable, OracleLinked, BalanceManager {
+contract TicketFactory {
     constructor() {}
 
     /// Properties
-    struct PriceRequest {
-        bool requested;
-        // Coordinate[] points; // See ISSUE 01
-        uint256 id;
-        uint256 standardPrice;
-        uint256 distance;
-        uint256 price;
-        string[] types;
-    }
-
-    struct Coordinate {
-        int32 lat;
-        int32 long;
-    }
-
     struct Ticket {
         address owner;
         string name;
@@ -37,64 +17,76 @@ contract TicketFactory is UserWalletFactory, Administrable, OracleLinked, Balanc
         uint256 distance;
     }
 
-    uint256 ticketPrice = 0.00030 ether;
+    struct Coordinate {
+        int32 lat;
+        int32 long;
+    }
 
     /// Mappings
-    mapping (address => PriceRequest) private callerToPriceRequest;
+    mapping (address => Ticket[]) private userToTickets;
 
-    /// Events
-    event TicketPriceChanged(uint256 newPrice);
-    event TicketPriceRequested(uint256 requestId, address indexed caller, string[] types, Coordinate[] points, int256 cardId);
-    event TicketPriceCalculated(uint256 indexed requestId, address indexed caller, uint256 price);
-    event BoughtTicket(uint256 indexed requestId, address indexed owner);
+    /// Modifier
+    modifier checkIndex(address _owner, uint256 _index) {
+        require(_index < _getTicketsOf(_owner).length, "Invalid ticket index!");
+        _;
+    }
 
     /// Functions
-    function getStandardPrice() public view returns(uint256) {
-        return ticketPrice;
+    // Functions - Create
+    function _addTicket(address _owner, Ticket memory _ticket) private {
+        userToTickets[_owner].push(_ticket);
     }
 
-    function getPrice(string[] calldata _types, Coordinate[] calldata _points, int256 _cardId) external {
-        uint256 requestId = super._addRequest();
-        emit TicketPriceRequested(requestId, msg.sender, _types, _points, _cardId);
-    }
-
-    function setCalculatedPrice(uint256 _requestId, address _caller, uint256 _standardPrice, uint256 _distance, uint256 _price, string[] calldata _types) public validRequestId(_requestId) mustBeOracle {
-        super._removeRequest(_requestId);
-        // callerToPriceRequest[_caller] = PriceRequest(true, _points, _standardPrice, _distance, _price); // See ISSUE 01
-        callerToPriceRequest[_caller] = PriceRequest(true, _requestId, _standardPrice, _distance, _price, _types);
-
-        emit TicketPriceCalculated(_requestId, _caller, _price);
-    }
-
-    function setPrice(uint256 price) external mustBeAdmin {
-        ticketPrice = price;
-        emit TicketPriceChanged(ticketPrice);
-    }
-
-    // TODO: Send value if too much?
-    function buyTicket() external payable {
-        require(callerToPriceRequest[msg.sender].requested == true, "You must request the price before buying a ticket!");
-        PriceRequest memory request = callerToPriceRequest[msg.sender];
-
-        require(request.standardPrice == getStandardPrice(), "The ticket price has changed: Please do another request.");
-        // require(msg.value >= request.price, "Not enough ETH!"); // TODO: In some case, this line triggers a revert even if there's enough ETH is the message
-
-        delete callerToPriceRequest[msg.sender];
-        // Ticket storage ticket = _createTicket(msg.sender, "Bonjour", request.points, request.distance); // See ISSUE 01
-        Ticket memory ticket = _createTicket(msg.sender, "Ticket", request.types, request.distance);
-
-        emit BoughtTicket(request.id, ticket.owner);
-    }
-
-    function _createTicket(address _owner, string memory _name, string[] memory _types, uint256 _distance) private returns(Ticket memory) {
-        // Ticket storage ticket = super._addTicket(_owner, Ticket(_owner, _name, new Coordinate[](_points.length), _distance)); // See ISSUE 01
+    function _createTicket(address _owner, string memory _name, string[] memory _types, uint256 _distance) internal returns(Ticket memory) {
+        // Ticket storage ticket = _addTicket(_owner, Ticket(_owner, _name, _types, new Coordinate[](_points.length), _distance)); // See ISSUE 01
         Ticket memory ticket = Ticket(_owner, _name, _types, _distance);
-        super._addTicket(_owner, ticket);
+        _addTicket(_owner, ticket);
 
         // for(uint i = 0; i < _points.length; i++) { // See ISSUE 01
         //     ticket.points.push(_points[i]);        // See ISSUE 01
         // }                                          // See ISSUE 01
 
         return ticket;
+    }
+
+    // Functions - Read
+    function getTickets() public view returns(Ticket[] memory) {
+        return _getTicketsOf(msg.sender);
+    }
+
+    function _getTicketsOf(address _owner) internal view returns(Ticket[] memory) {
+        return userToTickets[_owner];
+    }
+
+    function _getTicket(address _owner, uint256 _index) internal view checkIndex(_owner, _index) returns(Ticket memory) {
+        return userToTickets[_owner][_index];
+    }
+
+    // Functions - Update
+    function _setTicketOf(address _owner, uint256 _index, Ticket memory _ticket) internal {
+        userToTickets[_owner][_index] = _ticket;
+    }
+
+    // Functions - Delete
+    function _removeTicket(address _owner, uint256 _index) internal checkIndex(_owner, _index) {
+        // Delete the ticket
+        delete userToTickets[_owner][_index];
+
+        // Sort the array and truncate it
+        uint256 offset = 0;
+
+        for (uint256 idx = 0; idx <  userToTickets[_owner].length; idx++) {
+            if (offset > 0) {
+                userToTickets[_owner][idx - offset] =  userToTickets[_owner][idx];
+            }
+
+            if ( userToTickets[_owner][idx].distance == 0) {
+                offset++;
+            }
+        }
+
+        for (uint256 i = 0; i < offset; i++) {
+            userToTickets[_owner].pop();
+        }
     }
 }

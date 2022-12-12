@@ -3,7 +3,7 @@ const actions = { init: "INIT" };
 const initialState = {
 	artifact: null,
 	web3: null,
-	accounts: null,
+	account: null,
 	networkID: null,
 	contracts: {}
 };

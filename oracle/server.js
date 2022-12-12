@@ -13,7 +13,7 @@ import constants from "./lib/constants.js";
 import Queue from "./lib/Queue.js";
 import { calculatePrice } from "./lib/geoStuff.js";
 import { useDiscountCard } from "./lib/discounts.js";
-import TicketFactoryBuild from "./contracts/TicketFactory.json" assert {type: "json"};
+import TicketMarketBuild from "./contracts/TicketMarket.json" assert {type: "json"};
 import CardMarketBuild from "./contracts/CardMarket.json" assert {type: "json"};
 
 /*** Functions - Events ***********************************************************************************************/
@@ -23,19 +23,19 @@ import CardMarketBuild from "./contracts/CardMarket.json" assert {type: "json"};
  *
  * @param {Web3} web3 - The Web3 instance.
  * @param {Queue} queue - The Queue instance.
- * @param {Contract} ticketContract - Ticket contract.
+ * @param {Contract} ticketMarket - Ticket contract.
  */
-function listenEvents(web3, queue, ticketContract) {
+function listenEvents(web3, queue, ticketMarket) {
 	// Listen for requested price calculation
 	// noinspection JSUnresolvedFunction
-	ticketContract.events.TicketPriceRequested((err, event) => {
+	ticketMarket.events.TicketPriceRequested((err, event) => {
 		if (err) console.error(`An error occurred during an event: ${err}`.red);
 		else queue.addRequest(event);
 	});
 
 	// Listen for received price calculation
 	// noinspection JSUnresolvedFunction
-	ticketContract.events.TicketPriceCalculated((err/*, event*/) => {
+	ticketMarket.events.TicketPriceCalculated((err/*, event*/) => {
 		if (err) console.error(`An error occurred during an event: ${err}`.red);
 	});
 }
@@ -46,13 +46,13 @@ function listenEvents(web3, queue, ticketContract) {
  * @async
  *
  * @param {Queue} queue - The Queue instance.
- * @param {Contract} ticketContract - Ticket contract.
+ * @param {Contract} ticketMarket - Ticket contract.
  * @param {boolean} [forced = false] - Force close the oracle?
  * @return {Promise<void>}
  */
-async function onClose(queue, ticketContract, forced = false) {
+async function onClose(queue, ticketMarket, forced = false) {
 	queue.stop();
-	const retired = await retireOracle(ticketContract, forced);
+	const retired = await retireOracle(ticketMarket, forced);
 
 	if (retired) {
 		console.log("The Oracle is no more. Oedipus would be happy.".grey);
@@ -66,13 +66,13 @@ async function onClose(queue, ticketContract, forced = false) {
  * @async
  *
  * @param {Queue} queue - The Queue instance.
- * @param {Contract} ticketContract - Ticket contract.
+ * @param {Contract} ticketMarket - Ticket contract.
  * @param {Error} [err] - The error that cause the Oracle to stop working.
  * @return {Promise<void>}
  */
-async function onForcedClose(queue, ticketContract, err) {
+async function onForcedClose(queue, ticketMarket, err) {
 	console.error((err ? `${err}` : "The Oracle has been forced closed!").red);
-	await onClose(queue, ticketContract, true);
+	await onClose(queue, ticketMarket, true);
 }
 
 /*** Functions - Queue management *************************************************************************************/
@@ -82,22 +82,22 @@ async function onForcedClose(queue, ticketContract, err) {
  * @async
  *
  * @param {Request} request - The request.
- * @param {Contract} ticketContract - Ticket contract.
+ * @param {Contract} ticketMarket - Ticket contract.
  * @param {Contract} cardMarket - Card market.
  * @return {Promise<void>}
  */
-async function processRequest(request, ticketContract, cardMarket) {
+async function processRequest(request, ticketMarket, cardMarket) {
 	try {
 		// Calculate the ticket price.
 		// noinspection JSUnresolvedFunction
-		const standardPrice = await ticketContract.methods.getStandardPrice().call({ from: request.caller });
+		const standardPrice = await ticketMarket.methods.getStandardPrice().call({ from: request.caller });
 		let { distance, price } = calculatePrice(request.data.points, standardPrice);
 		price = await useDiscountCard(cardMarket, request.caller, request.data.cardId, price);
 
 		// Send the response
 		// noinspection JSUnresolvedFunction
 		await sendWithEstimatedGas(
-			ticketContract.methods.setCalculatedPrice(request.requestId, request.caller, standardPrice, (distance * constants.FLOAT_FACTOR).toFixed(), `${price}`, request.data.types),
+			ticketMarket.methods.setCalculatedPrice(request.requestId, request.caller, standardPrice, (distance * constants.FLOAT_FACTOR).toFixed(), `${price}`, request.data.types),
 			{ from: process.env.ACCOUNT }
 		);
 		console.log(`Price calculated ${`(caller: "${request.caller}", requestId: ${request.requestId})`.grey}`);
@@ -178,12 +178,12 @@ async function getContract(web3, buildFile) {
  * @async
  *
  * @param {Web3} web3 - The Web3 instance.
- * @param {Contract} ticketContract - Ticket contract.
+ * @param {Contract} ticketMarket - Ticket contract.
  */
-async function announceOracle(web3, ticketContract) {
+async function announceOracle(web3, ticketMarket) {
 	try {
 		// noinspection JSUnresolvedFunction
-		await sendWithEstimatedGas(ticketContract.methods.addOracle(process.env.ACCOUNT), { from: process.env.ACCOUNT });
+		await sendWithEstimatedGas(ticketMarket.methods.addOracle(process.env.ACCOUNT), { from: process.env.ACCOUNT });
 		console.log("Announce done: this oracle is ready to work.".green);
 	} catch (err) {
 		console.error(`An error occurred during the oracle announcement: ${err}`.red);
@@ -196,13 +196,13 @@ async function announceOracle(web3, ticketContract) {
  * @function
  * @async
  *
- * @param {Contract} ticketContract - Ticket contract.
+ * @param {Contract} ticketMarket - Ticket contract.
  * @param {boolean} [forced = false] - Force close the oracle?
  */
-async function retireOracle(ticketContract, forced = false) {
+async function retireOracle(ticketMarket, forced = false) {
 	try {
 		// noinspection JSUnresolvedFunction
-		await ticketContract.methods.removeOracle(process.env.ACCOUNT, forced).send({ from: process.env.ACCOUNT });
+		await ticketMarket.methods.removeOracle(process.env.ACCOUNT, forced).send({ from: process.env.ACCOUNT });
 		console.log("Retire done: this oracle is now free.".green);
 		return true;
 	} catch (err) {
@@ -231,23 +231,23 @@ async function startOracle() {
 		});
 
 	// Load contracts
-	const ticketContract = await getContract(web3, TicketFactoryBuild);
+	const ticketMarket = await getContract(web3, TicketMarketBuild);
 	const cardMarket = await getContract(web3, CardMarketBuild);
 
 	// Announce oracle
-	await announceOracle(web3, ticketContract);
+	await announceOracle(web3, ticketMarket);
 	const queue = new Queue(processRequest);
 
 	// Listen events
-	listenEvents(web3, queue, ticketContract);
+	listenEvents(web3, queue, ticketMarket);
 
 	// Initialize oracle events
 	["SIGTERM", "SIGINT", "SIGBREAK", "SIGHUP"].forEach(sig => {
-		process.on(sig, async () => { await onClose(queue, ticketContract); });
+		process.on(sig, async () => { await onClose(queue, ticketMarket); });
 	});
 
 	// Listen for contract events
-	queue.start(ticketContract, cardMarket).catch(err => onForcedClose(queue, ticketContract, err));
+	queue.start(ticketMarket, cardMarket).catch(err => onForcedClose(queue, ticketMarket, err));
 }
 
 startOracle().catch(err => console.error(`${err}`.red));

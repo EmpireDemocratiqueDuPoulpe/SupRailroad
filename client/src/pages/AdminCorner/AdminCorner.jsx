@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Web3 from "web3";
 import { useEth } from "../../contexts/EthContext";
-import useTickets from "../../hooks/tickets/useTickets.js";
+import useTicketsMarket from "../../hooks/market/useTicketsMarket.js";
 import useCards from "../../hooks/cards/useCards.js";
 import useContractBalance from "../../hooks/contractBalance/useContractBalance.js";
 import Loader from "../../components/Loader/Loader.jsx";
@@ -11,10 +11,10 @@ import Inputs from "../../components/Inputs";
 function AdminCorner() {
 	/* ---- Contexts -------------------------------- */
 	const navigate = useNavigate();
-	const { state: { contracts: {ticketFactory}, account, isAdmin } } = useEth();
-	const tickets = useTickets();
+	const { state: { contracts: {ticketMarket}, account, isAdmin } } = useEth();
+	const tickets = useTicketsMarket();
 	const cards = useCards();
-	const contractBalance = useContractBalance(ticketFactory);
+	const contractBalance = useContractBalance(ticketMarket);
 
 	/* ---- Constants ------------------------------- */
 	const [cardName, setCardName] = useState(/** @type {string} */ "");

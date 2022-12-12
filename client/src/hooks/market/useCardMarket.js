@@ -3,7 +3,7 @@ import { useEth } from "../../contexts/EthContext";
 import {useEffect, useState} from "react";
 import Web3 from "web3";
 
-function useMarket() {
+function useCardMarket() {
 	const messages = useMessages();
 	const { state: { account, contracts: {cardMarket} } } = useEth();
 
@@ -40,4 +40,4 @@ function useMarket() {
 	return { onSaleCards, buy: buyCard };
 }
 
-export default useMarket;
+export default useCardMarket;

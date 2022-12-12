@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useProgressiveSections, ProgressiveSectionsProvider } from "../../contexts/ProgressiveSectionsContext";
-import useTickets from "../../hooks/tickets/useTickets.js";
+import useTicketsMarket from "../../hooks/market/useTicketsMarket.js";
 import useCardWallet from "../../hooks/wallet/useCardWallet.js";
 import ProgressiveSection from "../../components/ProgressiveSection/ProgressiveSection.jsx";
 import Inputs from "../../components/Inputs";
@@ -14,7 +14,7 @@ import "./TravelPlanner.css";
 function DynamicSections() {
 	/* ---- Contexts -------------------------------- */
 	const progressiveSections = useProgressiveSections();
-	const tickets = useTickets({ onTicketBought: progressiveSections.nextStep });
+	const tickets = useTicketsMarket({ onTicketBought: progressiveSections.nextStep });
 	const cards = useCardWallet();
 	const navigate = useNavigate();
 

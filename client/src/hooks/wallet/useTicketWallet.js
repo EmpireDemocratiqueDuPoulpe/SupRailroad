@@ -2,10 +2,10 @@ import { useState, useEffect } from "react";
 import { useMessages } from "../../contexts/MessageContext";
 import { useEth } from "../../contexts/EthContext";
 
-function useWallet() {
+function useTicketWallet() {
 	/* ---- Contexts -------------------------------- */
 	const messages = useMessages();
-	const { state: { account, contracts: {ticketFactory} } } = useEth();
+	const { state: { account, contracts: {ticketMarket} } } = useEth();
 
 	/* ---- States ---------------------------------- */
 	const [wallet, setWallet] = useState(null);
@@ -15,9 +15,9 @@ function useWallet() {
 		// Fetch the new wallet and update the hook state.
 		const update = async () => {
 			try {
-				if (ticketFactory) {
+				if (ticketMarket) {
 					// noinspection JSUnresolvedFunction
-					const wallet = await ticketFactory.methods.getWallet().call({ from: account });
+					const wallet = await ticketMarket.methods.getTickets().call({ from: account });
 					setWallet(wallet);
 				}
 			} catch (err) { messages.addError(err, true); }
@@ -25,10 +25,10 @@ function useWallet() {
 
 		// Fetch the wallet once and start an event listener.
 		let ticketBoughtListener = null;
-		if (ticketFactory) {
+		if (ticketMarket) {
 			update().catch(console.error);
 			// noinspection JSValidateTypes
-			ticketBoughtListener = ticketFactory.events.BoughtTicket({ filter: {owner: account} }).on("data", update);
+			ticketBoughtListener = ticketMarket.events.BoughtTicket({ filter: {owner: account} }).on("data", update);
 		}
 
 		// The event listener is stopped when this hook is unmounted.
@@ -38,10 +38,10 @@ function useWallet() {
 			}
 		};
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [ticketFactory, account]);
+	}, [ticketMarket, account]);
 
 	/* ---- Expose hook ----------------------------- */
 	return wallet;
 }
 
-export default useWallet;
+export default useTicketWallet;

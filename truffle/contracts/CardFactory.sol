@@ -61,8 +61,8 @@ contract CardFactory {
     }
 
     // Functions - Update
-    function _setCard(uint256 _index, Card memory _card) internal {
-        userToCards[msg.sender][_index] = _card;
+    function _setCard(address _owner, uint256 _index, Card memory _card) internal {
+        userToCards[_owner][_index] = _card;
     }
 
     function _updateCardApproval(address _owner, address _target, uint256 _cardId) internal {
@@ -72,6 +72,7 @@ contract CardFactory {
 
     // Functions - Delete
     function _removeCard(address _owner, uint256 _cardId) internal {
+        // Delete the card
         Card[] storage cards = userToCards[_owner];
         uint256 idToRemove = _findCardIndex(_owner, _cardId);
         delete cards[idToRemove];
