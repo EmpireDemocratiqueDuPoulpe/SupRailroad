@@ -1,0 +1,38 @@
+/* ---- Page container ---------------------------------------------------------------------------------------------- */
+.Wallet-page { }
+
+/* ---- Collections ------------------------------------------------------------------------------------------------- */
+.Wallet-page .collection-box:not(:last-child) { margin-bottom: 25px; }
+
+/* -- Title */
+.Wallet-page .collection-box .collection-title {
+	box-sizing: border-box;
+	display: inline-block;
+	margin: 0 0 0.5em 0;
+	padding: 5px 40px 5px 10px;
+	background: var(--primary-color);
+	color: var(--text-color_background);
+	clip-path: polygon(0% 100%, 0% 0%, 100% 0%, calc(100% - 30px) 100%);
+}
+
+/* -- Empty collection message */
+.Wallet-page .collection-box .empty-collection {
+	font-size: 0.9em;
+	margin: 0.5em 0 0 0;
+	color: var(--text-attenuate_background);
+	font-style: italic;
+}
+
+body.crt-mode .Wallet-page .collection-box .empty-collection {
+	color: var(--primary-color);
+	opacity: 0.5;
+}
+
+/* -- Collection content */
+.Wallet-page .collection-box .collection-content {
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-start;
+	align-items: center;
+	gap: 10px;
+}

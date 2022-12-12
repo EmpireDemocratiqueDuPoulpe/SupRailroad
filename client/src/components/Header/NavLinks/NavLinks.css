@@ -1,0 +1,25 @@
+/* --- Container ---------------------------------------------------------------------------------------------------- */
+.nav-links {
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-start;
+	align-items: center;
+	gap: 30px;
+	height: var(--header-height);
+	padding: 0 40px;
+}
+
+/* --- Links -------------------------------------------------------------------------------------------------------- */
+.nav-links > a {
+	display: inline-block;
+	height: var(--header-height);
+	line-height: var(--header-height);
+	font-size: 1.05em;
+	color: var(--text-color_background);
+	font-weight: 500;
+	text-decoration: none;
+}
+
+.nav-links > a:hover {
+	color: var(--secondary-color);
+}

@@ -1,0 +1,44 @@
+/* ---- Page container ---------------------------------------------------------------------------------------------- */
+.App-root {
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-items: stretch;
+}
+
+/* -- Header */
+.App-root header { flex-grow: 0; flex-shrink: 0; }
+
+/* ---- App body ---------------------------------------------------------------------------------------------------- */
+.App-root .App-body { flex-grow: 1; position: relative; }
+
+/* ---- Pages ------------------------------------------------------------------------------------------------------- */
+.App-root .App-body .Page {
+	box-sizing: border-box;
+	padding: 20px;
+}
+
+/* -- Inner page */
+.App-root .App-body .Page .inner-page {
+	box-sizing: border-box;
+	width: 50vw;
+	margin: 0 auto;
+	padding: 20px;
+	background: var(--background-color⨣1);
+	box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+}
+
+body.crt-mode .App-root .App-body .Page .inner-page { box-shadow: none; }
+
+/* - ProgressiveSection */
+.App-root .App-body .Page .inner-page .inner-page-section:not(:last-child) { margin-bottom: 30px; }
+
+/* - ProgressiveSection title */
+.App-root .App-body .Page .inner-page .inner-page-section .inner-page-section-title {
+	margin-top: 0;
+	color: var(--secondary-color);
+}
+
+/* - ProgressiveSection body */
+.App-root .App-body .Page .inner-page .inner-page-section .inner-page-section-body { position: relative; }
+.App-root .App-body .Page .inner-page .inner-page-section .inner-page-section-body .loader.centered { margin: 7px auto 0 auto; }

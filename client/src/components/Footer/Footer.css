@@ -1,0 +1,21 @@
+/* --- Container ---------------------------------------------------------------------------------------------------- */
+.footer {
+	box-sizing: border-box;
+	position: absolute;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	text-align: center;
+	font-size: 0.8em;
+	padding: 10px;
+	background: var(--background-color-1);
+	color: var(--background-color⨣2);
+}
+
+body.crt-mode .footer {
+	border: 1px var(--primary-border-color) solid;
+	border-top: 2px var(--primary-border-color) dashed;
+	color: var(--primary-color);
+}
+
+body.crt-mode .footer .footer-content { opacity: 0.5; }

@@ -3,13 +3,26 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^6.2.1",
+    "@fortawesome/free-regular-svg-icons": "^6.2.1",
+    "@fortawesome/free-solid-svg-icons": "^6.2.1",
+    "@fortawesome/react-fontawesome": "^0.2.0",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+    "@turf/turf": "^6.5.0",
+    "babel-plugin-macros": "^3.1.0",
+    "lodash-es": "^4.17.21",
+    "mapbox-gl": "^2.11.0",
+    "normalize.css": "^8.0.1",
     "prop-types": "^15.8.1",
+    "qrcode.react": "^3.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-scripts": "^4.0.3",
+    "react-jazzicon": "^1.0.4",
+    "react-map-gl": "^7.0.19",
+    "react-router-dom": "^6.4.3",
+    "react-scripts": "5.0.1",
     "web3": "^1.7.5"
   },
   "scripts": {
@@ -29,7 +42,11 @@
     "production": [
       ">0.2%",
       "not dead",
-      "not op_mini all"
+      "not ie 11",
+      "not op_mini all",
+      "not safari < 10",
+      "not chrome < 51",
+      "not android < 51"
     ],
     "development": [
       "last 1 chrome version",

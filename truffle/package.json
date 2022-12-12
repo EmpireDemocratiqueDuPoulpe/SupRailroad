@@ -5,9 +5,12 @@
   "main": "truffle-config.js",
   "dependencies": {
     "@openzeppelin/contracts": "^4.8.0",
-    "@truffle/hdwallet-provider": "^2.0.10"
+    "@truffle/hdwallet-provider": "^2.0.10",
+    "truffle-contract-size": "^2.0.1"
   },
   "scripts": {
+    "migrate-v1": "truffle migrate && postMigrate.cmd",
+    "migrate-v2": "truffle migrate && ./postMigrate.cmd",
     "test": "truffle test"
   },
   "author": "",

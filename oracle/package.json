@@ -1,0 +1,25 @@
+{
+  "name": "oracle",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node --experimental-json-modules ./server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/core": "^7.20.5",
+    "@babel/eslint-parser": "^7.19.1",
+    "@babel/plugin-syntax-import-assertions": "^7.20.0",
+    "eslint": "^8.29.0"
+  },
+  "dependencies": {
+    "@turf/turf": "^6.5.0",
+    "colors": "^1.4.0",
+    "dotenv": "^16.0.3",
+    "web3": "^1.8.1"
+  }
+}

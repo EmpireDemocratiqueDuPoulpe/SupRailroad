@@ -1,0 +1,38 @@
+/* ---- Inputs ------------------------------------------------------------------------------------------------------ */
+.input {
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-start;
+	align-items: center;
+	gap: 7px;
+	margin: 10px 0;
+}
+
+/* ---- Text based inputs ------------------------------------------------------------------------------------------- */
+.input.text-input input, .input.number-input input {
+	padding: 5px;
+	background: transparent;
+	color: var(--text-color_background);
+	border: 1px var(--background-color⨣1) solid;
+	-moz-appearance: none;
+	-webkit-appearance: none;
+	appearance: none;
+	cursor: default;
+}
+
+.input.text-input input:focus, .input.number-input input:focus,
+.input.text-input:focus-within, .input.number-input:focus-within {
+	outline: none;
+}
+
+/* -- Editing */
+.input.text-input.editing input, .input.number-input.editing input {
+	background: var(--background-color⨣2);
+	border-color: rgba(0, 0, 0, 0.45);
+	cursor: text;
+}
+
+.input.text-input.editing input:focus, .input.number-input.editing input:focus,
+.input.text-input.editing:focus-within, .input.number-input.editing:focus-within {
+	border-color: var(--secondary-color) !important;
+}
