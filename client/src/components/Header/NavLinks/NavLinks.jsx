@@ -10,7 +10,7 @@ function NavLinks() {
 	return (
 		<div className="nav-links">
 			<Link to="/travel">Acheter un ticket</Link>
-			<Link to="/market">Cartes de r&eacute;duction</Link>
+			<Link to="/market">March&eacute;</Link>
 			{isAdmin && <Link to="/admin">Administration</Link>}
 		</div>
 	);
