@@ -7,6 +7,8 @@ import "./Administrable.sol";
 import "./CardFactory.sol";
 import "./BalanceManager.sol";
 
+/// @title Makes cards tradeable.
+/// @author Maxence P. <maxence.pawlowski@supinfo.com>
 contract CardMarket is ERC721, Administrable, CardFactory, BalanceManager {
     /// Libs
     using Counters for Counters.Counter;
@@ -21,9 +23,13 @@ contract CardMarket is ERC721, Administrable, CardFactory, BalanceManager {
     Card[] private onSaleCards;
 
     /// Events
+    /// @notice Triggered when the card is created.
     event CreatedCard(address indexed caller, uint256 count);
+    /// @notice Triggered when the card is bought.
     event BoughtCard(address indexed owner, uint256 indexed cardId);
+    /// @notice Triggered when an address is approved on a card.
     event ApprovedCard(address indexed owner, address indexed target, uint256 indexed cardId);
+    /// @notice Triggered when the card is transferred.
     event TransferredCard(address indexed owner, uint256 indexed cardId);
 
     /// Modifiers
@@ -34,6 +40,13 @@ contract CardMarket is ERC721, Administrable, CardFactory, BalanceManager {
 
     /// Functions
     // Functions - Cards creation and updates
+    /// @notice Create a card.
+    /// @param price - The card price.
+    /// @param discountPercent - The card discount.
+    /// @param name - The card name.
+    /// @param imagePath - The card image path.
+    /// @param description - The card description.
+    /// @param cardsNumber - The number of cards to create.
     function createCard(uint256 price, uint8 discountPercent, string calldata name, string calldata imagePath, string calldata description, uint8 cardsNumber) external mustBeAdmin {
         require(cardsNumber >= 1, "Not enough cards to create !");
         require(discountPercent >= 1, "Discount cant be below 1% !");
@@ -50,10 +63,13 @@ contract CardMarket is ERC721, Administrable, CardFactory, BalanceManager {
     }
 
     // Functions - Cards market
+    /// @notice Get all saleable cards.
+    /// @return The saleable cards.
     function getSaleableCards() public view returns(CardFactory.Card[] memory) {
         return onSaleCards;
     }
 
+    /// @notice For buying a card.
     function buyCard(uint256 cardId) public payable {
         // Get the card for the sale array
         Card memory card;
@@ -78,6 +94,7 @@ contract CardMarket is ERC721, Administrable, CardFactory, BalanceManager {
         emit BoughtCard(msg.sender, newCard.cardId);
     }
 
+    /// @notice Remove a bought card from the saleable cards list.
     function _removeOnSaleCard(uint256 idToRemove) internal {
         delete onSaleCards[idToRemove];
 
@@ -100,6 +117,9 @@ contract CardMarket is ERC721, Administrable, CardFactory, BalanceManager {
     }
 
     // Functions - Cards transfer
+    /// @notice Define a new approved address for a card.
+    /// @param _target - The approved address.
+    /// @param _cardId - The card id.
     function setApproval(address _target, uint256 _cardId) public {
         super.approve(_target, _cardId);
         userApprovals[_target].push(_cardId);
@@ -108,6 +128,8 @@ contract CardMarket is ERC721, Administrable, CardFactory, BalanceManager {
         emit ApprovedCard(msg.sender, _target, _cardId);
     }
 
+    /// @notice Get all cards with the caller address approved.
+    /// @return The approved cards.
     function getApprovals() public view returns (CardFactory.Card[] memory) {
         uint256[] memory cardsIDs = userApprovals[msg.sender];
         CardFactory.Card[] memory approvedCards = new CardFactory.Card[](cardsIDs.length);
@@ -128,6 +150,11 @@ contract CardMarket is ERC721, Administrable, CardFactory, BalanceManager {
         return approvedCards;
     }
 
+    /// @notice Transfer the card to the target address.
+    /// @param _owner - The card owner (before transfer).
+    /// @param _target - The approved address.
+    /// @param _cardId - The card id.
+    /// @return The cards.
     function transferCard(address _owner, address _target, uint256 _cardId) public {
         super.safeTransferFrom(_owner, _target, _cardId);
 
@@ -154,17 +181,17 @@ contract CardMarket is ERC721, Administrable, CardFactory, BalanceManager {
     }
 
     // Functions - Overrides
-    // Required to resolve a conflict (ERC721 / AccessControlEnumerable)
+    /// @notice Required to resolve a conflict (ERC721 / AccessControlEnumerable)
     function supportsInterface(bytes4 interfaceId) public view virtual override(ERC721, AccessControlEnumerable) returns (bool) {
         return super.supportsInterface(interfaceId);
     }
 
-    // Overridden for security issue. Our function is public while is hidden from the outside.
+    /// @notice Overridden for security issue. Our function is public while is hidden from the outside.
     function safeTransferFrom(address, address, uint256) override public pure {
         revert("You must use the `transferCard()` function!.");
     }
 
-    // Overridden for security issue. Our function is public while is hidden from the outside.
+    /// @notice Overridden for security issue. Our function is public while is hidden from the outside.
     function transferFrom(address, address, uint256) override public pure {
         revert("You must use the `transferCard()` function!.");
     }
