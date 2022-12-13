@@ -1,5 +1,5 @@
 /* --- Container ---------------------------------------------------------------------------------------------------- */
-.button {
+.button.simple-button {
 	box-sizing: border-box;
 	position: relative;
 	display: inline-block;
@@ -18,11 +18,19 @@
 	transition-duration: 150ms;
 	transition-timing-function: ease-in-out;
 }
-.button.centered { margin: 0 auto; }
+.button.simple-button.centered { margin: 0 auto; }
 
 /* -- Hover */
-.button:not(:disabled):hover {
+.button.simple-button:not(:disabled):hover {
 	background: var(--primary-color);
 	color: var(--text-color_primary);
 	border-color: var(--text-color_white);
+}
+
+/* -- Disabled */
+.button.simple-button:disabled {
+	cursor: default;
+	background: transparent;
+	color: #A5A5A5;
+	border-color: #A5A5A5;
 }

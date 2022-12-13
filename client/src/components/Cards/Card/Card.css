@@ -9,6 +9,7 @@
 	margin: 0;
 	padding: 0;
 	background-color: transparent;
+	border-radius: var(--border-radius);
 	perspective: 1000px;
 }
 .card.flippable { cursor: pointer; }
