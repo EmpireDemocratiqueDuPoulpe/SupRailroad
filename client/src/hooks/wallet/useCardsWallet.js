@@ -30,6 +30,7 @@ function useCardsWallet() {
 		let cardBoughtListener = null;
 		let cardApprovedListenerOut = null;
 		let cardApprovedListenerIn = null;
+		let cardTransferredListener = null;
 		if (cardMarket) {
 			update().catch(console.error);
 			// noinspection JSValidateTypes
@@ -38,6 +39,8 @@ function useCardsWallet() {
 			cardApprovedListenerOut = cardMarket.events.ApprovedCard({ filter: {owner: account} }).on("data", update);
 			// noinspection JSValidateTypes
 			cardApprovedListenerIn = cardMarket.events.ApprovedCard({ filter: {target: account} }).on("data", update);
+			// noinspection JSValidateTypes
+			cardTransferredListener = cardMarket.events.TransferredCard({ filter: {owner: account} }).on("data", update);
 		}
 
 		// The event listener is stopped when this hook is unmounted.
@@ -45,6 +48,7 @@ function useCardsWallet() {
 			if (cardBoughtListener) cardBoughtListener.removeAllListeners("data");
 			if (cardApprovedListenerOut) cardApprovedListenerOut.removeAllListeners("data");
 			if (cardApprovedListenerIn) cardApprovedListenerIn.removeAllListeners("data");
+			if (cardTransferredListener) cardTransferredListener.removeAllListeners("data");
 		};
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [cardMarket, account]);

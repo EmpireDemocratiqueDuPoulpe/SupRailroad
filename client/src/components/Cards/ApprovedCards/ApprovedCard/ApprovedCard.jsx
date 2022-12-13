@@ -1,5 +1,6 @@
 import PropTypes from "prop-types";
 import useCardsMarket from "../../../../hooks/market/useCardsMarket.js";
+import "./ApprovedCard.css";
 
 function ApprovedCard({ id, name, description, discount, approvedTo, owner }) {
 	/* ---- States ---------------------------------- */
@@ -10,14 +11,13 @@ function ApprovedCard({ id, name, description, discount, approvedTo, owner }) {
 
 	/* ---- Page content ---------------------------- */
 	return (
-		<div className="approved-card">
-			<p>ID : {id}</p>
-			<p>NAME : {name}</p>
-			<p>DESCRIPTION : {description}</p>
-			<p>DISCOUNT : {discount}</p>
-			<p>ACTUAL OWNER (from) : {owner}</p>
-			<button onClick={confirmRetrieval}>Récupérer</button>
-		</div>
+		<tr className="approved-card">
+			<td className="approved-card-name">{name}</td>
+			<td className="approved-card-description">{description}</td>
+			<td className="approved-card-discount">{discount} %</td>
+			<td className="approved-card-owner">{owner}</td>
+			<td className="approved-card-actions"><button onClick={confirmRetrieval}>Récupérer</button></td>
+		</tr>
 	);
 }
 ApprovedCard.propTypes = {
