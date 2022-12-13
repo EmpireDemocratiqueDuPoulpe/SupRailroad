@@ -1,7 +1,7 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
-import useCardsMarket from "../../hooks/market/useCardsMarket.js";
-import { eventOnElement } from "../../helpers/accessibility.js";
+import useCardsMarket from "../../../hooks/market/useCardsMarket.js";
+import { eventOnElement } from "../../../helpers/accessibility.js";
 import "./Card.css";
 
 function Card({ id, name, description, discountPercent, approvedTo, price, imageURI }) {

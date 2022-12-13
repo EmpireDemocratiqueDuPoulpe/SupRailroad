@@ -2,7 +2,7 @@ import Web3 from "web3";
 import { useEth } from "../../contexts/EthContext";
 import useCardsMarket from "../../hooks/market/useCardsMarket.js";
 import Loader from "../../components/Loader/Loader.jsx";
-import MarketCard from "../../components/MarketCard/MarketCard.jsx";
+import { MarketCard } from "../../components/Cards";
 
 function CardsMarket() {
 	/* ---- Contexts -------------------------------- */

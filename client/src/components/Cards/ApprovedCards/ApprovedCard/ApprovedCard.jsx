@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import useCardsMarket from "../../../hooks/market/useCardsMarket.js";
+import useCardsMarket from "../../../../hooks/market/useCardsMarket.js";
 
 function ApprovedCard({ id, name, description, discount, approvedTo, owner }) {
 	/* ---- States ---------------------------------- */

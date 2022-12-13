@@ -5,7 +5,7 @@ import useTicketsMarket from "../../hooks/market/useTicketsMarket.js";
 import useCardsWallet from "../../hooks/wallet/useCardsWallet.js";
 import ProgressiveSection from "../../components/ProgressiveSection/ProgressiveSection.jsx";
 import Buttons from "../../components/Buttons";
-import Card from "../../components/Card/Card.jsx";
+import { StandardCard } from "../../components/Cards";
 import Map from "../../components/Map/Map.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
@@ -68,7 +68,7 @@ function DynamicSections() {
 						{ usedCard && (
 							<>
 								<p>Carte de r&eacute;duction utilis&eacute;e :</p>
-								<Card id={usedCard.cardId} {...usedCard}/>
+								<StandardCard id={usedCard.cardId} {...usedCard}/>
 							</>
 						)}
 					</div>

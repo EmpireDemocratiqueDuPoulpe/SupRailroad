@@ -3,8 +3,7 @@ import useTicketsWallet from "../../hooks/wallet/useTicketsWallet.js";
 import useCardsWallet from "../../hooks/wallet/useCardsWallet.js";
 import Loader from "../../components/Loader/Loader.jsx";
 import Ticket from "../../components/Ticket/Ticket.jsx";
-import Card from "../../components/Card/Card.jsx";
-import ApprovedCards, { ApprovedCard } from "../../components/ApprovedCards/ApprovedCards.jsx";
+import { StandardCard, ApprovedContainer, ApprovedCard } from "../../components/Cards";
 import "./Wallet.css";
 
 function Wallet() {
@@ -31,7 +30,7 @@ function Wallet() {
 						<h2 className="collection-title">Cartes de r&eacute;duction</h2>
 						{!cardsWallet.cards?.length ? <p className="empty-collection">Vous ne possédez aucune carte de r&eacute;duction.</p> : (
 							<div className="collection-content">
-								{cardsWallet.cards.map((card, idx) => <Card key={`card-${account}-${idx}`} id={card.cardId} {...card}/>)}
+								{cardsWallet.cards.map((card, idx) => <StandardCard key={`card-${account}-${idx}`} id={card.cardId} {...card}/>)}
 							</div>
 						)}
 					</div>
@@ -40,7 +39,7 @@ function Wallet() {
 						<h2 className="collection-title">Cartes de r&eacute;duction approuvées</h2>
 						{!cardsWallet.approvedCards?.length ? <p className="empty-collection">Vous ne possédez aucune carte de r&eacute;duction en attente de récupération.</p> : (
 							<div className="collection-content">
-								<ApprovedCards>
+								<ApprovedContainer>
 									{cardsWallet.approvedCards.map((approvedCard, idx) => (
 										<ApprovedCard key={`approved-card-${account}-${idx}`}
 											id={approvedCard.cardId}
@@ -50,7 +49,7 @@ function Wallet() {
 											approvedTo={approvedCard.approvedTo}
 											discount={approvedCard.discountPercent}/>
 									))}
-								</ApprovedCards>
+								</ApprovedContainer>
 							</div>
 						)}
 					</div>
