@@ -12,6 +12,7 @@ html, body, #root, .expand-width, .expand-height, .expand-all {
 body {
   --background-color⨣2: #565B62;
   --background-color⨣1: #393E46;
+  --background-color⨣1_transparent: #393E4600;
   --background-color: #222831;
   --background-color-1: #181E27;
   --primary-color: #0466C8;
@@ -36,6 +37,7 @@ body {
 body.crt-mode {
   --background-color⨣2: #0E2516;
   --background-color⨣1: #0E2516;
+  --background-color⨣1_transparent: #0E251600;
   --background-color: #0E2516;
   --background-color-1: #0E2516;
   --primary-color: #26F087;
