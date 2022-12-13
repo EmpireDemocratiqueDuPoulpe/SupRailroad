@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useProgressiveSections, ProgressiveSectionsProvider } from "../../contexts/ProgressiveSectionsContext";
 import useTicketsMarket from "../../hooks/market/useTicketsMarket.js";
 import useCardsWallet from "../../hooks/wallet/useCardsWallet.js";
+import Loader from "../../components/Loader/Loader.jsx";
 import ProgressiveSection from "../../components/ProgressiveSection/ProgressiveSection.jsx";
 import Buttons from "../../components/Buttons";
 import { StandardCard } from "../../components/Cards";
@@ -63,12 +64,12 @@ function DynamicSections() {
 					<h3>Votre voyage</h3>
 
 					<div className="travel-data-content">
-						<p>{points.length ? (<>&Eacute;tapes : {points.length}</>) : "Cliquez sur la carte afin d'ajouter une étape."}</p>
+						<p>{points.length ? (<>&Eacute;tapes : {points.length}</>) : <span className="travel-data-step-help">Cliquez sur la carte afin d&apos;ajouter une &eacute;tape.</span>}</p>
 						<p>Distance : {distance}</p>
 						{ usedCard && (
 							<>
 								<p>Carte de r&eacute;duction utilis&eacute;e :</p>
-								<StandardCard id={usedCard.cardId} {...usedCard}/>
+								<StandardCard id={usedCard.cardId} {...usedCard} transferable={false} flippable={false}/>
 							</>
 						)}
 					</div>
@@ -76,6 +77,7 @@ function DynamicSections() {
 					<div className="travel-actions">
 						<button onClick={calcTicketPrice} disabled={points.length < 2}>Calculer le prix</button>
 
+						{ticketsMarket.processingPrice && <Loader/>}
 						<div className={`travel-price ${ticketsMarket.currentPrice ? "shown" : "hidden"}`}>
 							<p>Votre voyage est estim&eacute; &agrave; <span className="emphasis">{ticketsMarket.currentPrice} ETH</span>.</p>
 							<button onClick={buyTicket} disabled={!ticketsMarket.currentPrice}>Acheter un ticket</button>

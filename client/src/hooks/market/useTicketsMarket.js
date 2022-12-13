@@ -11,6 +11,7 @@ function useTicketsMarket({ onTicketBought } = {}) {
 	/* ---- States ---------------------------------- */
 	const [standardPrice, setStandardPrice] = useState(/** @type {number} */ null);
 	const [requestId, setRequestId] = useState(/** @type {number} */ null);
+	const [processingPrice, setProcessingPrice] = useState(/** @type {boolean} */ false);
 	const [price, setPrice] = useState(/** @type {number} */ null);
 
 	/* ---- Functions ------------------------------- */
@@ -38,6 +39,7 @@ function useTicketsMarket({ onTicketBought } = {}) {
 	const getPrice = async (types, points, cardId) => {
 		try {
 			if (ticketMarket) {
+				setProcessingPrice(true);
 				// noinspection JSUnresolvedFunction
 				await ticketMarket.methods.getPrice(types, points, cardId).send({ from: account });
 			}
@@ -99,6 +101,7 @@ function useTicketsMarket({ onTicketBought } = {}) {
 			// noinspection JSValidateTypes
 			receivedPriceListener = ticketMarket.events.TicketPriceCalculated({ filter: {requestId, caller: account} }).on("data", data => {
 				setPrice(parseFloat(Web3.utils.fromWei(data.returnValues.price, "ether")));
+				setProcessingPrice(false);
 			});
 		}
 
@@ -136,7 +139,8 @@ function useTicketsMarket({ onTicketBought } = {}) {
 	}, [ticketMarket, account, requestId]);
 
 	/* ---- Expose hook ----------------------------- */
-	return { standardPrice, setStandardPrice: changeStandardPrice, currentPrice: price, requestPrice: getPrice, buy: buyTicket };
+	console.log(processingPrice);
+	return { standardPrice, setStandardPrice: changeStandardPrice, processingPrice, currentPrice: price, requestPrice: getPrice, buy: buyTicket };
 }
 
 export default useTicketsMarket;

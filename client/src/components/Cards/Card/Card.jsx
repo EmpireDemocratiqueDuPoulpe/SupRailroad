@@ -5,15 +5,15 @@ import useCardsMarket from "../../../hooks/market/useCardsMarket.js";
 import { eventOnElement } from "../../../helpers/accessibility.js";
 import "./Card.css";
 
-function Card({ id, name, description, discountPercent, approvedTo, price, imagePath }) {
+function Card({ id, name, description, discountPercent, approvedTo, price, imagePath, flippable, transferable }) {
 	/* ---- States ---------------------------------- */
 	const cardsMarket = useCardsMarket();
 	const [flipped, setFlipped] = useState(/** @type {boolean} */ false);
 	const [approvedAddress, setApprovedAddress] = useState(/** @type {string} */ "");
 
 	/* ---- Functions ------------------------------- */
-	const showFront = () => setFlipped(false);
-	const showBack = () => setFlipped(true);
+	const showFront = () => { if (flippable) setFlipped(false); };
+	const showBack = () => { if (flippable) setFlipped(true); };
 	const flip = () => flipped ? showFront() : showBack();
 
 	const killEvent = event => event.stopPropagation();
@@ -21,11 +21,14 @@ function Card({ id, name, description, discountPercent, approvedTo, price, image
 	const handleApprovedAddress = event => setApprovedAddress(event.target.value);
 	const confirmApproval = event => {
 		killEvent(event);
-		cardsMarket.approve(approvedAddress, id).catch(console.error);
+
+		if (transferable) {
+			cardsMarket.approve(approvedAddress, id).catch(console.error);
+		}
 	};
 
 	return (
-		<div className={`card${flipped ? " flipped" : ""}`} {...eventOnElement(flip)}>
+		<div className={`card${flippable ? " flippable" : ""}${flipped ? " flipped" : ""}`} {...eventOnElement(flip)}>
 			<div className="card-inner">
 				<div className="card-front">
 					<div className="card-front-content">
@@ -49,7 +52,7 @@ function Card({ id, name, description, discountPercent, approvedTo, price, image
 								<p className="no-event" {...eventOnElement(killEvent)}>Carte approuv&eacute;e pour :</p>
 								<p className="address no-event" {...eventOnElement(killEvent)}>{approvedTo}</p>
 							</div>
-						) : (
+						) : (transferable && (
 							<>
 								<p className="card-approved-to-title no-event" {...eventOnElement(killEvent)}>Envoyer la carte à ...</p>
 
@@ -58,7 +61,7 @@ function Card({ id, name, description, discountPercent, approvedTo, price, image
 									<button onClick={confirmApproval} disabled={!approvedAddress}>&gt;</button>
 								</div>
 							</>
-						)}
+						))}
 					</div>
 
 					<div className="card-bottom"/>
@@ -75,6 +78,9 @@ Card.propTypes = {
 	approvedTo: PropTypes.string,
 	price: PropTypes.string.isRequired,
 	imagePath: PropTypes.string,
+	flippable: PropTypes.bool,
+	transferable: PropTypes.bool
 };
+Card.defaultProps = { flippable: true, transferable: true };
 
 export default Card;

@@ -10,8 +10,8 @@
 	padding: 0;
 	background-color: transparent;
 	perspective: 1000px;
-	cursor: pointer;
 }
+.card.flippable { cursor: pointer; }
 
 .card .card-inner {
 	box-sizing: inherit;
