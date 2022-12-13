@@ -16,6 +16,8 @@ import { useDiscountCard } from "./lib/discounts.js";
 import TicketMarketBuild from "./contracts/TicketMarket.json" assert {type: "json"};
 import CardMarketBuild from "./contracts/CardMarket.json" assert {type: "json"};
 
+let CLOSING = false;
+
 /*** Functions - Events ***********************************************************************************************/
 /**
  * Listen contract events.
@@ -51,6 +53,9 @@ function listenEvents(web3, queue, ticketMarket) {
  * @return {Promise<void>}
  */
 async function onClose(queue, ticketMarket, forced = false) {
+	if (CLOSING) return;
+	CLOSING = true;
+
 	queue.stop();
 	const retired = await retireOracle(ticketMarket, forced);
 
@@ -71,7 +76,10 @@ async function onClose(queue, ticketMarket, forced = false) {
  * @return {Promise<void>}
  */
 async function onForcedClose(queue, ticketMarket, err) {
-	console.error((err ? `${err}` : "The Oracle has been forced closed!").red);
+	if (!CLOSING) {
+		console.error((err ? `${err}` : "The Oracle has been forced closed!").red);
+	}
+
 	await onClose(queue, ticketMarket, true);
 }
 
@@ -243,7 +251,13 @@ async function startOracle() {
 
 	// Initialize oracle events
 	["SIGTERM", "SIGINT", "SIGBREAK", "SIGHUP"].forEach(sig => {
-		process.on(sig, async () => { await onClose(queue, ticketMarket); });
+		process.on(sig, async () => {
+			if (process.env?.NODE_ENV === "development") {
+				await onForcedClose(queue, ticketMarket);
+			} else {
+				await onClose(queue, ticketMarket);
+			}
+		});
 	});
 
 	// Listen for contract events
