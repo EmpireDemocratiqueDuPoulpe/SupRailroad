@@ -5,6 +5,7 @@ import useTicketsMarket from "../../hooks/market/useTicketsMarket.js";
 import useCardsMarket from "../../hooks/market/useCardsMarket.js";
 import useContractBalance from "../../hooks/contractBalance/useContractBalance.js";
 import Loader from "../../components/Loader/Loader.jsx";
+import { PayableButton } from "../../components/Buttons";
 import Inputs from "../../components/Inputs";
 
 function AdminCorner() {
@@ -100,7 +101,10 @@ function AdminCorner() {
 						<span>Prix (ETH) :</span><input type="number" step="0.0001" placeholder="Prix de la carte" value={cardPrice} onChange={handleCardPrice}/><br/>
 						<span>Réduction (%) :</span><input type="number" step="1" min="1" max="100" placeholder="Pourcentage de réduction" value={cardDiscount} onChange={handleCardDiscount}/><br/>
 						<span>Nombre :</span><input type="number" step="1" min="1" max="100" placeholder="Nombre de cartes" value={cardsCount} onChange={handleCardsNumber}/><br/>
-						<button onClick={createCard}>Create card</button>
+
+						<PayableButton onClick={createCard}>
+							Cr&eacute;er {cardsCount > 1 ? "les" : "la"} carte{cardsCount > 1 ? "s" : ""}
+						</PayableButton>
 					</div>
 				</div>
 
@@ -113,13 +117,19 @@ function AdminCorner() {
 								<div className="balance-box">
 									<h3>March&eacute; des tickets</h3>
 									<p className="inner-page-section-data">Balance : {ticketsContractBalance.balance} ETH</p>
-									<button onClick={() => transfertBalance(ticketsContractBalance)} disabled={!ticketsContractBalance.balance}>Transférer sur mon compte</button>
+
+									<PayableButton onClick={() => transfertBalance(ticketsContractBalance)} disabled={!ticketsContractBalance.balance}>
+										Transférer sur mon compte
+									</PayableButton>
 								</div>
 
 								<div className="balance-box">
 									<h3>March&eacute; des cartes de r&eacute;duction</h3>
 									<p className="inner-page-section-data">Balance : {cardsContractBalance.balance} ETH</p>
-									<button onClick={() => transfertBalance(cardsContractBalance)} disabled={!cardsContractBalance.balance}>Transférer sur mon compte</button>
+
+									<PayableButton onClick={() => transfertBalance(cardsContractBalance)} disabled={!cardsContractBalance.balance}>
+										Transférer sur mon compte
+									</PayableButton>
 								</div>
 							</div>
 						)}

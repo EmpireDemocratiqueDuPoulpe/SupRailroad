@@ -1,14 +1,19 @@
+import { useMemo } from "react";
 import PropTypes from "prop-types";
+import Web3 from "web3";
 import useCardsMarket from "../../../hooks/market/useCardsMarket.js";
+import { PayableButton } from "../../Buttons";
+
 import "./MarketCard.css";
 
 // eslint-disable-next-line no-unused-vars
 function MarketCard({ id, name, description, discount, price, imageURI }) {
 	/* ---- States ---------------------------------- */
 	const cardsMarket = useCardsMarket(false);
+	const weiToPrice = useMemo(() => Web3.utils.fromWei(price, "ether"), [price]);
 
 	/* ---- Functions ------------------------------- */
-	const buyCard = () => cardsMarket.buy(id, price).catch(console.error);
+	const buyCard = () => cardsMarket.buy(id, weiToPrice).catch(console.error);
 
 	/* ---- Page content ---------------------------- */
 	return (
@@ -21,7 +26,9 @@ function MarketCard({ id, name, description, discount, price, imageURI }) {
 				<p className="market-card-discount market-card-info-line">{discount}%</p>
 			</div>
 
-			<button className="market-card-buy-btn" onClick={buyCard}>Acheter: {price} ETH</button>
+			<PayableButton className="market-card-buy-btn" onClick={buyCard}>
+				Acheter ({weiToPrice} ETH)
+			</PayableButton>
 		</div>
 	);
 }

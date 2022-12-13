@@ -5,7 +5,7 @@ import useTicketsMarket from "../../hooks/market/useTicketsMarket.js";
 import useCardsWallet from "../../hooks/wallet/useCardsWallet.js";
 import Loader from "../../components/Loader/Loader.jsx";
 import ProgressiveSection from "../../components/ProgressiveSection/ProgressiveSection.jsx";
-import Buttons from "../../components/Buttons";
+import { MultipleButton, SubButton, PayableButton } from "../../components/Buttons";
 import { StandardCard } from "../../components/Cards";
 import Map from "../../components/Map/Map.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -44,11 +44,11 @@ function DynamicSections() {
 	return (
 		<div className="travel-dynamic-sections">
 			<ProgressiveSection idx={0} title="Sélectionnez votre moyen de transport :" inline>
-				<Buttons.MultipleButton onChange={handleTypesChange}>
-					<Buttons.SubButton label="Bus" value="bus"/>
-					<Buttons.SubButton label="Métro" value="subway"/>
-					<Buttons.SubButton label="Train" value="train"/>
-				</Buttons.MultipleButton>
+				<MultipleButton onChange={handleTypesChange}>
+					<SubButton label="Bus" value="bus"/>
+					<SubButton label="Métro" value="subway"/>
+					<SubButton label="Train" value="train"/>
+				</MultipleButton>
 
 				<button onClick={progressiveSections.nextStep} disabled={!travelTypes.length}>
 					<FontAwesomeIcon icon={solid("check")}/>
@@ -75,18 +75,24 @@ function DynamicSections() {
 					</div>
 
 					<div className="travel-actions">
-						<button onClick={calcTicketPrice} disabled={points.length < 2}>Calculer le prix</button>
+						<PayableButton onClick={calcTicketPrice} disabled={points.length < 2}>
+							Calculer le prix
+						</PayableButton>
 
 						{ticketsMarket.processingPrice && <Loader/>}
 						<div className={`travel-price ${ticketsMarket.currentPrice ? "shown" : "hidden"}`}>
 							<p>Votre voyage est estim&eacute; &agrave; <span className="emphasis">{ticketsMarket.currentPrice} ETH</span>.</p>
-							<button onClick={buyTicket} disabled={!ticketsMarket.currentPrice}>Acheter un ticket</button>
+
+							<PayableButton onClick={buyTicket} disabled={!ticketsMarket.currentPrice}>
+								Acheter le ticket
+							</PayableButton>
 						</div>
 					</div>
 				</div>
 			</ProgressiveSection>
 
 			<ProgressiveSection idx={2} title="Faites vos valises !">
+				<button onClick={() => navigate("/wallet")}>Mon portefeuille</button>
 				<button onClick={() => navigate(0)}>Acheter un autre ticket</button>
 			</ProgressiveSection>
 		</div>
