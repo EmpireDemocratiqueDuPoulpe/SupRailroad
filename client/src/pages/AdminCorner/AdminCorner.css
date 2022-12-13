@@ -1,0 +1,62 @@
+/* ---- Card Manager ------------------------------------------------------------------------------------------------ */
+.AdminCorner-page .new-card-form {
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-items: stretch;
+	gap: 10px;
+	padding: 0 25px;
+}
+
+.AdminCorner-page .new-card-form .new-card-form-row {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+	gap: 20px;
+}
+
+/* -- Inputs */
+.AdminCorner-page .new-card-form .new-card-form-row .input { margin: 0; }
+.AdminCorner-page .new-card-form .new-card-form-row .input,
+.AdminCorner-page .new-card-form .new-card-form-row .spacer { flex-grow: 1; }
+
+.AdminCorner-page .new-card-form .input.column { flex-direction: column; align-items: flex-start; }
+.AdminCorner-page .new-card-form .input textarea { width: 100%; height: 100px; resize: none; }
+
+.AdminCorner-page .new-card-form .new-card-form-row .input input { width: 210px; }
+
+.AdminCorner-page .new-card-form .new-card-form-row .input input,
+.AdminCorner-page .new-card-form .new-card-form-row .input textarea {
+	box-sizing: border-box;
+	padding: 5px;
+	background: var(--background-color);
+	color: var(--text-color_background);
+	border: 1px var(--primary-border-color) solid;
+}
+
+.AdminCorner-page .new-card-form .new-card-form-row .input input:focus-visible,
+.AdminCorner-page .new-card-form .new-card-form-row .input textarea:focus-visible {
+	border-color: var(--secondary-color);
+	outline: none;
+}
+
+/* ---- Balance Manager --------------------------------------------------------------------------------------------- */
+.AdminCorner-page .balances-group {
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-start;
+	align-items: center;
+}
+
+.AdminCorner-page .balances-group .balance-box {
+	flex-grow: 1;
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-items: center;
+}
+
+.AdminCorner-page .balances-group .balance-box h3 { margin-bottom: 0.5em; }
+.AdminCorner-page .balances-group .balance-box h3,
+.AdminCorner-page .balances-group .balance-box p { margin-top: 0; }

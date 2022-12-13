@@ -3,7 +3,7 @@ import Web3 from "web3";
 import { useMessages } from "../../contexts/MessageContext";
 import { useEth } from "../../contexts/EthContext";
 
-function useCardsMarket(fetchCards = true) {
+function useCardsMarket({ onCardCreated, fetchCards } = { fetchCards: true }) {
 	const messages = useMessages();
 	const { state: { account, contracts: {cardMarket} } } = useEth();
 
@@ -61,9 +61,19 @@ function useCardsMarket(fetchCards = true) {
 		};
 
 		// Fetch the market once and start an event listener.
+		let cardCreatedListener = null;
 		let cardBoughtListener = null;
 		if (cardMarket) {
 			getAllOnSale().catch(console.error);
+
+			// noinspection JSValidateTypes
+			cardCreatedListener = cardMarket.events.CreatedCard().on("data", data => {
+				if (onCardCreated) {
+					onCardCreated(data);
+				}
+
+				getAllOnSale().catch(console.error);
+			});
 			// noinspection JSValidateTypes
 			cardBoughtListener = cardMarket.events.BoughtCard().on("data", data => {
 				if (data.returnValues.owner === account) {
@@ -76,9 +86,8 @@ function useCardsMarket(fetchCards = true) {
 
 		// The event listener is stopped when this hook is unmounted.
 		return () => {
-			if (cardBoughtListener) {
-				cardBoughtListener.removeAllListeners("data");
-			}
+			if (cardBoughtListener) cardBoughtListener.removeAllListeners("data");
+			if (cardCreatedListener) cardCreatedListener.removeAllListeners("data");
 		};
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [cardMarket, account, fetchCards]);

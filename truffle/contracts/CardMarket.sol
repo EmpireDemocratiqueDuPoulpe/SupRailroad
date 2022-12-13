@@ -21,6 +21,7 @@ contract CardMarket is ERC721, Administrable, CardFactory, BalanceManager {
     Card[] private onSaleCards;
 
     /// Events
+    event CreatedCard(address indexed caller, uint256 count);
     event BoughtCard(address indexed owner, uint256 indexed cardId);
     event ApprovedCard(address indexed owner, address indexed target, uint256 indexed cardId);
     event TransferredCard(address indexed owner, uint256 indexed cardId);
@@ -44,6 +45,8 @@ contract CardMarket is ERC721, Administrable, CardFactory, BalanceManager {
 
             cardCounter.increment();
         }
+
+        emit CreatedCard(msg.sender, cardsNumber);
     }
 
     // Functions - Cards market

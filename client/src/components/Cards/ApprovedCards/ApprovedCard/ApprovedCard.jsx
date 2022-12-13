@@ -5,7 +5,7 @@ import "./ApprovedCard.css";
 
 function ApprovedCard({ id, name, description, discount, approvedTo, owner }) {
 	/* ---- States ---------------------------------- */
-	const cardsMarket = useCardsMarket(false);
+	const cardsMarket = useCardsMarket({ fetchCards: false });
 
 	/* ---- Functions ------------------------------- */
 	const confirmRetrieval = () => cardsMarket.retrieveApproved(owner, approvedTo, id).catch(console.error);

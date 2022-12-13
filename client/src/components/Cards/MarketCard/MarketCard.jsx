@@ -9,7 +9,7 @@ import "./MarketCard.css";
 // eslint-disable-next-line no-unused-vars
 function MarketCard({ id, name, description, discount, price, imageURI }) {
 	/* ---- States ---------------------------------- */
-	const cardsMarket = useCardsMarket(false);
+	const cardsMarket = useCardsMarket({ fetchCards: false });
 	const weiToPrice = useMemo(() => Web3.utils.fromWei(price, "ether"), [price]);
 
 	/* ---- Functions ------------------------------- */

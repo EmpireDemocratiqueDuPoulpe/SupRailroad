@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useMessages } from "../../contexts/MessageContext";
 import { useEth } from "../../contexts/EthContext";
 import useTicketsMarket from "../../hooks/market/useTicketsMarket.js";
 import useCardsMarket from "../../hooks/market/useCardsMarket.js";
@@ -7,60 +8,53 @@ import useContractBalance from "../../hooks/contractBalance/useContractBalance.j
 import Loader from "../../components/Loader/Loader.jsx";
 import { PayableButton } from "../../components/Buttons";
 import Inputs from "../../components/Inputs";
+import "./AdminCorner.css";
 
 function AdminCorner() {
-	/* ---- Contexts -------------------------------- */
+	/* ---- Contexts - Part one --------------------- */
 	const navigate = useNavigate();
+	const messages = useMessages();
 	const { state: { contracts: {ticketMarket, cardMarket}, account, isAdmin } } = useEth();
 	const ticketsMarket = useTicketsMarket();
-	const cardsMarket = useCardsMarket();
 	const ticketsContractBalance = useContractBalance(ticketMarket);
 	const cardsContractBalance = useContractBalance(cardMarket);
 
-	/* ---- Constants ------------------------------- */
+	/* ---- States ---------------------------------- */
 	const [cardName, setCardName] = useState(/** @type {string} */ "");
 	const [cardDescription, setCardDescription] = useState(/** @type {string} */ "");
 	const [cardImage, setCardImage] = useState(/** @type {string} */ "");
 	const [cardPrice, setCardPrice] = useState(/** @type {string} */ "");
-	const [cardDiscount, setCardDiscount] = useState(/** @type {number} */ "");
-	const [cardsCount, setCardsCount] = useState(/** @type {number} */ "");
+	const [cardDiscount, setCardDiscount] = useState(/** @type {string} */ "");
+	const [cardCount, setCardCount] = useState(/** @type {string} */ "");
 
 	/* ---- Functions ------------------------------- */
-	/* ┌─────────New card form functions─────────┐ */
-
-	const handleCardName = event => {
-		setCardName(event.target.value);
+	const onCardNameChange = event => setCardName(event.target.value);
+	const onCardDescriptionChange = event => setCardDescription(event.target.value);
+	const onCardImageChange = event => setCardImage(event.target.value);
+	const onCardPriceChange = event => setCardPrice(event.target.value);
+	const onCardDiscountChange = event => setCardDiscount(event.target.value);
+	const onCardCountChange = event => setCardCount(event.target.value);
+	const resetCardForm = () => {
+		setCardName("");
+		setCardDescription("");
+		setCardImage("");
+		setCardPrice("");
+		setCardDiscount("");
+		setCardCount("");
 	};
-
-	const handleCardDescription = event => {
-		setCardDescription(event.target.value);
+	const isCardValid = () => cardName && cardPrice && cardDiscount && cardCount;
+	const createCard = () => cardsMarket.create(cardPrice, cardDiscount, cardName, cardImage, cardDescription.trim(), cardCount).catch(console.error);
+	const onCardCreated = () => {
+		messages.addSuccess("Carte de réduction créées.");
+		resetCardForm();
 	};
-
-	const handleCardImage = event => {
-		setCardImage(event.target.value);
-	};
-
-	const handleCardPrice = event => {
-		setCardPrice(event.target.value.toString());
-	};
-
-	const handleCardDiscount = event => {
-		setCardDiscount(event.target.value);
-	};
-
-	const handleCardsNumber = event => {
-		setCardsCount(event.target.value);
-	};
-
-	/* └─────────────────────────────────────────┘ */
 
 	const onPriceChange = price => ticketsMarket.setStandardPrice(price).catch(console.error);
 
-	const createCard = () => {
-		cardsMarket.create(cardPrice, cardDiscount, cardName, cardImage, cardDescription, cardsCount).catch(console.error);
-	};
-
 	const transfertBalance = contractBalance => contractBalance.transfert(account).catch(console.error);
+
+	/* ---- Contexts - Part two --------------------- */
+	const cardsMarket = useCardsMarket({ onCardCreated, fetchCards: false });
 
 	/* ---- Effects --------------------------------- */
 	useEffect(() => {
@@ -95,16 +89,53 @@ function AdminCorner() {
 					<h2 className="inner-page-section-title">Cartes de r&eacute;duction</h2>
 
 					<div className="inner-page-section-body">
-						<span>Nom :</span><input type="text" minLength="1" placeholder="Nom de la carte" value={cardName} onChange={handleCardName}/><br/>
-						<span>Description :</span><input type="text" placeholder="Description de la carte" value={cardDescription} onChange={handleCardDescription}/><br/>
-						<span>Image (url) :</span><input type="text" placeholder="Image de la carte" value={cardImage} onChange={handleCardImage}/><br/>
-						<span>Prix (ETH) :</span><input type="number" step="0.0001" placeholder="Prix de la carte" value={cardPrice} onChange={handleCardPrice}/><br/>
-						<span>Réduction (%) :</span><input type="number" step="1" min="1" max="100" placeholder="Pourcentage de réduction" value={cardDiscount} onChange={handleCardDiscount}/><br/>
-						<span>Nombre :</span><input type="number" step="1" min="1" max="100" placeholder="Nombre de cartes" value={cardsCount} onChange={handleCardsNumber}/><br/>
+						<div className="new-card-form">
+							<div className="new-card-form-row">
+								<label className="input">
+									Nom :
+									<input type="text" minLength="1" placeholder="Carte de réduction" value={cardName} onChange={onCardNameChange}/>
+								</label>
 
-						<PayableButton onClick={createCard}>
-							Cr&eacute;er {cardsCount > 1 ? "les" : "la"} carte{cardsCount > 1 ? "s" : ""}
-						</PayableButton>
+								<label className="input">
+									Image (url) :
+									<input type="text" placeholder="https://i.imgur.com/oXg3WVS.png" value={cardImage} onChange={onCardImageChange}/>
+								</label>
+							</div>
+
+							<div className="new-card-form-row">
+								<label className="input column">
+									Description :
+									<textarea placeholder="Payez cette carte pour payer moins cher ! Attendez ... je ... euh non c'est ça." value={cardDescription} onChange={onCardDescriptionChange}/>
+								</label>
+							</div>
+
+							<div className="new-card-form-row">
+								<label className="input">
+									Prix (ETH) :
+									<input type="number" step="0.01" placeholder="0.030" value={cardPrice} onChange={onCardPriceChange}/>
+								</label>
+
+								<label className="input">
+									Réduction (%) :
+									<input type="number" step="1" min="1" max="100" placeholder="10" value={cardDiscount} onChange={onCardDiscountChange}/>
+								</label>
+							</div>
+
+							<div className="new-card-form-row">
+								<div className="spacer"/>
+
+								<label className="input">
+									Nombre de carte :
+									<input type="number" step="1" min="1" max="100" placeholder="pas trop stp, sinon ça lag" value={cardCount} onChange={onCardCountChange}/>
+								</label>
+
+								<div className="spacer"/>
+							</div>
+
+							<PayableButton onClick={createCard} disabled={!isCardValid()}>
+								Cr&eacute;er {cardCount > 1 ? "les" : "la"} carte{cardCount > 1 ? "s" : ""}
+							</PayableButton>
+						</div>
 					</div>
 				</div>
 

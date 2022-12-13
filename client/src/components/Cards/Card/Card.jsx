@@ -7,7 +7,7 @@ import "./Card.css";
 
 function Card({ id, name, description, discountPercent, approvedTo, price, imagePath, flippable, transferable }) {
 	/* ---- States ---------------------------------- */
-	const cardsMarket = useCardsMarket();
+	const cardsMarket = useCardsMarket({ fetchCards: false });
 	const [flipped, setFlipped] = useState(/** @type {boolean} */ false);
 	const [approvedAddress, setApprovedAddress] = useState(/** @type {string} */ "");
 
