@@ -56,27 +56,84 @@
 	bottom: 0;
 	left: 0;
 	width: 100%;
-	height: 50px;
-	background: var(--secondary-color);
+	height: 30px;
+	background: var(--quaternary-color);
 }
 
-.card .card-inner .card-front .card-bottom { clip-path: polygon(0% 100%, 100% 100%, 100% 0%, 75% 0%, 60% 50%, 0% 50%); }
-.card .card-inner .card-back .card-bottom { clip-path: polygon(100% 100%, 0% 100%, 0% 0%, 25% 0%, 40% 50%, 100% 50%); }
+.card .card-inner .card-front .card-bottom { clip-path: polygon(100% 100%, 0% 100%, 0% 0%, 25% 0%, 35% 70%, 100% 70%); }
+.card .card-inner .card-back .card-bottom { clip-path: polygon(0% 100%, 100% 100%, 100% 0%, 75% 0%, 65% 70%, 0% 70%); }
 
 /* --- Card front --------------------------------------------------------------------------------------------------- */
 .card .card-inner .card-front { transform: rotateY(0deg); z-index: 2; }
 
 /* -- Card info */
-.card .card-inner .card-front .card-info .card-info-line {
-	margin-top: 0;
+.card .card-inner .card-front .card-info .card-info-line { margin-top: 0; }
+.card .card-inner .card-front .card-info .card-info-line.card-name {
+	display: inline-block;
+	height: 2.3em;
+	margin-right: 40px;
+	font-weight: 500;
 }
+.card .card-inner .card-front .card-info .card-info-line.card-description { font-size: 0.7em; }
 .card .card-inner .card-front .card-info p:last-of-type { margin-bottom: 0; }
 
-/* --- Card back ---------------------------------------------------------------------------------------------------- */
+/* -- Card discount */
+.card .card-inner .card-front .card-discount {
+	box-sizing: border-box;
+	position: absolute;
+	top: var(--inner-padding);
+	right: var(--inner-padding);
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	width: 40px;
+	height: 40px;
+	font-size: 1em;
+	margin: 0;
+	padding: 5px;
+	background: var(--background-color⨣2);
+	border-radius: var(--border-radius);
+	font-weight: 500;
+}
+
+/* -- Card image */
+.card .card-inner .card-front .card-image {
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	width: 125px;
+	background-size: cover;
+	background-repeat: no-repeat;
+	opacity: 0.5;
+	z-index: -1;
+}
+
+.card .card-inner .card-front .card-image::after {
+	content: "";
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	background: var(--background-color⨣1);
+	background: linear-gradient(90deg, var(--background-color⨣1) 10%, var(--background-color⨣1_transparent) 100%);
+}
+
+/* -- Card price */
+.card .card-inner .card-front .card-price {
+	position: absolute;
+	left: 90px;
+	bottom: 15px;
+	font-size: 0.7em;
+	color: var(--quaternary-color);
+	font-weight: 500;
+}
+
+	/* --- Card back ---------------------------------------------------------------------------------------------------- */
 .card .card-inner .card-back {
 	align-items: flex-end;
-	padding-top: calc(var(--inner-padding) / 2);
-	padding-right: calc(var(--inner-padding) / 2);
 	padding-bottom: calc(var(--inner-padding) + (var(--inner-padding) / 4));
 	transform: rotateY(180deg);
 	z-index: 1;
@@ -85,4 +142,22 @@
 .card .card-inner .card-back .card-back-content {
 	min-height: 0;
 	margin-bottom: 10px;
+}
+
+.card .card-inner .card-back .card-back-content .card-approved-to p,
+.card .card-inner .card-back .card-back-content .card-approved-to-title { margin-top: 0; }
+
+.card .card-inner .card-back .card-back-content .card-approved-to-form {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+}
+
+.card .card-inner .card-back .card-back-content .card-approved-to-form > input { width: 173px; }
+
+.card .card-inner .card-back .card-back-content .card-approved-to .address {
+	font-size: 0.85em;
+	font-style: italic;
+	word-break: break-all;
 }
