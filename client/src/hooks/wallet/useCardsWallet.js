@@ -11,6 +11,7 @@ function useCardsWallet() {
 	const [wallet, setWallet] = useState({});
 
 	/* ---- Effects --------------------------------- */
+	// Keep the wallet updated
 	useEffect(() => {
 		// Fetch the new wallet and update the hook state.
 		const update = async () => {
@@ -27,17 +28,23 @@ function useCardsWallet() {
 
 		// Fetch the wallet once and start an event listener.
 		let cardBoughtListener = null;
+		let cardApprovedListenerOut = null;
+		let cardApprovedListenerIn = null;
 		if (cardMarket) {
 			update().catch(console.error);
 			// noinspection JSValidateTypes
 			cardBoughtListener = cardMarket.events.BoughtCard({ filter: {owner: account} }).on("data", update);
+			// noinspection JSValidateTypes
+			cardApprovedListenerOut = cardMarket.events.ApprovedCard({ filter: {owner: account} }).on("data", update);
+			// noinspection JSValidateTypes
+			cardApprovedListenerIn = cardMarket.events.ApprovedCard({ filter: {target: account} }).on("data", update);
 		}
 
 		// The event listener is stopped when this hook is unmounted.
 		return () => {
-			if (cardBoughtListener) {
-				cardBoughtListener.removeAllListeners("data");
-			}
+			if (cardBoughtListener) cardBoughtListener.removeAllListeners("data");
+			if (cardApprovedListenerOut) cardApprovedListenerOut.removeAllListeners("data");
+			if (cardApprovedListenerIn) cardApprovedListenerIn.removeAllListeners("data");
 		};
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [cardMarket, account]);

@@ -11,6 +11,7 @@ function useTicketsWallet() {
 	const [wallet, setWallet] = useState({});
 
 	/* ---- Effects --------------------------------- */
+	// Keep the wallet updated
 	useEffect(() => {
 		// Fetch the new wallet and update the hook state.
 		const update = async () => {

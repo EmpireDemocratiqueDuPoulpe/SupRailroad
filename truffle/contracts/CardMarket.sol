@@ -22,6 +22,7 @@ contract CardMarket is ERC721, Administrable, CardFactory, BalanceManager {
 
     /// Events
     event BoughtCard(address indexed owner, uint256 indexed cardId);
+    event ApprovedCard(address indexed owner, address indexed target, uint256 indexed cardId);
     event TransferredCard(address indexed owner, uint256 indexed cardId);
 
     /// Modifiers
@@ -100,6 +101,8 @@ contract CardMarket is ERC721, Administrable, CardFactory, BalanceManager {
         super.approve(_target, _cardId);
         userApprovals[_target].push(_cardId);
         super._updateCardApproval(msg.sender, _target, _cardId);
+
+        emit ApprovedCard(msg.sender, _target, _cardId);
     }
 
     function getApprovals() public view returns (CardFactory.Card[] memory) {
