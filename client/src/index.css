@@ -12,6 +12,7 @@ html, body, #root, .expand-width, .expand-height, .expand-all {
 body {
   --background-color⨣2: #565B62;
   --background-color⨣1: #393E46;
+  --background-color⨣1_transparent: #393E4600;
   --background-color: #222831;
   --background-color-1: #181E27;
   --primary-color: #0466C8;
@@ -19,8 +20,12 @@ body {
   --tertiary-color: #4ECDC4;
   --quaternary-color: #F62A66;
   --red-color: #C81219;
+  --white-color: #FFFFFF;
   --text-color_background: #FFFFFF;
   --text-attenuate_background: #AEB1B4;
+  --text-color_primary: #FFFFFF;
+  --text-color_secondary: #000000;
+  --text-color_white: #000000;
   --primary-border-color: #404B4D;
 
   margin: 0;
@@ -36,6 +41,7 @@ body {
 body.crt-mode {
   --background-color⨣2: #0E2516;
   --background-color⨣1: #0E2516;
+  --background-color⨣1_transparent: #0E251600;
   --background-color: #0E2516;
   --background-color-1: #0E2516;
   --primary-color: #26F087;
@@ -43,8 +49,12 @@ body.crt-mode {
   --tertiary-color: #26F087;
   --quaternary-color: #26F087;
   --red-color: #C81219;
+  --white-color: #FFFFFF;
   --text-color_background: #FFFFFF;
   --text-attenuate_background: #AEB1B4;
+  --text-color_primary: #FFFFFF;
+  --text-color_secondary: #FFFFFF;
+  --text-color_white: #000000;
   --primary-border-color: #26F087;
 }
 

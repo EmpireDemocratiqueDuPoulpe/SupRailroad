@@ -1,0 +1,36 @@
+/* --- Container ---------------------------------------------------------------------------------------------------- */
+.button.simple-button {
+	box-sizing: border-box;
+	position: relative;
+	display: inline-block;
+	padding: 10px;
+	background: var(--primary-color);
+	color: var(--text-color_primary);
+	border: 2px var(--primary-color) solid;
+	border-radius: 5px;
+	font-weight: 500;
+	text-decoration: none;
+	-moz-appearance: none;
+	-webkit-appearance: none;
+	appearance: none;
+	cursor: pointer;
+	transition-property: background, color, border;
+	transition-duration: 150ms;
+	transition-timing-function: ease-in-out;
+}
+.button.simple-button.centered { margin: 0 auto; }
+
+/* -- Hover */
+.button.simple-button:not(:disabled):hover {
+	background: var(--primary-color);
+	color: var(--text-color_primary);
+	border-color: var(--text-color_white);
+}
+
+/* -- Disabled */
+.button.simple-button:disabled {
+	cursor: default;
+	background: transparent;
+	color: #A5A5A5;
+	border-color: #A5A5A5;
+}

@@ -1,0 +1,46 @@
+/* --- Container ---------------------------------------------------------------------------------------------------- */
+.button.button-payable {
+	box-sizing: border-box;
+	position: relative;
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	gap: 5px;
+	padding: 10px;
+	background: var(--white-color);
+	color: var(--text-color_white);
+	border: 2px var(--text-color_white) solid;
+	border-radius: 5px;
+	font-weight: 500;
+	-moz-appearance: none;
+	-webkit-appearance: none;
+	appearance: none;
+	cursor: pointer;
+	transition-property: background, color, border;
+	transition-duration: 150ms;
+	transition-timing-function: ease-in-out;
+}
+.button.button-payable.centered { margin: 0 auto; }
+
+/* -- Hover */
+.button.button-payable:not(:disabled):hover {
+	background: var(--secondary-color);
+	color: var(--text-color_secondary);
+	border-color: var(--secondary-color);
+}
+
+/* -- Disabled */
+.button.button-payable:disabled { cursor: default; border-color: #A5A5A5; }
+
+.button.button-payable:disabled::after {
+	content: "";
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	background: #A5A5A5;
+	border-radius: 5px;
+	opacity: 0.5;
+}

@@ -46,4 +46,7 @@
     align-items: stretch;
 }
 
-.progressive-sections.section.inlined .section-body { margin-top: calc(var(--title-size) / 2); }
+.progressive-sections.section.inlined .section-body {
+    align-items: center;
+    margin-top: calc(var(--title-size) / 2);
+}

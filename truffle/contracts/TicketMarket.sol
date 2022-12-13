@@ -36,13 +36,13 @@ contract TicketMarket is TicketFactory, Administrable, OracleLinked, BalanceMana
     mapping (address => PriceRequest) private callerToPriceRequest;
 
     /// Events
-    /// @notice Triggerred when the base price of the ticket is changed.
-    event TicketPriceChanged(uint256 newPrice);
-    /// @notice Triggerred when a price calculation is requested.
+    /// @notice Triggered when the base price of the ticket is changed.
+    event TicketPriceChanged(address indexed caller, uint256 newPrice);
+    /// @notice Triggered when a price calculation is requested.
     event TicketPriceRequested(uint256 indexed requestId, address indexed caller, string[] types, Coordinate[] points, int256 cardId);
-    /// @notice Triggerred when a price has been calculated.
+    /// @notice Triggered when a price has been calculated.
     event TicketPriceCalculated(uint256 indexed requestId, address indexed caller, uint256 price);
-    /// @notice Triggerred when a ticket is bought.
+    /// @notice Triggered when a ticket is bought.
     event BoughtTicket(uint256 indexed requestId, address indexed owner);
 
     /// Functions
@@ -67,7 +67,7 @@ contract TicketMarket is TicketFactory, Administrable, OracleLinked, BalanceMana
     /// @param _price - The new standard price (in Wei).
     function setPrice(uint256 _price) external mustBeAdmin {
         ticketPrice = _price;
-        emit TicketPriceChanged(_price);
+        emit TicketPriceChanged(msg.sender, _price);
     }
 
     /// @notice Sends the response to a price request.
@@ -85,7 +85,7 @@ contract TicketMarket is TicketFactory, Administrable, OracleLinked, BalanceMana
         emit TicketPriceCalculated(_requestId, _caller, _price);
     }
 
-    // Functions - Market
+    // Functions - TicketsMarket
     // TODO: Send value if too much?
     /// @notice Buys a ticket.
     function buyTicket() external payable {

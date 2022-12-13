@@ -1,0 +1,12 @@
+/* --- Container ---------------------------------------------------------------------------------------------------- */
+.approved-cards {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+/* --- Header ------------------------------------------------------------------------------------------------------- */
+.approved-cards thead {
+	height: 40px;
+	background: var(--background-color⨣1);
+	border: 1px var(--background-color⨣1) solid;
+}

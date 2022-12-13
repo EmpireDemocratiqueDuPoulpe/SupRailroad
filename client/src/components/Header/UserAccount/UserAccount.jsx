@@ -1,5 +1,5 @@
-import { useState, useCallback } from "react";
-import { Link } from "react-router-dom";
+import { useState, useEffect, useCallback } from "react";
+import { Link, useLocation } from "react-router-dom";
 import { useEth } from "../../../contexts/EthContext";
 import Jazzicon, { jsNumberForAddress } from "react-jazzicon";
 import OutsideAlerter from "../../OutsideAlerter/OutsideAlerter.jsx";
@@ -13,6 +13,7 @@ const JAZZICON_DIAMETER = 100;
 function UserAccount() {
 	/* ---- Contexts -------------------------------- */
 	const { state: { account, balance } } = useEth();
+	const location = useLocation();
 
 	/* ---- States ---------------------------------- */
 	const [showMenu, setShowMenu] = useState(/** @type {boolean} */ false);
@@ -32,6 +33,9 @@ function UserAccount() {
 	const openMenu = () => setShowMenu(true);
 	const closeMenu = () => setShowMenu(false);
 	const toggleMenu = () => showMenu ? closeMenu() : openMenu();
+
+	/* ---- Effects --------------------------------- */
+	useEffect(() => { closeMenu(); }, [location.pathname]);
 
 	/* ---- Page content ---------------------------- */
 	return (

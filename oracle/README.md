@@ -17,6 +17,7 @@ oracle will use for these calls. The address must be a registered administrator 
 Create an `.env` file in the [oracle root folder](https://github.com/EmpireDemocratiqueDuPoulpe/SupRailroad/tree/main/oracle)
 containing the following data:
 ```dotenv
+NODE_ENV="development"
 ACCOUNT="YOUR ACCOUNT ADDRESS HERE"  # This address must be a registered administrator.
 # SLEEP_INTERVAL=1000  # Optional (default=1000): Interval between queue processing.
 # CHUNK_SIZE=10  # Optional (default=10): How many requests are addressed per queue processing.

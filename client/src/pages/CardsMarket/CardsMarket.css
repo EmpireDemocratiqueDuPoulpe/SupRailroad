@@ -1,11 +1,8 @@
-/* ---- Page container ---------------------------------------------------------------------------------------------- */
-.Wallet-page { }
-
 /* ---- Collections ------------------------------------------------------------------------------------------------- */
-.Wallet-page .collection-box:not(:last-child) { margin-bottom: 25px; }
+.CardsMarket-page .market-section:not(:last-child) { margin-bottom: 25px; }
 
 /* -- Title */
-.Wallet-page .collection-box .collection-title {
+.CardsMarket-page .market-section .market-section-title {
 	box-sizing: border-box;
 	display: inline-block;
 	margin: 0 0 0.5em 0;
@@ -15,21 +12,21 @@
 	clip-path: polygon(0% 100%, 0% 0%, 100% 0%, calc(100% - 30px) 100%);
 }
 
-/* -- Empty collection message */
-.Wallet-page .collection-box .empty-collection {
+/* -- Empty section message */
+.CardsMarket-page .market-section .market-section-no-item {
 	font-size: 0.9em;
 	margin: 0.5em 0 0 0;
 	color: var(--text-attenuate_background);
 	font-style: italic;
 }
 
-body.crt-mode .Wallet-page .collection-box .empty-collection {
+body.crt-mode .CardsMarket-page .market-section .market-section-no-item {
 	color: var(--primary-color);
 	opacity: 0.5;
 }
 
 /* -- Collection content */
-.Wallet-page .collection-box .collection-content {
+.CardsMarket-page .market-section .market-section-items {
 	display: flex;
 	flex-direction: row;
 	justify-content: flex-start;

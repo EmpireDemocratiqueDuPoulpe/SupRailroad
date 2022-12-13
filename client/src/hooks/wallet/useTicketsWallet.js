@@ -2,49 +2,48 @@ import { useState, useEffect } from "react";
 import { useMessages } from "../../contexts/MessageContext";
 import { useEth } from "../../contexts/EthContext";
 
-function useCardWallet() {
+function useTicketsWallet() {
 	/* ---- Contexts -------------------------------- */
 	const messages = useMessages();
-	const { state: { account, contracts: {cardMarket} } } = useEth();
+	const { state: { account, contracts: {ticketMarket} } } = useEth();
 
 	/* ---- States ---------------------------------- */
 	const [wallet, setWallet] = useState({});
 
 	/* ---- Effects --------------------------------- */
+	// Keep the wallet updated
 	useEffect(() => {
 		// Fetch the new wallet and update the hook state.
 		const update = async () => {
 			try {
-				if (cardMarket) {
+				if (ticketMarket) {
 					// noinspection JSUnresolvedFunction
-					const wallet = {
-						cards: await cardMarket.methods.getCards().call({ from: account }),
-						approvedCards: await cardMarket.methods.getApprovals().call({ from: account })
-					};
-					setWallet(wallet);
+					setWallet({
+						tickets: await ticketMarket.methods.getTickets().call({ from: account })
+					});
 				}
 			} catch (err) { messages.addError(err, true); }
 		};
 
 		// Fetch the wallet once and start an event listener.
-		let cardBoughtListener = null;
-		if (cardMarket) {
+		let ticketBoughtListener = null;
+		if (ticketMarket) {
 			update().catch(console.error);
 			// noinspection JSValidateTypes
-			cardBoughtListener = cardMarket.events.BoughtCard({ filter: {owner: account} }).on("data", update);
+			ticketBoughtListener = ticketMarket.events.BoughtTicket({ filter: {owner: account} }).on("data", update);
 		}
 
 		// The event listener is stopped when this hook is unmounted.
 		return () => {
-			if (cardBoughtListener) {
-				cardBoughtListener.removeAllListeners("data");
+			if (ticketBoughtListener) {
+				ticketBoughtListener.removeAllListeners("data");
 			}
 		};
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [cardMarket, account]);
+	}, [ticketMarket, account]);
 
 	/* ---- Expose hook ----------------------------- */
 	return wallet;
 }
 
-export default useCardWallet;
+export default useTicketsWallet;

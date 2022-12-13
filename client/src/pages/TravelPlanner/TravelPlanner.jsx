@@ -2,10 +2,11 @@ import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useProgressiveSections, ProgressiveSectionsProvider } from "../../contexts/ProgressiveSectionsContext";
 import useTicketsMarket from "../../hooks/market/useTicketsMarket.js";
-import useCardWallet from "../../hooks/wallet/useCardWallet.js";
+import useCardsWallet from "../../hooks/wallet/useCardsWallet.js";
+import Loader from "../../components/Loader/Loader.jsx";
 import ProgressiveSection from "../../components/ProgressiveSection/ProgressiveSection.jsx";
-import Inputs from "../../components/Inputs";
-import Card from "../../components/Card/Card.jsx";
+import { SimpleButton, MultipleButton, SubButton, PayableButton } from "../../components/Buttons";
+import { StandardCard } from "../../components/Cards";
 import Map from "../../components/Map/Map.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
@@ -14,8 +15,8 @@ import "./TravelPlanner.css";
 function DynamicSections() {
 	/* ---- Contexts -------------------------------- */
 	const progressiveSections = useProgressiveSections();
-	const tickets = useTicketsMarket({ onTicketBought: progressiveSections.nextStep });
-	const cards = useCardWallet();
+	const ticketsMarket = useTicketsMarket({ onTicketBought: progressiveSections.nextStep });
+	const cardsWallet = useCardsWallet();
 	const navigate = useNavigate();
 
 	/* ---- States ---------------------------------- */
@@ -23,10 +24,10 @@ function DynamicSections() {
 	const [points, setPoints] = useState(/** @type {Array<Array<number>>} */ []);
 	const [distance, setDistance] = useState(/** @type {string} */ "");
 	const usedCard = useMemo(() => {
-		if (cards?.cards) {
-			return cards.cards.slice().sort((a, b) => a.discountPercent - b.discountPercent).shift() ?? null;
+		if (cardsWallet?.cards) {
+			return cardsWallet.cards.slice().sort((a, b) => b.discountPercent - a.discountPercent).shift() ?? null;
 		} else return null;
-	}, [cards]);
+	}, [cardsWallet]);
 
 	/* ---- Functions ------------------------------- */
 	const handleTypesChange = types => { setTravelTypes(types); };
@@ -36,22 +37,22 @@ function DynamicSections() {
 		setDistance(distance ?? "");
 	};
 
-	const calcTicketPrice = () => { tickets.requestPrice(travelTypes, points, (usedCard?.cardId ?? -1)).catch(console.error); };
-	const buyTicket = () => { tickets.buy().catch(console.error); };
+	const calcTicketPrice = () => { ticketsMarket.requestPrice(travelTypes, points, (usedCard?.cardId ?? -1)).catch(console.error); };
+	const buyTicket = () => { ticketsMarket.buy().catch(console.error); };
 
 	/* ---- Page content ---------------------------- */
 	return (
 		<div className="travel-dynamic-sections">
-			<ProgressiveSection idx={0} title="Sélectionnez votre moyen de transport :" inline>
-				<Inputs.MultipleButton onChange={handleTypesChange}>
-					<Inputs.SubButton label="Bus" value="bus"/>
-					<Inputs.SubButton label="Métro" value="subway"/>
-					<Inputs.SubButton label="Train" value="train"/>
-				</Inputs.MultipleButton>
+			<ProgressiveSection className="travel-type-section" idx={0} title="Sélectionnez votre moyen de transport :" inline>
+				<MultipleButton onChange={handleTypesChange}>
+					<SubButton label="Bus" value="bus"/>
+					<SubButton label="Métro" value="subway"/>
+					<SubButton label="Train" value="train"/>
+				</MultipleButton>
 
-				<button onClick={progressiveSections.nextStep} disabled={!travelTypes.length}>
+				<SimpleButton onClick={progressiveSections.nextStep} disabled={!travelTypes.length}>
 					<FontAwesomeIcon icon={solid("check")}/>
-				</button>
+				</SimpleButton>
 			</ProgressiveSection>
 
 			<ProgressiveSection idx={1} title="Tracez votre route (et marchez à l'ombre svp) :">
@@ -63,29 +64,41 @@ function DynamicSections() {
 					<h3>Votre voyage</h3>
 
 					<div className="travel-data-content">
-						<p>{points.length ? (<>&Eacute;tapes : {points.length}</>) : "Cliquez sur la carte afin d'ajouter une étape."}</p>
+						<p>{points.length ? (<>&Eacute;tapes : {points.length}</>) : <span className="travel-data-step-help">Cliquez sur la carte afin d&apos;ajouter une &eacute;tape.</span>}</p>
 						<p>Distance : {distance}</p>
 						{ usedCard && (
 							<>
 								<p>Carte de r&eacute;duction utilis&eacute;e :</p>
-								<Card id={usedCard.cardId} {...usedCard}/>
+								<StandardCard id={usedCard.cardId} {...usedCard} transferable={false} flippable={false}/>
 							</>
 						)}
 					</div>
 
 					<div className="travel-actions">
-						<button onClick={calcTicketPrice} disabled={points.length < 2}>Calculer le prix</button>
+						<PayableButton onClick={calcTicketPrice} disabled={points.length < 2} centered>
+							Calculer le prix
+						</PayableButton>
 
-						<div className={`travel-price ${tickets.currentPrice ? "shown" : "hidden"}`}>
-							<p>Votre voyage est estim&eacute; &agrave; <span className="emphasis">{tickets.currentPrice} ETH</span>.</p>
-							<button onClick={buyTicket} disabled={!tickets.currentPrice}>Acheter un ticket</button>
+						{ticketsMarket.processingPrice && <Loader/>}
+						<div className={`travel-price ${ticketsMarket.currentPrice ? "shown" : "hidden"}`}>
+							<p>Votre voyage est estim&eacute; &agrave; <span className="emphasis">{ticketsMarket.currentPrice} ETH</span>.</p>
+
+							<PayableButton onClick={buyTicket} disabled={!ticketsMarket.currentPrice} centered>
+								Acheter le ticket
+							</PayableButton>
 						</div>
 					</div>
 				</div>
 			</ProgressiveSection>
 
-			<ProgressiveSection idx={2} title="Faites vos valises !">
-				<button onClick={() => navigate(0)}>Acheter un autre ticket</button>
+			<ProgressiveSection className="final-section" idx={2} title="Faites vos valises !">
+				<SimpleButton onClick={() => navigate("/wallet")}>
+					Mon portefeuille
+				</SimpleButton>
+
+				<SimpleButton onClick={() => navigate(0)}>
+					Acheter un autre ticket
+				</SimpleButton>
 			</ProgressiveSection>
 		</div>
 	);

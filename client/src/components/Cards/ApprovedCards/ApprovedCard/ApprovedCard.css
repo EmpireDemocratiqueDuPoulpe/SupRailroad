@@ -1,0 +1,11 @@
+/* --- Container ---------------------------------------------------------------------------------------------------- */
+.approved-cards .approved-card td {
+	height: 30px;
+	padding: 0 5px;
+	border: 1px var(--primary-border-color) solid;
+}
+
+/* --- Cells -------------------------------------------------------------------------------------------------------- */
+.approved-cards .approved-card td.approved-card-discount { text-align: center; }
+.approved-cards .approved-card td.approved-card-owner { font-style: italic; }
+.approved-cards .approved-card td.approved-card-actions { text-align: center; }

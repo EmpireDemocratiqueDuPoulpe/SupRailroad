@@ -1,6 +1,12 @@
 /* ---- Page container ---------------------------------------------------------------------------------------------- */
 .TravelPlanner-page { padding: 0 15vw !important; }
 
+/* ---- Travel types selector --------------------------------------------------------------------------------------- */
+.TravelPlanner-page .travel-type-section .simple-button {
+	margin-left: 10px;
+	padding: 5px;
+}
+
 /* ---- Travel map -------------------------------------------------------------------------------------------------- */
 .TravelPlanner-page .travel-map { flex-shrink: 0; }
 
@@ -12,8 +18,9 @@
 	justify-content: flex-start;
 	align-items: flex-start;
 	margin: 0 20px;
-	border: 2px var(--primary-color) solid;
+	background: var(--background-color⨣1);
 	border-radius: 5px;
+	overflow: hidden;
 }
 
 /* -- Travel data title */
@@ -22,30 +29,47 @@
 	display: inline-block;
 	width: 100%;
 	margin: 0 0 0.5em 0;
-	padding: 5px 40px 5px 10px;
+	padding: 10px 40px 10px 10px;
 	background: var(--primary-color);
 	color: var(--text-color_background);
 }
 
 /* -- Travel data content */
 .TravelPlanner-page .travel-data .travel-data-content { padding: 0 10px; }
-.TravelPlanner-page .travel-data .travel-data-content p { margin-bottom: 0; }
-.TravelPlanner-page .travel-data .travel-data-content p:not(:first-child) { margin-top: 0.25em; }
+.TravelPlanner-page .travel-data .travel-data-content > p { margin-bottom: 0; }
+.TravelPlanner-page .travel-data .travel-data-content > p:not(:first-child) { margin-top: 0.25em; }
+
+.TravelPlanner-page .travel-data .travel-data-content .travel-data-step-help { font-weight: bold; }
+
+.TravelPlanner-page .travel-data .travel-data-content .card {
+	box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+	transform: scale(0.8);
+}
 
 /* -- Travel data actions */
 .TravelPlanner-page .travel-data .travel-actions {
+	box-sizing: border-box;
+	position: relative;
 	flex-grow: 0;
 	flex-shrink: 0;
+	width: 100%;
 	margin-top: auto;
-	padding: 0 10px;
+	padding: 0 10px 10px 10px;
 }
 
 /* - Travel data price */
+.TravelPlanner-page .travel-data .travel-actions .loader {
+	top: 20%;
+	left: 45%;
+	transform: scale(0.7);
+}
+
 .TravelPlanner-page .travel-data .travel-actions .travel-price {
 	position: relative;
+	margin-top: 10px;
 	padding: 10px;
 	opacity: 0;
-	transition: opacity 200ms ease-in;
+	transition: opacity 250ms ease-in;
 }
 .TravelPlanner-page .travel-data .travel-actions .travel-price.shown { opacity: 1; }
 
@@ -57,10 +81,18 @@
 	right: 0;
 	bottom: 0;
 	left: 0;
-	z-index: -1;
+	pointer-events: none;
 }
 .TravelPlanner-page .travel-data .travel-actions .travel-price::before { background: var(--primary-color); opacity: 0.15; }
 .TravelPlanner-page .travel-data .travel-actions .travel-price::after { border: 2px var(--primary-color) dashed; }
 
-.TravelPlanner-page .travel-data .travel-actions .travel-price > p { margin-top: 0; }
+.TravelPlanner-page .travel-data .travel-actions .travel-price > p {
+	position: relative;
+	margin-top: 0;
+}
 .TravelPlanner-page .travel-data .travel-actions .travel-price .travel-price-span { margin-top: 0; }
+
+/* ---- Final section ----------------------------------------------------------------------------------------------- */
+.TravelPlanner-page .final-section .button:not(:last-child) {
+	margin-right: 10px;
+}
