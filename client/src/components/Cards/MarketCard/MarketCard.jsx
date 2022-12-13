@@ -12,17 +12,16 @@ function MarketCard({ id, name, description, discount, price, imageURI }) {
 
 	/* ---- Page content ---------------------------- */
 	return (
-		<div className="market-card">
+		<div className={`market-card${imageURI ? " with-image" : ""}`}>
+			{imageURI && <div className="market-card-image" style={{ backgroundImage: `url(${imageURI})` }}/>}
+
 			<div className="market-card-info">
-				<div className="market-card-text">
-					<p className="market-card-name market-card-info-line">{name} - {id}</p>
-					<p className="market-card-description market-card-info-line">{description}</p>
-				</div>
-				<div className="market-card-img-container" style={{ backgroundImage: `url(${imageURI})` }}>
-					<p className="market-card-discount market-card-info-line">{discount}%</p>
-				</div>
+				<p className="market-card-name market-card-info-line">{name}</p>
+				<p className="market-card-description market-card-info-line">{description}</p>
+				<p className="market-card-discount market-card-info-line">{discount}%</p>
 			</div>
-			<button className="market-card-buyButton market-card-info-line" onClick={buyCard}>Acheter: {price} ETH</button>
+
+			<button className="market-card-buy-btn" onClick={buyCard}>Acheter: {price} ETH</button>
 		</div>
 	);
 }
