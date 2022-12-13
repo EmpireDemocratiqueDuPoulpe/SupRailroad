@@ -154,7 +154,6 @@ contract CardMarket is ERC721, Administrable, CardFactory, BalanceManager {
     /// @param _owner - The card owner (before transfer).
     /// @param _target - The approved address.
     /// @param _cardId - The card id.
-    /// @return The cards.
     function transferCard(address _owner, address _target, uint256 _cardId) public {
         super.safeTransferFrom(_owner, _target, _cardId);
 
