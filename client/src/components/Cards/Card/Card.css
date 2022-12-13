@@ -155,7 +155,20 @@
 	align-items: center;
 }
 
-.card .card-inner .card-back .card-back-content .card-approved-to-form > input { width: 173px; }
+.card .card-inner .card-back .card-back-content .card-approved-to-form > input {
+	box-sizing: border-box;
+	width: 175px;
+	margin-right: 5px;
+	padding: 5px;
+	background: var(--background-color);
+	color: var(--text-color_background);
+	border: 1px var(--primary-border-color) solid;
+}
+
+.card .card-inner .card-back .card-back-content .card-approved-to-form > input:focus-visible {
+	border-color: var(--secondary-color);
+	outline: none;
+}
 
 .card .card-inner .card-back .card-back-content .card-approved-to .address {
 	font-size: 0.85em;

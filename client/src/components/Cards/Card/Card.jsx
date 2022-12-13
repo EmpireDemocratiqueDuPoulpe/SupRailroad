@@ -2,6 +2,7 @@ import { useState } from "react";
 import PropTypes from "prop-types";
 import Web3 from "web3";
 import useCardsMarket from "../../../hooks/market/useCardsMarket.js";
+import { SimpleButton } from "../../Buttons";
 import { eventOnElement } from "../../../helpers/accessibility.js";
 import "./Card.css";
 
@@ -58,7 +59,9 @@ function Card({ id, name, description, discountPercent, approvedTo, price, image
 
 								<div className="card-approved-to-form">
 									<input type="text" placeholder="Adresse de destination" value={approvedAddress} onChange={handleApprovedAddress} {...eventOnElement(killEvent)}/>
-									<button onClick={confirmApproval} disabled={!approvedAddress}>&gt;</button>
+									<SimpleButton onClick={confirmApproval} disabled={!approvedAddress}>
+										&gt;
+									</SimpleButton>
 								</div>
 							</>
 						))}
