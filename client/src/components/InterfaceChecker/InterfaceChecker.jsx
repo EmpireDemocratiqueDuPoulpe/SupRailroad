@@ -19,7 +19,7 @@ function InterfaceChecker({ children }) {
 					<p className="interface-checker-sub-message">Ce n&apos;est pas une suggestion <span className="emojis">🔫🤠</span></p>
 
 					<div className="interface-checker-actions">
-						<a className="button interface-checker-metamask-link" href="https://metamask.io/" target="_blank" rel="noreferrer">
+						<a className="button simple-button interface-checker-metamask-link" href="https://metamask.io/" target="_blank" rel="noreferrer">
 							Télécharger Metamask
 							<FontAwesomeIcon icon={solid("frog")}/>
 						</a>

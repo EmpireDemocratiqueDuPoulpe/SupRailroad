@@ -92,7 +92,7 @@ function AdminCorner() {
 						<div className="new-card-form">
 							<div className="new-card-form-row">
 								<label className="input">
-									Nom :
+									Nom* :
 									<input type="text" minLength="1" placeholder="Carte de réduction" value={cardName} onChange={onCardNameChange}/>
 								</label>
 
@@ -111,12 +111,12 @@ function AdminCorner() {
 
 							<div className="new-card-form-row">
 								<label className="input">
-									Prix (ETH) :
+									Prix* (ETH) :
 									<input type="number" step="0.01" placeholder="0.030" value={cardPrice} onChange={onCardPriceChange}/>
 								</label>
 
 								<label className="input">
-									Réduction (%) :
+									Réduction* (%) :
 									<input type="number" step="1" min="1" max="100" placeholder="10" value={cardDiscount} onChange={onCardDiscountChange}/>
 								</label>
 							</div>
@@ -125,7 +125,7 @@ function AdminCorner() {
 								<div className="spacer"/>
 
 								<label className="input">
-									Nombre de carte :
+									Nombre de carte* :
 									<input type="number" step="1" min="1" max="100" placeholder="pas trop stp, sinon ça lag" value={cardCount} onChange={onCardCountChange}/>
 								</label>
 
