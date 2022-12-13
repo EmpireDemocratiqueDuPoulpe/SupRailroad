@@ -10,10 +10,11 @@ import Inputs from "../../components/Inputs";
 function AdminCorner() {
 	/* ---- Contexts -------------------------------- */
 	const navigate = useNavigate();
-	const { state: { contracts: {ticketMarket}, account, isAdmin } } = useEth();
+	const { state: { contracts: {ticketMarket, cardMarket}, account, isAdmin } } = useEth();
 	const ticketsMarket = useTicketsMarket();
 	const cardsMarket = useCardsMarket();
-	const contractBalance = useContractBalance(ticketMarket);
+	const ticketsContractBalance = useContractBalance(ticketMarket);
+	const cardsContractBalance = useContractBalance(cardMarket);
 
 	/* ---- Constants ------------------------------- */
 	const [cardName, setCardName] = useState(/** @type {string} */ "");
@@ -58,9 +59,7 @@ function AdminCorner() {
 		cardsMarket.create(cardPrice, cardDiscount, cardName, cardImage, cardDescription, cardsCount).catch(console.error);
 	};
 
-	const transfertBalance = () => {
-		contractBalance.transfert(account).catch(console.error);
-	};
+	const transfertBalance = contractBalance => contractBalance.transfert(account).catch(console.error);
 
 	/* ---- Effects --------------------------------- */
 	useEffect(() => {
@@ -109,12 +108,20 @@ function AdminCorner() {
 					<h2 className="inner-page-section-title">Transfert de fonds</h2>
 
 					<div className="inner-page-section-body">
-						{!contractBalance.loaded ? <Loader centered/> : (
-							<>
-								<p className="inner-page-section-data">Balance : {contractBalance.balance} ETH</p>
+						{(!ticketsContractBalance.loaded || !cardsContractBalance.loaded) ? <Loader centered/> : (
+							<div className="balances-group">
+								<div className="balance-box">
+									<h3>March&eacute; des tickets</h3>
+									<p className="inner-page-section-data">Balance : {ticketsContractBalance.balance} ETH</p>
+									<button onClick={() => transfertBalance(ticketsContractBalance)} disabled={!ticketsContractBalance.balance}>Transférer sur mon compte</button>
+								</div>
 
-								<button onClick={transfertBalance} disabled={!contractBalance.balance}>Transférer sur mon compte</button>
-							</>
+								<div className="balance-box">
+									<h3>March&eacute; des cartes de r&eacute;duction</h3>
+									<p className="inner-page-section-data">Balance : {cardsContractBalance.balance} ETH</p>
+									<button onClick={() => transfertBalance(cardsContractBalance)} disabled={!cardsContractBalance.balance}>Transférer sur mon compte</button>
+								</div>
+							</div>
 						)}
 					</div>
 				</div>

@@ -5,8 +5,9 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "./Administrable.sol";
 import "./CardFactory.sol";
+import "./BalanceManager.sol";
 
-contract CardMarket is ERC721, Administrable, CardFactory {
+contract CardMarket is ERC721, Administrable, CardFactory, BalanceManager {
     /// Libs
     using Counters for Counters.Counter;
 
