@@ -63,7 +63,13 @@ function useTicketsMarket({ onTicketBought } = {}) {
 		if (ticketMarket) {
 			getStandardPrice().catch(console.error);
 			// noinspection JSValidateTypes
-			priceChangeListener = ticketMarket.events.TicketPriceChanged().on("data", getStandardPrice);
+			priceChangeListener = ticketMarket.events.TicketPriceChanged().on("data", data => {
+				if (data.returnValues.caller === account) {
+					messages.addSuccess("Prix du ticket modifié.");
+				}
+
+				getStandardPrice().catch(console.error);
+			});
 		}
 
 		// The event listener is stopped when this hook is unmounted.

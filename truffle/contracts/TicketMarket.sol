@@ -37,7 +37,7 @@ contract TicketMarket is TicketFactory, Administrable, OracleLinked, BalanceMana
 
     /// Events
     /// @notice Triggered when the base price of the ticket is changed.
-    event TicketPriceChanged(uint256 newPrice);
+    event TicketPriceChanged(address indexed caller, uint256 newPrice);
     /// @notice Triggered when a price calculation is requested.
     event TicketPriceRequested(uint256 indexed requestId, address indexed caller, string[] types, Coordinate[] points, int256 cardId);
     /// @notice Triggered when a price has been calculated.
@@ -67,7 +67,7 @@ contract TicketMarket is TicketFactory, Administrable, OracleLinked, BalanceMana
     /// @param _price - The new standard price (in Wei).
     function setPrice(uint256 _price) external mustBeAdmin {
         ticketPrice = _price;
-        emit TicketPriceChanged(_price);
+        emit TicketPriceChanged(msg.sender, _price);
     }
 
     /// @notice Sends the response to a price request.

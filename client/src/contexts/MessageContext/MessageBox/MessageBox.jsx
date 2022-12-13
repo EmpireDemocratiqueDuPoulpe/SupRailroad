@@ -11,13 +11,11 @@ function MessageBox({ id, code, message, type, ttl, onClose }) {
 	useEffect(() => {
 		let timeout;
 		if (ttl) {
-			timeout = setTimeout(() => handleClose(), ttl);
+			timeout = setTimeout(handleClose, ttl);
 		}
 
 		return () => {
-			if (timeout) {
-				clearTimeout(timeout);
-			}
+			if (timeout) clearTimeout(timeout);
 		};
 	}, [handleClose, ttl]);
 
