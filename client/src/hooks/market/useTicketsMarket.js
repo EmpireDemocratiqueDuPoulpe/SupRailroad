@@ -139,7 +139,6 @@ function useTicketsMarket({ onTicketBought } = {}) {
 	}, [ticketMarket, account, requestId]);
 
 	/* ---- Expose hook ----------------------------- */
-	console.log(processingPrice);
 	return { standardPrice, setStandardPrice: changeStandardPrice, processingPrice, currentPrice: price, requestPrice: getPrice, buy: buyTicket };
 }
 
