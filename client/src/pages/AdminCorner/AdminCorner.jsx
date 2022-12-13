@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Web3 from "web3";
 import { useEth } from "../../contexts/EthContext";
 import useTicketsMarket from "../../hooks/market/useTicketsMarket.js";
-import useCards from "../../hooks/cards/useCards.js";
+import useCardsMarket from "../../hooks/market/useCardsMarket.js";
 import useContractBalance from "../../hooks/contractBalance/useContractBalance.js";
 import Loader from "../../components/Loader/Loader.jsx";
 import Inputs from "../../components/Inputs";
@@ -12,8 +11,8 @@ function AdminCorner() {
 	/* ---- Contexts -------------------------------- */
 	const navigate = useNavigate();
 	const { state: { contracts: {ticketMarket}, account, isAdmin } } = useEth();
-	const tickets = useTicketsMarket();
-	const cards = useCards();
+	const ticketsMarket = useTicketsMarket();
+	const cardsMarket = useCardsMarket();
 	const contractBalance = useContractBalance(ticketMarket);
 
 	/* ---- Constants ------------------------------- */
@@ -22,7 +21,7 @@ function AdminCorner() {
 	const [cardImage, setCardImage] = useState(/** @type {string} */ "");
 	const [cardPrice, setCardPrice] = useState(/** @type {string} */ "");
 	const [cardDiscount, setCardDiscount] = useState(/** @type {number} */ "");
-	const [cardsNumber, setCardsNumber] = useState(/** @type {number} */ "");
+	const [cardsCount, setCardsCount] = useState(/** @type {number} */ "");
 
 	/* ---- Functions ------------------------------- */
 	/* ┌─────────New card form functions─────────┐ */
@@ -48,17 +47,15 @@ function AdminCorner() {
 	};
 
 	const handleCardsNumber = event => {
-		setCardsNumber(event.target.value);
+		setCardsCount(event.target.value);
 	};
 
 	/* └─────────────────────────────────────────┘ */
 
-	const onPriceChange = price => {
-		tickets.setStandardPrice(price).catch(console.error);
-	};
+	const onPriceChange = price => ticketsMarket.setStandardPrice(price).catch(console.error);
 
 	const createCard = () => {
-		cards.create(Web3.utils.toWei(cardPrice, "ether"), cardDiscount, cardName, cardImage, cardDescription, cardsNumber).catch(console.error);
+		cardsMarket.create(cardPrice, cardDiscount, cardName, cardImage, cardDescription, cardsCount).catch(console.error);
 	};
 
 	const transfertBalance = () => {
@@ -87,8 +84,8 @@ function AdminCorner() {
 						<Inputs.Number
 							label="Prix du ticket (par km) :" postLabel="ETH"
 							step={0.0001}
-							defaultValue={tickets.standardPrice?.toString()} onChange={onPriceChange}
-							disabled={!tickets.standardPrice}
+							defaultValue={ticketsMarket.standardPrice?.toString()} onChange={onPriceChange}
+							disabled={!ticketsMarket.standardPrice}
 						/>
 						<Inputs.Checkbox label="Gagner un max d'argent" checked readOnly/>
 					</div>
@@ -103,7 +100,7 @@ function AdminCorner() {
 						<span>Image (url) :</span><input type="text" placeholder="Image de la carte" value={cardImage} onChange={handleCardImage}/><br/>
 						<span>Prix (ETH) :</span><input type="number" step="0.0001" placeholder="Prix de la carte" value={cardPrice} onChange={handleCardPrice}/><br/>
 						<span>Réduction (%) :</span><input type="number" step="1" min="1" max="100" placeholder="Pourcentage de réduction" value={cardDiscount} onChange={handleCardDiscount}/><br/>
-						<span>Nombre :</span><input type="number" step="1" min="1" max="100" placeholder="Nombre de cartes" value={cardsNumber} onChange={handleCardsNumber}/><br/>
+						<span>Nombre :</span><input type="number" step="1" min="1" max="100" placeholder="Nombre de cartes" value={cardsCount} onChange={handleCardsNumber}/><br/>
 						<button onClick={createCard}>Create card</button>
 					</div>
 				</div>

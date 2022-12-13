@@ -1,12 +1,12 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
-import useCards from "../../hooks/cards/useCards.js";
+import useCardsMarket from "../../hooks/market/useCardsMarket.js";
 import { eventOnElement } from "../../helpers/accessibility.js";
 import "./Card.css";
 
 function Card({ id, name, description, discountPercent, approvedTo, price, imageURI }) {
 	/* ---- States ---------------------------------- */
-	const cards = useCards();
+	const cardsMarket = useCardsMarket();
 	const [flipped, setFlipped] = useState(/** @type {boolean} */ false);
 	const [approvedAddress, setApprovedAddress] = useState(/** @type {string} */ "");
 
@@ -20,7 +20,7 @@ function Card({ id, name, description, discountPercent, approvedTo, price, image
 	const handleApprovedAddress = event => setApprovedAddress(event.target.value);
 	const confirmApproval = event => {
 		killEvent(event);
-		cards.approve(approvedAddress, id).catch(console.error);
+		cardsMarket.approve(approvedAddress, id).catch(console.error);
 	};
 
 	return (

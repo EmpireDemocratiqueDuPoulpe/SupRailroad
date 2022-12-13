@@ -1,14 +1,14 @@
 import PropTypes from "prop-types";
-import useCardMarket from "../../hooks/market/useCardMarket.js";
+import useCardsMarket from "../../hooks/market/useCardsMarket.js";
 import "./MarketCard.css";
 
 // eslint-disable-next-line no-unused-vars
 function MarketCard({ id, name, description, discount, price, imageURI }) {
 	/* ---- States ---------------------------------- */
-	const cardMarket = useCardMarket();
+	const cardsMarket = useCardsMarket(false);
 
 	/* ---- Functions ------------------------------- */
-	const buyCard = () => cardMarket.buy(price, id).catch(console.error);
+	const buyCard = () => cardsMarket.buy(id, price).catch(console.error);
 
 	/* ---- Page content ---------------------------- */
 	return (

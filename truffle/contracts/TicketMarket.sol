@@ -85,7 +85,7 @@ contract TicketMarket is TicketFactory, Administrable, OracleLinked, BalanceMana
         emit TicketPriceCalculated(_requestId, _caller, _price);
     }
 
-    // Functions - Market
+    // Functions - CardsMarket
     // TODO: Send value if too much?
     /// @notice Buys a ticket.
     function buyTicket() external payable {

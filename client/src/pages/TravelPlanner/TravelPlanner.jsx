@@ -2,7 +2,7 @@ import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useProgressiveSections, ProgressiveSectionsProvider } from "../../contexts/ProgressiveSectionsContext";
 import useTicketsMarket from "../../hooks/market/useTicketsMarket.js";
-import useCardWallet from "../../hooks/wallet/useCardWallet.js";
+import useCardsWallet from "../../hooks/wallet/useCardsWallet.js";
 import ProgressiveSection from "../../components/ProgressiveSection/ProgressiveSection.jsx";
 import Buttons from "../../components/Buttons";
 import Card from "../../components/Card/Card.jsx";
@@ -14,8 +14,8 @@ import "./TravelPlanner.css";
 function DynamicSections() {
 	/* ---- Contexts -------------------------------- */
 	const progressiveSections = useProgressiveSections();
-	const tickets = useTicketsMarket({ onTicketBought: progressiveSections.nextStep });
-	const cards = useCardWallet();
+	const ticketsMarket = useTicketsMarket({ onTicketBought: progressiveSections.nextStep });
+	const cardsWallet = useCardsWallet();
 	const navigate = useNavigate();
 
 	/* ---- States ---------------------------------- */
@@ -23,10 +23,10 @@ function DynamicSections() {
 	const [points, setPoints] = useState(/** @type {Array<Array<number>>} */ []);
 	const [distance, setDistance] = useState(/** @type {string} */ "");
 	const usedCard = useMemo(() => {
-		if (cards?.cards) {
-			return cards.cards.slice().sort((a, b) => b.discountPercent - a.discountPercent).shift() ?? null;
+		if (cardsWallet?.cards) {
+			return cardsWallet.cards.slice().sort((a, b) => b.discountPercent - a.discountPercent).shift() ?? null;
 		} else return null;
-	}, [cards]);
+	}, [cardsWallet]);
 
 	/* ---- Functions ------------------------------- */
 	const handleTypesChange = types => { setTravelTypes(types); };
@@ -36,8 +36,8 @@ function DynamicSections() {
 		setDistance(distance ?? "");
 	};
 
-	const calcTicketPrice = () => { tickets.requestPrice(travelTypes, points, (usedCard?.cardId ?? -1)).catch(console.error); };
-	const buyTicket = () => { tickets.buy().catch(console.error); };
+	const calcTicketPrice = () => { ticketsMarket.requestPrice(travelTypes, points, (usedCard?.cardId ?? -1)).catch(console.error); };
+	const buyTicket = () => { ticketsMarket.buy().catch(console.error); };
 
 	/* ---- Page content ---------------------------- */
 	return (
@@ -76,9 +76,9 @@ function DynamicSections() {
 					<div className="travel-actions">
 						<button onClick={calcTicketPrice} disabled={points.length < 2}>Calculer le prix</button>
 
-						<div className={`travel-price ${tickets.currentPrice ? "shown" : "hidden"}`}>
-							<p>Votre voyage est estim&eacute; &agrave; <span className="emphasis">{tickets.currentPrice} ETH</span>.</p>
-							<button onClick={buyTicket} disabled={!tickets.currentPrice}>Acheter un ticket</button>
+						<div className={`travel-price ${ticketsMarket.currentPrice ? "shown" : "hidden"}`}>
+							<p>Votre voyage est estim&eacute; &agrave; <span className="emphasis">{ticketsMarket.currentPrice} ETH</span>.</p>
+							<button onClick={buyTicket} disabled={!ticketsMarket.currentPrice}>Acheter un ticket</button>
 						</div>
 					</div>
 				</div>

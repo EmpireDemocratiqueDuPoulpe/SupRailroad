@@ -1,12 +1,12 @@
 import PropTypes from "prop-types";
-import useCards from "../../../hooks/cards/useCards.js";
+import useCardsMarket from "../../../hooks/market/useCardsMarket.js";
 
-function ApprovedCard({ id, name, description, discount, approvedTo, from }) {
+function ApprovedCard({ id, name, description, discount, approvedTo, owner }) {
 	/* ---- States ---------------------------------- */
-	const cards = useCards();
+	const cardsMarket = useCardsMarket(false);
 
 	/* ---- Functions ------------------------------- */
-	const confirmRetrieval = () => cards.retrieve(from, approvedTo, id).catch(console.error);
+	const confirmRetrieval = () => cardsMarket.retrieveApproved(owner, approvedTo, id).catch(console.error);
 
 	/* ---- Page content ---------------------------- */
 	return (
@@ -15,7 +15,7 @@ function ApprovedCard({ id, name, description, discount, approvedTo, from }) {
 			<p>NAME : {name}</p>
 			<p>DESCRIPTION : {description}</p>
 			<p>DISCOUNT : {discount}</p>
-			<p>ACTUAL OWNER (from) : {from}</p>
+			<p>ACTUAL OWNER (from) : {owner}</p>
 			<button onClick={confirmRetrieval}>Récupérer</button>
 		</div>
 	);
@@ -26,7 +26,7 @@ ApprovedCard.propTypes = {
 	description: PropTypes.string,
 	discount: PropTypes.string.isRequired,
 	approvedTo: PropTypes.string.isRequired,
-	from: PropTypes.string.isRequired
+	owner: PropTypes.string.isRequired
 };
 
 export default ApprovedCard;
