@@ -1,5 +1,6 @@
 import PropTypes from "prop-types";
 import useCardsMarket from "../../../../hooks/market/useCardsMarket.js";
+import { PayableButton } from "../../../Buttons";
 import "./ApprovedCard.css";
 
 function ApprovedCard({ id, name, description, discount, approvedTo, owner }) {
@@ -16,7 +17,11 @@ function ApprovedCard({ id, name, description, discount, approvedTo, owner }) {
 			<td className="approved-card-description">{description}</td>
 			<td className="approved-card-discount">{discount} %</td>
 			<td className="approved-card-owner">{owner}</td>
-			<td className="approved-card-actions"><button onClick={confirmRetrieval}>Récupérer</button></td>
+			<td className="approved-card-actions">
+				<PayableButton onClick={confirmRetrieval} centered>
+					Récupérer
+				</PayableButton>
+			</td>
 		</tr>
 	);
 }
